@@ -41,6 +41,6 @@ const run = async () => {
 
   exec(`git tag ${newVersion}`)
   exec(`git push "${remoteRepo}" --follow-tags`)
-  exec(`git push --tags`)
+  exec(`git push "${remoteRepo}" --tags`)
 }
 run()
