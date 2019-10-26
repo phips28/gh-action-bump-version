@@ -27,6 +27,10 @@ Toolkit.run(async tools => {
 
   try {
     const current = pkg.version.toString()
+    // set git user
+    await tools.runInWorkspace('git', ['config', 'user.name', '"Bump Version"'])
+    await tools.runInWorkspace('git', ['config', 'user.email', '"gh-action-bump-version@users.noreply.github.com"'])
+
     await tools.runInWorkspace('git', ['checkout', 'master'])
     await tools.runInWorkspace('npm',
       ['version', '--allow-same-version=true', '--git-tag-version=false', current])

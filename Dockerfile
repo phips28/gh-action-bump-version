@@ -24,8 +24,7 @@ COPY package*.json ./
 # Install dependencies
 RUN apt-get update
 RUN apt-get -y install git
-RUN git config --global user.name "Bump Version"
-RUN git config --global user.email "gh-action-bump-version@users.noreply.github.com"
+
 RUN npm ci
 
 
