@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/phips28/gh-action-bump-version#readme",
   "dependencies": {
-    "yargs": "^12.0.5"
+    "yargs": "^14.2.0"
   },
   "devDependencies": {
     "standard": "^12.0.1"
