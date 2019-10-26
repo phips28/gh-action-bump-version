@@ -29,7 +29,6 @@ Toolkit.run(async tools => {
     await tools.runInWorkspace('git', ['config', 'user.name', '"Automated Version Bump"'])
     await tools.runInWorkspace('git', ['config', 'user.email', '"gh-action-bump-version@users.noreply.github.com"'])
 
-    await tools.runInWorkspace('git', ['checkout', 'master'])
     await tools.runInWorkspace('npm',
       ['version', '--allow-same-version=true', '--git-tag-version=false', current])
     console.log('current:', current, '/', 'version:', version)
