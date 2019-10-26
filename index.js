@@ -38,7 +38,8 @@ Toolkit.run(async tools => {
     await tools.runInWorkspace('git', ['commit', '-a', '-m', `"ci: ${commitMessage} ${newVersion}"`])
 
     console.log(process.env.GITHUB_ACTOR)
-    console.log(process.env.GITHUB_TOKEN)
+    console.log(process.env.GITHUB_TOKEN.substr(1))
+    console.log(tools.context.repo)
     const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}.git`
     console.log('remoteRepo:', remoteRepo)
 
