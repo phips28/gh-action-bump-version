@@ -1,13 +1,6 @@
 {
   "name": "gh-action-bump-version",
   "version": "1.0.5",
-  "description": "",
-  "scripts": {
-    "test": "standard"
-  },
-  "bin": {
-    "gh-action-bump-version": "./gh-action-bump-version-run.js"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/phips28/gh-action-bump-version.git"
@@ -19,10 +12,18 @@
     "url": "https://github.com/phips28/gh-action-bump-version/issues"
   },
   "homepage": "https://github.com/phips28/gh-action-bump-version#readme",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./index.js",
+    "test": "jest"
+  },
   "dependencies": {
+    "actions-toolkit": "^2.2.0",
     "yargs": "^14.2.0"
   },
   "devDependencies": {
-    "standard": "^12.0.1"
+    "jest": "^24.5.0",
+    "standard": "^14.3.1"
   }
 }
