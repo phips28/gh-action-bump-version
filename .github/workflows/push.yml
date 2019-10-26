@@ -1,33 +1,21 @@
-on: push
-name: Build and Publish
+name: "Bump Version"
+
+on:
+  push:
+    branches:
+      - "master"
+
 jobs:
-  shellLint:
-    name: Shell Lint
+  bump-version:
+    name: "Bump Version on master"
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@master
-    - name: Shell Lint
-      uses: actions/bin/shellcheck@master
-      with:
-        args: entrypoint.sh
-    - name: Build Docker
-      uses: actions/docker/cli@master
-      with:
-        args: build -t npm .
-    - name: Build
-      uses: actions/npm@master
-      with:
-        args: install
-    - name: Test
-      uses: actions/npm@master
-      with:
-        args: test
-    - name: Publish Filter
-      uses: actions/bin/filter@master
-      with:
-        args: branch master
-    - name: Publish
-      uses: mikeal/merge-release@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+      - name: "Checkout source code"
+          - uses: actions/checkout@v1
+          - with:
+              fetch-depth: 1
+      - name: "Bump Version"
+        uses: phips28/gh-action-bump-version@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
