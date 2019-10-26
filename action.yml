@@ -1,4 +1,4 @@
-name: Bump Version
+name: Automated Version Bump
 description: Automated version bump for npm packages.
 runs:
   using: docker
