@@ -21,15 +21,15 @@ fi
 
 remote_repo="https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 
-git config user.name "Merge Release"
-git config user.email "merge-release@users.noreply.github.com"
-git remote add merge-release "${remote_repo}"
+git config user.name "Bump Version"
+git config user.email "gh-action-bump-version@users.noreply.github.com"
+git remote add gh-action-bump-version "${remote_repo}"
 
-if [ "$GITHUB_REPOSITORY" = "mikeal/merge-release" ]
+if [ "$GITHUB_REPOSITORY" = "phips28/gh-action-bump-version" ]
 then
-  echo "node merge-release-run.js"
-  sh -c "node merge-release-run.js $*"
+  echo "node gh-action-bump-version-run.js"
+  sh -c "node gh-action-bump-version-run.js $*"
 else
-  echo "npx merge-release"
-  sh -c "npx merge-release $*"
+  echo "npx gh-action-bump-version"
+  sh -c "npx gh-action-bump-version $*"
 fi

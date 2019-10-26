@@ -1,6 +1,6 @@
-## merge-release
+## gh-action-bump-version
 
-GitHub Action for automated npm publishing.
+GitHub Action for automated npm version bump.
 
 This Action publishes a package to npm. It is meant to be used on every successful merge to master but 
 you'll need to configured that workflow yourself. You can look to the
