@@ -8,6 +8,7 @@ const event = JSON.parse(fs.readFileSync('/github/workflow/event.json').toString
 let pkg = require(path.join(process.cwd(), 'package.json'))
 
 const run = async () => {
+  console.log('event:', event)
   let messages = event.commits.map(commit => commit.message + '\n' + commit.body)
 
   const commitMessage = 'version bump'
@@ -28,6 +29,7 @@ const run = async () => {
   }
 
   let current = pkg.version.toString()
+  exec(`git checkout master`)
   exec(`npm version --allow-same-version=true --git-tag-version=false ${current} `)
   console.log('current:', current, '/', 'version:', version)
   let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString()
