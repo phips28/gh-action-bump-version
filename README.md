@@ -16,6 +16,5 @@ you'll need to configured that workflow yourself. You can look to the
   * If a commit message begins with the string "feat" then the minor version will be increased. This works
     for most common commit metadata for feature additions: `"feat: new API"` and `"feature: new API"`.
   * All other changes will increment the patch version.
-* Publish to npm using the configured token.
 * Push the bumped npm version in package.json back into the repo.
-* Push a tag for the new version to GitHub.
+* Push a tag for the new version back into the repo.
