@@ -1,5 +1,5 @@
 name: gh-action-bump-version
-description: asfd
+description: Automated version bump for npm packages.
 runs:
   using: docker
   image: Dockerfile
