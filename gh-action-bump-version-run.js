@@ -26,10 +26,8 @@ const run = async () => {
   console.log('current:', current, '/', 'version:', version)
   let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString()
   console.log('new version:', newVersion)
-  exec(`git commit -m 'ci: version bump ${newVersion}'`)
-  exec(`git commit -m 'ci: version bump 1.0.1'`)
+  exec(`git commit -a -m 'ci: version bump ${newVersion}'`)
   exec(`git push`)
-  exec(`git checkout package.json`) // cleanup
   exec(`git tag ${newVersion}`)
   exec(`git push --tags`)
 }
