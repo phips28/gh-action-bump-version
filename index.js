@@ -3,11 +3,10 @@ const { execSync } = require('child_process')
 
 // Run your GitHub Action!
 Toolkit.run(async tools => {
-  console.log('context:', tools.context)
 
   const pkg = tools.getPackageJSON()
   const event = tools.context.payload
-  console.log('event:', event)
+  // console.log('event:', event)
 
   const messages = event.commits.map(commit => commit.message + '\n' + commit.body)
 
@@ -41,9 +40,8 @@ Toolkit.run(async tools => {
 
     const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}.git`
     console.log('remoteRepo:', remoteRepo)
-    console.log('remoteRepo:', tools.context.repo)
 
-    await tools.runInWorkspace('git', ['tag', '-a', newVersion])
+    await tools.runInWorkspace('git', ['tag', `-a "${newVersion}"`])
     await tools.runInWorkspace('git', ['push', `"${remoteRepo}"`, '--follow-tags'])
     await tools.runInWorkspace('git', ['push', `"${remoteRepo}"`, '--tags'])
   } catch (e) {
