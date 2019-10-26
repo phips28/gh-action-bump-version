@@ -24,7 +24,10 @@ COPY package*.json ./
 # Install dependencies
 RUN apt-get update
 RUN apt-get -y install git
+RUN git config user.name "Bump Version"
+RUN git config user.email "gh-action-bump-version@users.noreply.github.com"
 RUN npm ci
+
 
 # Copy the rest of your action's code
 COPY . .
