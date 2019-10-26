@@ -12,9 +12,10 @@ jobs:
 
     steps:
       - name: "Checkout source code"
-          - uses: "actions/checkout@v1"
-          - with:
-              fetch-depth: 1
+        uses: "actions/checkout@v1"
+        with:
+          fetch-depth: 1
+
       - name: "Bump Version"
         uses: "phips28/gh-action-bump-version@master"
         env:
