@@ -33,14 +33,14 @@ Toolkit.run(async tools => {
     await tools.runInWorkspace('npm',
       ['version', '--allow-same-version=true', '--git-tag-version=false', current])
     console.log('current:', current, '/', 'version:', version)
-    const newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString()
+    const newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim()
     console.log('new version:', newVersion)
     await tools.runInWorkspace('git', ['commit', '-a', '-m', `"ci: ${commitMessage} ${newVersion}"`])
 
     const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}.git`
     console.log('remoteRepo:', remoteRepo)
 
-    await tools.runInWorkspace('git', ['tag', `-a "${newVersion}"`])
+    await tools.runInWorkspace('git', ['tag', '-a', newVersion])
     await tools.runInWorkspace('git', ['push', `"${remoteRepo}"`, '--follow-tags'])
     await tools.runInWorkspace('git', ['push', `"${remoteRepo}"`, '--tags'])
   } catch (e) {
