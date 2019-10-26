@@ -22,6 +22,8 @@ LABEL "com.github.actions.color"="blue"
 COPY package*.json ./
 
 # Install dependencies
+RUN apt-get update
+RUN apt-get -y install git
 RUN npm ci
 
 # Copy the rest of your action's code
