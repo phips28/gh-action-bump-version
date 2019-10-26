@@ -35,8 +35,12 @@ const run = async () => {
   let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString()
   console.log('new version:', newVersion)
   exec(`git commit -a -m 'ci: ${commitMessage} ${newVersion}'`)
-  exec(`git push`)
+
+  const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}.git`
+  console.log('remoteRepo:', remoteRepo)
+
   exec(`git tag ${newVersion}`)
+  exec(`git push "${remoteRepo}" --follow-tags`)
   exec(`git push --tags`)
 }
 run()
