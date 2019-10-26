@@ -5,7 +5,7 @@ const { execSync } = require('child_process')
 Toolkit.run(async tools => {
   const pkg = tools.getPackageJSON()
   const event = tools.context.payload
-  console.log('event:', event)
+  console.log('payload:', event)
 
   const messages = event.commits.map(commit => commit.message + '\n' + commit.body)
 
