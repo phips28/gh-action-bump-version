@@ -13,6 +13,12 @@ jobs:
     steps:
       - name: "Checkout source code"
         uses: "actions/checkout@v1"
+        with:
+          fetch-depth: 1
+      - name: "Setup Node.js"
+        uses: "actions/setup-node@v1"
+        with:
+          node-version: 8.10
       - name: "Bump Version"
         uses: "phips28/gh-action-bump-version@master"
         env:
