@@ -11,7 +11,7 @@ const run = async () => {
   console.log('event:', event)
   let messages = event.commits.map(commit => commit.message + '\n' + commit.body)
 
-  const commitMessage = 'version bump'
+  const commitMessage = 'version bump to'
   const isVersionBump = messages.map(message => message.toLowerCase().includes(commitMessage)).includes(true)
   if (isVersionBump) {
     return
