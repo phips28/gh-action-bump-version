@@ -37,15 +37,12 @@ Toolkit.run(async tools => {
     console.log('new version:', newVersion)
     await tools.runInWorkspace('git', ['commit', '-a', '-m', `"ci: ${commitMessage} ${newVersion}"`])
 
-    console.log(process.env.GITHUB_ACTOR)
-    console.log(process.env.GITHUB_TOKEN.substr(1))
-    console.log(tools.context.repo)
     const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}.git`
-    console.log('remoteRepo:', remoteRepo)
+    console.log('remoteRepo:', Buffer.from(remoteRepo).toString('base64'))
 
     await tools.runInWorkspace('git', ['tag', newVersion])
-    await tools.runInWorkspace('git', ['push', `"${remoteRepo}"`, '--follow-tags'])
-    await tools.runInWorkspace('git', ['push', `"${remoteRepo}"`, '--tags'])
+    await tools.runInWorkspace('git', [`push "${remoteRepo}"`, '--follow-tags'])
+    await tools.runInWorkspace('git', [`push "${remoteRepo}"`, '--tags'])
   } catch (e) {
     tools.log.fatal(e)
     tools.exit.failure('Failed to bump version')
