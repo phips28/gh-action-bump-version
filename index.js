@@ -5,7 +5,6 @@ const { execSync } = require('child_process')
 Toolkit.run(async tools => {
   const pkg = tools.getPackageJSON()
   const event = tools.context.payload
-  // console.log('payload:', event)
 
   const messages = event.commits.map(commit => commit.message + '\n' + commit.body)
 
@@ -29,6 +28,9 @@ Toolkit.run(async tools => {
     await tools.runInWorkspace('git', ['config', 'user.name', '"Automated Version Bump"'])
     await tools.runInWorkspace('git', ['config', 'user.email', '"gh-action-bump-version@users.noreply.github.com"'])
 
+    const currentBranch = /refs\/[a-zA-Z]+\/(.*)/.exec(process.env.GITHUB_REF)
+    console.log('currentBranch:', currentBranch)
+    await tools.runInWorkspace('git', ['checkout', currentBranch])
     await tools.runInWorkspace('npm',
       ['version', '--allow-same-version=true', '--git-tag-version=false', current])
     console.log('current:', current, '/', 'version:', version)
