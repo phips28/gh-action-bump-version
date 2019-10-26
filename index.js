@@ -41,7 +41,7 @@ Toolkit.run(async tools => {
     console.log('remoteRepo:', Buffer.from(remoteRepo).toString('base64'))
 
     await tools.runInWorkspace('git', ['tag', newVersion])
-    await tools.runInWorkspace('git', [`push "${remoteRepo}"`, '--follow-tags'])
+    await tools.runInWorkspace(`git push "${remoteRepo}"`, ['--follow-tags'])
     await tools.runInWorkspace('git', [`push "${remoteRepo}"`, '--tags'])
   } catch (e) {
     tools.log.fatal(e)
