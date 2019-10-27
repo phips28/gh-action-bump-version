@@ -31,18 +31,19 @@ Toolkit.run(async tools => {
     const currentBranch = /refs\/[a-zA-Z]+\/(.*)/.exec(process.env.GITHUB_REF)[1]
     console.log('currentBranch:', currentBranch)
 
+    // do it in the current checked out github branch (DETACHED HEAD)
+    // important for further usage of the package.json version
     await tools.runInWorkspace('npm',
       ['version', '--allow-same-version=true', '--git-tag-version=false', current])
     console.log('current:', current, '/', 'version:', version)
     let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim()
-
     await tools.runInWorkspace('git', ['commit', '-a', '-m', `"ci: ${commitMessage} ${newVersion}"`])
 
+    // now go to the actual branch to perform the same versioning
     await tools.runInWorkspace('git', ['checkout', currentBranch])
     await tools.runInWorkspace('npm',
       ['version', '--allow-same-version=true', '--git-tag-version=false', current])
     console.log('current:', current, '/', 'version:', version)
-
     newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim()
     console.log('new version:', newVersion)
     await tools.runInWorkspace('git', ['commit', '-a', '-m', `"ci: ${commitMessage} ${newVersion}"`])
