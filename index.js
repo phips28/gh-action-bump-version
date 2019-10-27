@@ -30,11 +30,20 @@ Toolkit.run(async tools => {
 
     const currentBranch = /refs\/[a-zA-Z]+\/(.*)/.exec(process.env.GITHUB_REF)[1]
     console.log('currentBranch:', currentBranch)
+
+    await tools.runInWorkspace('npm',
+      ['version', '--allow-same-version=true', '--git-tag-version=false', current])
+    console.log('current:', current, '/', 'version:', version)
+    let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim()
+
+    await tools.runInWorkspace('git', ['commit', '-a', '-m', `"ci: ${commitMessage} ${newVersion}"`])
+
     await tools.runInWorkspace('git', ['checkout', currentBranch])
     await tools.runInWorkspace('npm',
       ['version', '--allow-same-version=true', '--git-tag-version=false', current])
     console.log('current:', current, '/', 'version:', version)
-    const newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim()
+
+    newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim()
     console.log('new version:', newVersion)
     await tools.runInWorkspace('git', ['commit', '-a', '-m', `"ci: ${commitMessage} ${newVersion}"`])
 
