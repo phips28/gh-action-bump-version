@@ -9,7 +9,6 @@ you'll need to configured that workflow yourself. You can look to the
 
 ### Workflow
 
-* Check for the latest version number published to npm.
 * Based on the commit messages, increment the version from the lastest release.
   * If the string "BREAKING CHANGE" is found anywhere in any of the commit messages or descriptions the major 
     version will be incremented.
