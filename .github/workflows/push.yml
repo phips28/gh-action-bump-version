@@ -22,7 +22,7 @@ jobs:
         with:
           node-version: 8.10.0
       - name: "Automated Version Bump"
-        uses: "phips28/gh-action-bump-version@master"
+        uses: "phips28/gh-action-bump-version@testing"
         with:
           tag-prefix: 'testing'
         env:
