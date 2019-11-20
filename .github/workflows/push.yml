@@ -23,6 +23,8 @@ jobs:
           node-version: 12
       - name: "Automated Version Bump"
         uses: "travelport-czech/gh-action-bump-version@master"
+        with:
+          tag-prefix: ''
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: "cat package.json"
