@@ -20,10 +20,15 @@ jobs:
       - name: "Setup Node.js"
         uses: "actions/setup-node@v1"
         with:
-          node-version: 8.10.0
+          node-version: 12
       - name: "Automated Version Bump"
-        uses: "phips28/gh-action-bump-version@master"
+        uses: "travelport-czech/gh-action-bump-version@master"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: "cat package.json"
         run: cat ./package.json
+      - run: npm ci --only=production
+      - run: git add node_modules -f
+      - uses: ./
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
