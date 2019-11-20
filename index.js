@@ -6,7 +6,7 @@ Toolkit.run(async tools => {
   const pkg = tools.getPackageJSON()
   const event = tools.context.payload
 
-  console.log('info', tools.context)
+  console.log('info', tools.arguments)
 
   const messages = event.commits.map(commit => commit.message + '\n' + commit.body)
 
