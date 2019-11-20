@@ -20,5 +20,5 @@ jobs:
       - run: npm ci --only=production
       - run: git add node_modules -f
       - uses: ./
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
