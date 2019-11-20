@@ -23,7 +23,7 @@ jobs:
           node-version: 8.10.0
       - name: "Automated Version Bump"
         uses: "phips28/gh-action-bump-version@master"
-        wiht:
+        with:
           tag-prefix: ''
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
