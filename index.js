@@ -6,8 +6,7 @@ Toolkit.run(async tools => {
   const pkg = tools.getPackageJSON()
   const event = tools.context.payload
 
-  console.log(JSON.stringify(tools.context))
-  console.log(JSON.stringify(tools))
+  console.log('INPUT_TAG-PREFIX', process.env['INPUT_TAG-PREFIX'])
   const messages = event.commits.map(commit => commit.message + '\n' + commit.body)
 
   const commitMessage = 'version bump to'
