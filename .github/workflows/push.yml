@@ -3,7 +3,7 @@ name: "Bump Version"
 on:
   push:
     branches:
-      - "master"
+      - "testing"
 
 jobs:
   bump-version:
@@ -23,6 +23,8 @@ jobs:
           node-version: 8.10.0
       - name: "Automated Version Bump"
         uses: "phips28/gh-action-bump-version@master"
+        with:
+          tag-prefix: 'testing'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: "cat package.json"
