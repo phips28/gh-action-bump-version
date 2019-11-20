@@ -1,3 +1,4 @@
+const core = require('@actions/core')
 const { Toolkit } = require('actions-toolkit')
 const { execSync } = require('child_process')
 
@@ -5,8 +6,6 @@ const { execSync } = require('child_process')
 Toolkit.run(async tools => {
   const pkg = tools.getPackageJSON()
   const event = tools.context.payload
-
-  console.log('info', tools.arguments)
 
   const messages = event.commits.map(commit => commit.message + '\n' + commit.body)
 
@@ -23,6 +22,8 @@ Toolkit.run(async tools => {
   } else if (messages.map(message => message.toLowerCase().startsWith('feat')).includes(true)) {
     version = 'minor'
   }
+
+  const tagPrefix = core.getInput('tag-prefix')
 
   try {
     const current = pkg.version.toString()
