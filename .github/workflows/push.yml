@@ -13,12 +13,17 @@ jobs:
     steps:
       - name: "Checkout source code"
         uses: "actions/checkout@v1"
+        with:
+          ref: ${{ github.ref }}
+      - name: "cat package.json"
+        run: cat ./package.json
       - name: "Setup Node.js"
         uses: "actions/setup-node@v1"
         with:
-          node-version: 12
-      - run: npm ci --only=production
-      - run: git add node_modules -f
-      - uses: ./
+          node-version: 8.10.0
+      - name: "Automated Version Bump"
+        uses: "@travelport-czech/gh-action-bump-version@master"
         env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: "cat package.json"
+        run: cat ./package.json
