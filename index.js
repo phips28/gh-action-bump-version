@@ -1,3 +1,4 @@
+const core = require('@actions/core')
 const { Toolkit } = require('actions-toolkit')
 const { execSync } = require('child_process')
 
@@ -22,6 +23,8 @@ Toolkit.run(async tools => {
     version = 'minor'
   }
 
+  const tagPrefix = core.getInput('tag-prefix')
+
   try {
     const current = pkg.version.toString()
     // set git user
@@ -45,6 +48,7 @@ Toolkit.run(async tools => {
       ['version', '--allow-same-version=true', '--git-tag-version=false', current])
     console.log('current:', current, '/', 'version:', version)
     newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim()
+    newVersion = `${tagPrefix}${newVersion}`
     console.log('new version:', newVersion)
     await tools.runInWorkspace('git', ['commit', '-a', '-m', `"ci: ${commitMessage} ${newVersion}"`])
 
