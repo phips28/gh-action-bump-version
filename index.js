@@ -1,4 +1,3 @@
-const core = require('@actions/core')
 const { Toolkit } = require('actions-toolkit')
 const { execSync } = require('child_process')
 
@@ -24,8 +23,6 @@ Toolkit.run(async tools => {
   } else if (messages.map(message => message.toLowerCase().startsWith('feat')).includes(true)) {
     version = 'minor'
   }
-
-  const tagPrefix = core.getInput('tag-prefix')
 
   try {
     const current = pkg.version.toString()
