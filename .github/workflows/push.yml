@@ -22,7 +22,7 @@ jobs:
         with:
           node-version: 8.10.0
       - name: "Automated Version Bump"
-        uses: "@travelport-czech/gh-action-bump-version@master"
+        uses: "travelport-czech/gh-action-bump-version@master"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: "cat package.json"

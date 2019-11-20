@@ -6,3 +6,8 @@ runs:
 branding:
   icon: chevron-up
   color: blue
+inputs:
+  tag-prefix:
+    description: 'Prefix that is used for the git tag'
+    default: ''
+    required: false
