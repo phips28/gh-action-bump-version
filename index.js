@@ -1,3 +1,9 @@
+//Change working directory if user defined PACKAGEJSON_DIR
+if(process.env.PACKAGEJSON_DIR) {
+  process.env.GITHUB_WORKSPACE = process.env.GITHUB_WORKSPACE.concat(process.env.PACKAGEJSON_DIR)
+  process.chdir(process.env.GITHUB_WORKSPACE)
+}
+
 const { Toolkit } = require('actions-toolkit')
 const { execSync } = require('child_process')
 
