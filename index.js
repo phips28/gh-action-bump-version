@@ -1,6 +1,11 @@
 const { Toolkit } = require('actions-toolkit')
 const { execSync } = require('child_process')
 
+// Change working directory if user defined PACKAGEJSON_DIR
+if (process.env.PACKAGEJSON_DIR) {
+  process.chdir(`${process.env.GITHUB_WORKSPACE}/${process.env.PACKAGEJSON_DIR}`)
+}
+
 // Run your GitHub Action!
 Toolkit.run(async tools => {
   const pkg = tools.getPackageJSON()
