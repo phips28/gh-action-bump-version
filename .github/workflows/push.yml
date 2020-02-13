@@ -20,9 +20,9 @@ jobs:
       - name: "Setup Node.js"
         uses: "actions/setup-node@v1"
         with:
-          node-version: 8.10.0
+          node-version: 12.11.0
       - name: "Automated Version Bump"
-        uses: "phips28/gh-action-bump-version@master"
+        uses: "speed-e/gh-action-bump-version@master"
         with:
           tag-prefix: ''
         env:
