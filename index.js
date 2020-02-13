@@ -43,7 +43,7 @@ Toolkit.run(async tools => {
       ['version', '--allow-same-version=true', '--git-tag-version=false', current])
     console.log('current:', current, '/', 'version:', version)
     let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim()
-    await tools.runInWorkspace('git', ['commit', '-a', '-m', `"ci: ${commitMessage} ${newVersion}"`])
+    await tools.runInWorkspace('git', ['commit', '-a', '-m', `ci: ${commitMessage} ${newVersion}`])
 
     // now go to the actual branch to perform the same versioning
     await tools.runInWorkspace('git', ['checkout', currentBranch])
@@ -53,7 +53,7 @@ Toolkit.run(async tools => {
     newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim()
     newVersion = `${process.env['INPUT_TAG-PREFIX']}${newVersion}`
     console.log('new version:', newVersion)
-    await tools.runInWorkspace('git', ['commit', '-a', '-m', `"ci: ${commitMessage} ${newVersion}"`])
+    await tools.runInWorkspace('git', ['commit', '-a', '-m', `ci: ${commitMessage} ${newVersion}`])
 
     const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}.git`
     // console.log(Buffer.from(remoteRepo).toString('base64'))
