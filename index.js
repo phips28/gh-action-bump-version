@@ -21,9 +21,10 @@ Toolkit.run(async tools => {
   }
 
   let version = 'patch'
-  if (messages.map(message => message.includes('BREAKING CHANGE')).includes(true)) {
+  if (messages.map(message => message.includes('BREAKING CHANGE') || message.includes('major')).includes(true)) {
     version = 'major'
-  } else if (messages.map(message => message.toLowerCase().startsWith('feat')).includes(true)) {
+  } else if (messages.map(
+    message => message.toLowerCase().startsWith('feat') || message.toLowerCase().includes('minor')).includes(true)) {
     version = 'minor'
   }
 

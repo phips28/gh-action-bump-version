@@ -10,9 +10,9 @@ you'll need to configured that workflow yourself. You can look to the
 ### Workflow
 
 * Based on the commit messages, increment the version from the lastest release.
-  * If the string "BREAKING CHANGE" is found anywhere in any of the commit messages or descriptions the major 
+  * If the string "BREAKING CHANGE" or "major" is found anywhere in any of the commit messages or descriptions the major 
     version will be incremented.
-  * If a commit message begins with the string "feat" then the minor version will be increased. This works
+  * If a commit message begins with the string "feat" or "minor" then the minor version will be increased. This works
     for most common commit metadata for feature additions: `"feat: new API"` and `"feature: new API"`.
   * All other changes will increment the patch version.
 * Push the bumped npm version in package.json back into the repo.
