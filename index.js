@@ -9,29 +9,28 @@ if (process.env.PACKAGEJSON_DIR) {
 // Run your GitHub Action!
 Toolkit.run(async tools => {
   const pkg = tools.getPackageJSON()
+  const current = pkg.version.toString()
   const event = tools.context.payload
 
   const messages = event.commits.map(commit => commit.message + '\n' + commit.body)
 
-  const commitMessage = 'version bump to'
-  const isVersionBump = messages.map(message => message.toLowerCase().includes(commitMessage)).includes(true)
+  const isVersionBump = messages.map(message => message.toLowerCase().includes(current)).includes(true)
   if (isVersionBump) {
     tools.exit.success('No action necessary!')
     return
   }
 
   let version = 'patch'
-  if (messages.map(message => message.includes('BREAKING CHANGE')).includes(true)) {
+  if (messages.map(message => message.toLowerCase().startsWith('major')).includes(true)) {
     version = 'major'
-  } else if (messages.map(message => message.toLowerCase().startsWith('feat')).includes(true)) {
+  } else if (messages.map(message => message.toLowerCase().startsWith('minor')).includes(true)) {
     version = 'minor'
   }
 
   try {
-    const current = pkg.version.toString()
     // set git user
     await tools.runInWorkspace('git', ['config', 'user.name', '"Automated Version Bump"'])
-    await tools.runInWorkspace('git', ['config', 'user.email', '"gh-action-bump-version@users.noreply.github.com"'])
+    await tools.runInWorkspace('git', ['config', 'user.email', '"fpr-public@users.noreply.github.com"'])
 
     const currentBranch = /refs\/[a-zA-Z]+\/(.*)/.exec(process.env.GITHUB_REF)[1]
     console.log('currentBranch:', currentBranch)
@@ -42,7 +41,7 @@ Toolkit.run(async tools => {
       ['version', '--allow-same-version=true', '--git-tag-version=false', current])
     console.log('current:', current, '/', 'version:', version)
     let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim()
-    await tools.runInWorkspace('git', ['commit', '-a', '-m', `ci: ${commitMessage} ${newVersion}`])
+    await tools.runInWorkspace('git', ['commit', '-a', '-m', newVersion])
 
     // now go to the actual branch to perform the same versioning
     await tools.runInWorkspace('git', ['checkout', currentBranch])
@@ -52,7 +51,7 @@ Toolkit.run(async tools => {
     newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim()
     newVersion = `${process.env['INPUT_TAG-PREFIX']}${newVersion}`
     console.log('new version:', newVersion)
-    await tools.runInWorkspace('git', ['commit', '-a', '-m', `ci: ${commitMessage} ${newVersion}`])
+    await tools.runInWorkspace('git', ['commit', '-a', '-m', newVersion])
 
     const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}.git`
     // console.log(Buffer.from(remoteRepo).toString('base64'))
