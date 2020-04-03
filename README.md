@@ -7,6 +7,8 @@ It is meant to be used on every successful merge to master but
 you'll need to configured that workflow yourself. You can look to the
 [`.github/workflows/push.yml`](./.github/workflows/push.yml) file in this project as an example.
 
+**Attention**
+
 Make sure you use the `actions/checkout@v2` action!
 
 ### Workflow
