@@ -20,10 +20,10 @@
   },
   "dependencies": {
     "actions-toolkit": "^2.2.0",
-    "yargs": "^14.2.0"
+    "yargs": "^15.3.1"
   },
   "devDependencies": {
-    "jest": "^24.5.0",
-    "standard": "^14.3.1"
+    "jest": "^25.2.7",
+    "standard": "^14.3.3"
   }
 }
