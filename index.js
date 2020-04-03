@@ -37,7 +37,6 @@ Toolkit.run(async tools => {
 
     const currentBranch = /refs\/[a-zA-Z]+\/(.*)/.exec(process.env.GITHUB_REF)[1]
     console.log('currentBranch:', currentBranch)
-    console.log('event.pull_request.head.ref:', event.pull_request.head.ref)
 
     // do it in the current checked out github branch (DETACHED HEAD)
     // important for further usage of the package.json version
@@ -55,7 +54,6 @@ Toolkit.run(async tools => {
     newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim()
     newVersion = `${process.env['INPUT_TAG-PREFIX']}${newVersion}`
     console.log('new version:', newVersion)
-    // await tools.runInWorkspace('git', ['commit', '-a', '-m', `ci: ${commitMessage} ${newVersion}`])
     console.log('before remoteRepo')
     const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}.git`
     // console.log(Buffer.from(remoteRepo).toString('base64'))
