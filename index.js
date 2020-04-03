@@ -36,7 +36,7 @@ Toolkit.run(async tools => {
     await tools.runInWorkspace('git', ['config', 'user.email', '"gh-action-bump-version@users.noreply.github.com"'])
 
     const currentBranch = /refs\/[a-zA-Z]+\/(.*)/.exec(process.env.GITHUB_REF)[1]
-    console.log('currentBranch:', currentBranch)
+    console.log('currentBranch:', currentBranch, process.env.GITHUB_REF)
 
     // do it in the current checked out github branch (DETACHED HEAD)
     // important for further usage of the package.json version
