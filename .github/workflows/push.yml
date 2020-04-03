@@ -3,7 +3,7 @@ name: "Bump Version"
 on:
   push:
     branches:
-      - "checkout_v2"
+      - "master"
 
 jobs:
   bump-version:
@@ -22,7 +22,7 @@ jobs:
         with:
           node-version: 12
       - name: "Automated Version Bump"
-        uses: "phips28/gh-action-bump-version@checkout_v2"
+        uses: "phips28/gh-action-bump-version@master"
         with:
           tag-prefix: ''
         env:
