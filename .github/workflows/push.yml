@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: "Checkout source code"
-        uses: "actions/checkout@v1"
+        uses: "actions/checkout@v2"
         with:
           ref: ${{ github.ref }}
       - name: "cat package.json"
@@ -20,7 +20,7 @@ jobs:
       - name: "Setup Node.js"
         uses: "actions/setup-node@v1"
         with:
-          node-version: 8.10.0
+          node-version: 12
       - name: "Automated Version Bump"
         uses: "phips28/gh-action-bump-version@master"
         with:
