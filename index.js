@@ -32,8 +32,8 @@ Toolkit.run(async tools => {
   try {
     const current = pkg.version.toString()
     // set git user
-    await tools.runInWorkspace('git', ['config', 'user.name', `"${process.env.GITHUB_USER || "Automated Version Bump"}"`])
-    await tools.runInWorkspace('git', ['config', 'user.email', `"${process.env.GITHUB_EMAIL || "gh-action-bump-version@users.noreply.github.com"}"`])
+    await tools.runInWorkspace('git', ['config', 'user.name', `"${process.env.GITHUB_USER || 'Automated Version Bump'}"`])
+    await tools.runInWorkspace('git', ['config', 'user.email', `"${process.env.GITHUB_EMAIL || 'gh-action-bump-version@users.noreply.github.com'}"`])
 
     const currentBranch = /refs\/[a-zA-Z]+\/(.*)/.exec(process.env.GITHUB_REF)[1]
     console.log('currentBranch:', currentBranch)
