@@ -13,7 +13,7 @@ Make sure you use the `actions/checkout@v2` action!
 
 ### Workflow
 
-* Based on the commit messages, increment the version from the lastest release.
+* Based on the commit messages, increment the version from the latest release.
   * If the string "BREAKING CHANGE" or "major" is found anywhere in any of the commit messages or descriptions the major 
     version will be incremented.
   * If a commit message begins with the string "feat" or includes "minor" then the minor version will be increased. This works
@@ -21,3 +21,19 @@ Make sure you use the `actions/checkout@v2` action!
   * All other changes will increment the patch version.
 * Push the bumped npm version in package.json back into the repo.
 * Push a tag for the new version back into the repo.
+
+### Usage:
+**tag-prefix:** Prefix that is used for the git tag  (optional). Example:
+```yaml
+-	name:  'Automated Version Bump'
+	uses:  'phips28/gh-action-bump-version@master'
+	with:
+		tag-prefix:  ''
+```
+**PACKAGEJSON_DIR:** Param to parse the location of the desired package.json (optional). Example:
+```yaml
+-	name:  'Automated Version Bump'
+	uses:  'phips28/gh-action-bump-version@master'
+	env:
+		PACKAGEJSON_DIR:  'frontend'
+```

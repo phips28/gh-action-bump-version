@@ -11,3 +11,7 @@ inputs:
     description: 'Prefix that is used for the git tag'
     default: ''
     required: false
+  PACKAGEJSON_DIR:
+    description: 'Custom dir to the package'
+    default: ''
+    required: false
