@@ -25,15 +25,15 @@ Make sure you use the `actions/checkout@v2` action!
 ### Usage:
 **tag-prefix:** Prefix that is used for the git tag  (optional). Example:
 ```yaml
--	name:  'Automated Version Bump'
-	uses:  'phips28/gh-action-bump-version@master'
-	with:
-		tag-prefix:  ''
+- name:  'Automated Version Bump'
+  uses:  'phips28/gh-action-bump-version@master'
+  with:
+    tag-prefix:  ''
 ```
 **PACKAGEJSON_DIR:** Param to parse the location of the desired package.json (optional). Example:
 ```yaml
--	name:  'Automated Version Bump'
-	uses:  'phips28/gh-action-bump-version@master'
-	env:
-		PACKAGEJSON_DIR:  'frontend'
+- name:  'Automated Version Bump'
+  uses:  'phips28/gh-action-bump-version@master'
+  env:
+    PACKAGEJSON_DIR:  'frontend'
 ```
