@@ -11,6 +11,10 @@ inputs:
     description: 'Prefix that is used for the git tag'
     default: ''
     required: false
+  skip-tag:
+    description: 'Avoid to add a TAG to the version update commit'
+    default: 'false'
+    required: false
   PACKAGEJSON_DIR:
     description: 'Custom dir to the package'
     default: ''
