@@ -15,7 +15,7 @@ Toolkit.run(async tools => {
   if (!event.commits) {
     console.log("Couldn't find any commits in this event, incrementing patch version...")
   }
-  
+
   const messages = event.commits ? event.commits.map(commit => commit.message + '\n' + commit.body) : []
 
   const commitMessage = 'version bump to'
@@ -25,11 +25,12 @@ Toolkit.run(async tools => {
     return
   }
 
+  const majorWords = process.env['INPUT_MAJOR-WORDING'].split(',')
+  const minorWords = process.env['INPUT_MINOR-WORDING'].split(',')
   let version = 'patch'
-  if (messages.map(message => /^([a-zA-Z]+)(\(.+\))?(\!)\:/.test(message) || message.includes('BREAKING CHANGE') || message.includes('major')).includes(true)) {
+  if (messages.some(message => /^([a-zA-Z]+)(\(.+\))?(\!)\:/.test(message) || majorWords.some(word => message.includes(word)))) {
     version = 'major'
-  } else if (messages.map(
-    message => message.toLowerCase().startsWith('feat') || message.toLowerCase().includes('minor')).includes(true)) {
+  } else if (messages.some(message => minorWords.some(word => message.includes(word)))) {
     version = 'minor'
   }
 
