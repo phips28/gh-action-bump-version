@@ -30,6 +30,13 @@ Make sure you use the `actions/checkout@v2` action!
   with:
     tag-prefix:  ''
 ```
+**skip-tag:** The tag is not added to the git repository  (optional). Example:
+```yaml
+- name:  'Automated Version Bump'
+  uses:  'phips28/gh-action-bump-version@master'
+  with:
+    skip-tag:  'true'
+```
 **PACKAGEJSON_DIR:** Param to parse the location of the desired package.json (optional). Example:
 ```yaml
 - name:  'Automated Version Bump'
