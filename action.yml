@@ -18,6 +18,9 @@ inputs:
   major-wording:
     description: 'Words list that trigger a major version bump'
     default: 'BREAKING CHANGE,major'
+  skip-tag:
+    description: 'Avoid to add a TAG to the version update commit'
+    default: 'false'
     required: false
   PACKAGEJSON_DIR:
     description: 'Custom dir to the package'
