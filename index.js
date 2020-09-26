@@ -41,7 +41,7 @@ Toolkit.run(async tools => {
 
     let currentBranch = /refs\/[a-zA-Z]+\/(.*)/.exec(process.env.GITHUB_REF)[1]
     if (process.env.GITHUB_HEAD_REF) {
-      console.log('Is pull request');
+      // Comes from a pull request
       currentBranch = process.env.GITHUB_HEAD_REF;
     }
     console.log('currentBranch:', currentBranch)
