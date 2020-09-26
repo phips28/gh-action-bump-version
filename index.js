@@ -54,6 +54,8 @@ Toolkit.run(async tools => {
     await tools.runInWorkspace('git', ['commit', '-a', '-m', `ci: ${commitMessage} ${newVersion}`])
 
     // now go to the actual branch to perform the same versioning
+    // First fetch to get updated local version of branch
+    await tools.runInWorkspace('git', ['fetch'])
     await tools.runInWorkspace('git', ['checkout', currentBranch])
     await tools.runInWorkspace('npm',
       ['version', '--allow-same-version=true', '--git-tag-version=false', current])
