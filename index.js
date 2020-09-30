@@ -90,6 +90,5 @@ Toolkit.run(async tools => {
     tools.log.fatal(e)
     tools.exit.failure('Failed to bump version')
   }
-  // Test for PR
   tools.exit.success('Version bumped!')
 })
