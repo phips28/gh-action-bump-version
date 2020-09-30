@@ -14,7 +14,7 @@ Make sure you use the `actions/checkout@v2` action!
 ### Workflow
 
 * Based on the commit messages, increment the version from the latest release.
-  * If the string "BREAKING CHANGE" or "major" is found anywhere in any of the commit messages or descriptions the major 
+  * If the string "BREAKING CHANGE", "major" or the Attention pattern `refactor!: drop support for Node 6` is found anywhere in any of the commit messages or descriptions the major 
     version will be incremented.
   * If a commit message begins with the string "feat" or includes "minor" then the minor version will be increased. This works
     for most common commit metadata for feature additions: `"feat: new API"` and `"feature: new API"`.
@@ -30,6 +30,7 @@ Make sure you use the `actions/checkout@v2` action!
   with:
     tag-prefix:  ''
 ```
+
 **skip-tag:** The tag is not added to the git repository  (optional). Example:
 ```yaml
 - name:  'Automated Version Bump'
@@ -37,6 +38,16 @@ Make sure you use the `actions/checkout@v2` action!
   with:
     skip-tag:  'true'
 ```
+
+**wording:** Customize the messages that trigger the version bump. It must be a string, case sensitive, coma separated  (optional). Example:
+```yaml
+- name:  'Automated Version Bump'
+  uses:  'phips28/gh-action-bump-version@master'
+  with:
+    minor-wording:  'add,Adds,new'
+    major-wording:  'MAJOR,cut-major'
+```
+
 **PACKAGEJSON_DIR:** Param to parse the location of the desired package.json (optional). Example:
 ```yaml
 - name:  'Automated Version Bump'

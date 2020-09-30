@@ -11,6 +11,13 @@ inputs:
     description: 'Prefix that is used for the git tag'
     default: ''
     required: false
+  minor-wording:
+    description: 'Words list that trigger a minor version bump'
+    default: 'feat,minor'
+    required: false
+  major-wording:
+    description: 'Words list that trigger a major version bump'
+    default: 'BREAKING CHANGE,major'
   skip-tag:
     description: 'Avoid to add a TAG to the version update commit'
     default: 'false'
