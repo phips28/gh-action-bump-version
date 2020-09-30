@@ -13,7 +13,7 @@ Toolkit.run(async tools => {
   const event = tools.context.payload
 
   if (!event.commits) {
-    console.log("Couldn't find any commits in this event, incrementing patch version...")
+    console.log('Couldn\'t find any commits in this event, incrementing patch version...')
   }
 
   const messages = event.commits ? event.commits.map(commit => commit.message + '\n' + commit.body) : []
@@ -28,7 +28,8 @@ Toolkit.run(async tools => {
   const majorWords = process.env['INPUT_MAJOR-WORDING'].split(',')
   const minorWords = process.env['INPUT_MINOR-WORDING'].split(',')
   let version = 'patch'
-  if (messages.some(message => /^([a-zA-Z]+)(\(.+\))?(\!)\:/.test(message) || majorWords.some(word => message.includes(word)))) {
+  if (messages.some(
+    message => /^([a-zA-Z]+)(\(.+\))?(\!)\:/.test(message) || majorWords.some(word => message.includes(word)))) {
     version = 'major'
   } else if (messages.some(message => minorWords.some(word => message.includes(word)))) {
     version = 'minor'
@@ -37,13 +38,17 @@ Toolkit.run(async tools => {
   try {
     const current = pkg.version.toString()
     // set git user
-    await tools.runInWorkspace('git', ['config', 'user.name', `"${process.env.GITHUB_USER || 'Automated Version Bump'}"`])
-    await tools.runInWorkspace('git', ['config', 'user.email', `"${process.env.GITHUB_EMAIL || 'gh-action-bump-version@users.noreply.github.com'}"`])
+    await tools.runInWorkspace('git',
+      ['config', 'user.name', `"${process.env.GITHUB_USER || 'Automated Version Bump'}"`])
+    await tools.runInWorkspace('git',
+      ['config', 'user.email', `"${process.env.GITHUB_EMAIL || 'gh-action-bump-version@users.noreply.github.com'}"`])
 
     let currentBranch = /refs\/[a-zA-Z]+\/(.*)/.exec(process.env.GITHUB_REF)[1]
+    let isPullRequest = false
     if (process.env.GITHUB_HEAD_REF) {
       // Comes from a pull request
-      currentBranch = process.env.GITHUB_HEAD_REF;
+      currentBranch = process.env.GITHUB_HEAD_REF
+      isPullRequest = true
     }
     console.log('currentBranch:', currentBranch)
     // do it in the current checked out github branch (DETACHED HEAD)
@@ -55,8 +60,10 @@ Toolkit.run(async tools => {
     await tools.runInWorkspace('git', ['commit', '-a', '-m', `ci: ${commitMessage} ${newVersion}`])
 
     // now go to the actual branch to perform the same versioning
-    // First fetch to get updated local version of branch
-    await tools.runInWorkspace('git', ['fetch'])
+    if (isPullRequest) {
+      // First fetch to get updated local version of branch
+      await tools.runInWorkspace('git', ['fetch'])
+    }
     await tools.runInWorkspace('git', ['checkout', currentBranch])
     await tools.runInWorkspace('npm',
       ['version', '--allow-same-version=true', '--git-tag-version=false', current])
