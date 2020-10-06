@@ -13,7 +13,7 @@ Toolkit.run(async tools => {
   const event = tools.context.payload
 
   if (!event.commits) {
-    console.log('Couldn\'t find any commits in this event, incrementing patch/prerelease version...')
+    console.log('Couldn\'t find any commits in this event, incrementing patch version...')
   }
 
   const messages = event.commits ? event.commits.map(commit => commit.message + '\n' + commit.body) : []
