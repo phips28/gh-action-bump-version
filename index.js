@@ -28,14 +28,28 @@ Toolkit.run(async tools => {
 
   const majorWords = process.env['INPUT_MAJOR-WORDING'].split(',')
   const minorWords = process.env['INPUT_MINOR-WORDING'].split(',')
+  const prereleaseWords = ['preprelease', 'alpha', 'beta', 'rc']
+
   let version = 'patch'
+  let preid = null;
+  let foundWords = [];
+
   if (messages.some(
     message => /^([a-zA-Z]+)(\(.+\))?(\!)\:/.test(message) || majorWords.some(word => message.includes(word)))) {
     version = 'major'
   } else if (messages.some(message => minorWords.some(word => message.includes(word)))) {
     version = 'minor'
-  } else if (messages.some(message => message.includes('prerelease'))) {
-    version = 'prerelease'
+  } else if (messages.some(message => prereleaseWords.some(word => {
+        if (message.includes(word)) {
+          foundWords.push(word);
+          return true;
+        } else {
+          return false;
+        }
+      }
+    ))) {
+    version = 'prerelease';
+    console.log(foundWords);
   }
 
   try {
