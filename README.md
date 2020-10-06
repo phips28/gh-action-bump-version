@@ -18,6 +18,7 @@ Make sure you use the `actions/checkout@v2` action!
     version will be incremented.
   * If a commit message begins with the string "feat" or includes "minor" then the minor version will be increased. This works
     for most common commit metadata for feature additions: `"feat: new API"` and `"feature: new API"`.
+  * If a commit message contains the word "prerelease" then the pre-release version will be increased (for example 1.6.0-alpha.1 -> 1.6.0-alpha.2)
   * All other changes will increment the patch version.
 * Push the bumped npm version in package.json back into the repo.
 * Push a tag for the new version back into the repo.

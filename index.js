@@ -13,7 +13,7 @@ Toolkit.run(async tools => {
   const event = tools.context.payload
 
   if (!event.commits) {
-    console.log('Couldn\'t find any commits in this event, incrementing patch version...')
+    console.log('Couldn\'t find any commits in this event, incrementing patch/prerelease version...')
   }
 
   const messages = event.commits ? event.commits.map(commit => commit.message + '\n' + commit.body) : []
@@ -34,6 +34,8 @@ Toolkit.run(async tools => {
     version = 'major'
   } else if (messages.some(message => minorWords.some(word => message.includes(word)))) {
     version = 'minor'
+  } else if (messages.some(message => message.includes('prerelease'))) {
+    version = 'prerelease'
   }
 
   try {
