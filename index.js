@@ -47,7 +47,7 @@ Toolkit.run(async tools => {
         }
       }
     ))) {
-      let preid = foundWord.split("-")[1];
+      const preid = foundWord.split("-")[1];
       version = `prerelease --preid=${preid}`;
   }
 
