@@ -47,9 +47,9 @@ Make sure you use the `actions/checkout@v2` action!
   with:
     minor-wording:  'add,Adds,new'
     major-wording:  'MAJOR,cut-major'
-    patch-wording:  'patch, fixes'    # Providing patch-wording will override commits
+    patch-wording:  'patch,fixes'     # Providing patch-wording will override commits
                                       # defaulting to a patch bump.
-    rc-wording:     'RELEASE, alpha'
+    rc-wording:     'RELEASE,alpha'
 ```
 
 **PACKAGEJSON_DIR:** Param to parse the location of the desired package.json (optional). Example:
