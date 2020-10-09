@@ -28,7 +28,8 @@ Toolkit.run(async tools => {
 
   const majorWords = process.env['INPUT_MAJOR-WORDING'].split(',')
   const minorWords = process.env['INPUT_MINOR-WORDING'].split(',')
-  const preReleaseWords = ['pre-alpha', 'pre-beta', 'pre-rc']
+  const patchWords = process.env['INPUT_PATCH-WORDING'].split(',')
+  const preReleaseWords = process.env['INPUT_RC-WORDING'].split(',')
 
   let version = 'patch'
   let foundWord = null;
@@ -49,6 +50,15 @@ Toolkit.run(async tools => {
     ))) {
       const preid = foundWord.split("-")[1];
       version = `prerelease --preid=${preid}`;
+  } else if (patchWords && Array.isArray(patchWords)) {
+    if (!messages.some(message => patchWords.some(word => message.includes(word)))) {
+      version = null
+    }
+  }
+
+  if (version === null) {
+    tools.exit.success('No version keywords found, skipping bump.')
+    return
   }
 
   try {
