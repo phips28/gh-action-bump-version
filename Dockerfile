@@ -8,7 +8,7 @@
 #
 # You can specify a version:
 # FROM node:10-slim
-FROM node:slim
+FROM node:14.14-slim
 
 # Labels for GitHub to read your action
 LABEL "com.github.actions.name"="Automated version bump for npm packages."
@@ -19,17 +19,17 @@ LABEL "com.github.actions.icon"="chevron-up"
 LABEL "com.github.actions.color"="blue"
 
 # Copy the package.json and package-lock.json
-COPY package*.json ./
+COPY package.json ./
 
 # Install dependencies
 RUN apt-get update
 RUN apt-get -y install git
 
-RUN npm ci --only=production
+RUN npm i --only=production
 
 
 # Copy the rest of your action's code
 COPY . .
 
 # Run `node /index.js`
-ENTRYPOINT ["node", "/index.js"]
+ENTRYPOINT ["node", "index.js"]
