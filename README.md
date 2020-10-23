@@ -40,6 +40,14 @@ Make sure you use the `actions/checkout@v2` action!
     skip-tag:  'true'
 ```
 
+**default:** Set a default version bump to use  (optional - defaults to patch). Example:
+```yaml
+- name:  'Automated Version Bump'
+  uses:  'phips28/gh-action-bump-version@master'
+  with:
+    default: prerelease
+```
+
 **wording:** Customize the messages that trigger the version bump. It must be a string, case sensitive, coma separated  (optional). Example:
 ```yaml
 - name:  'Automated Version Bump'
