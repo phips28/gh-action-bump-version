@@ -31,7 +31,7 @@ Toolkit.run(async tools => {
   const patchWords = process.env['INPUT_PATCH-WORDING'].split(',')
   const preReleaseWords = process.env['INPUT_RC-WORDING'].split(',')
 
-  let version = process.env['DEFAULT'] || 'patch'
+  let version = process.env['INPUT_DEFAULT'] || 'patch'
   let foundWord = null;
   
   if (messages.some(
