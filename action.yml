@@ -31,3 +31,7 @@ inputs:
     description: 'Custom dir to the package'
     default: ''
     required: false
+  default:
+    description: 'Set a default version bump to use'
+    default: 'patch'
+    required: false
