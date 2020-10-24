@@ -73,6 +73,6 @@ Make sure you use the `actions/checkout@v2` action!
 - name:  'Automated Version Bump'
   uses:  'phips28/gh-action-bump-version@master'
   env:
-    PACKAGEJSON_DIR:  'frontend'
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    PACKAGEJSON_DIR:  'frontend'
 ```
