@@ -28,6 +28,8 @@ Make sure you use the `actions/checkout@v2` action!
 ```yaml
 - name:  'Automated Version Bump'
   uses:  'phips28/gh-action-bump-version@master'
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   with:
     tag-prefix:  ''
 ```
@@ -36,6 +38,8 @@ Make sure you use the `actions/checkout@v2` action!
 ```yaml
 - name:  'Automated Version Bump'
   uses:  'phips28/gh-action-bump-version@master'
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   with:
     skip-tag:  'true'
 ```
@@ -44,6 +48,8 @@ Make sure you use the `actions/checkout@v2` action!
 ```yaml
 - name:  'Automated Version Bump'
   uses:  'phips28/gh-action-bump-version@master'
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   with:
     default: prerelease
 ```
@@ -52,6 +58,8 @@ Make sure you use the `actions/checkout@v2` action!
 ```yaml
 - name:  'Automated Version Bump'
   uses:  'phips28/gh-action-bump-version@master'
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   with:
     minor-wording:  'add,Adds,new'
     major-wording:  'MAJOR,cut-major'
@@ -65,5 +73,6 @@ Make sure you use the `actions/checkout@v2` action!
 - name:  'Automated Version Bump'
   uses:  'phips28/gh-action-bump-version@master'
   env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     PACKAGEJSON_DIR:  'frontend'
 ```
