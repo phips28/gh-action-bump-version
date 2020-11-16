@@ -19,7 +19,7 @@ Toolkit.run(async tools => {
   const messages = event.commits ? event.commits.map(commit => commit.message + '\n' + commit.body) : []
 
   const commitMessage = 'version bump to'
-  console.log('messages:', messages);
+  console.log('messages:', messages)
   const isVersionBump = messages.map(message => message.toLowerCase().includes(commitMessage)).includes(true)
   if (isVersionBump) {
     tools.exit.success('No action necessary!')
@@ -32,7 +32,7 @@ Toolkit.run(async tools => {
   const preReleaseWords = process.env['INPUT_RC-WORDING'].split(',')
 
   let version = process.env['INPUT_DEFAULT'] || 'patch'
-  let foundWord = null;
+  let foundWord = null
 
   if (messages.some(
     message => /^([a-zA-Z]+)(\(.+\))?(\!)\:/.test(message) || majorWords.some(word => message.includes(word)))) {
@@ -41,15 +41,15 @@ Toolkit.run(async tools => {
     version = 'minor'
   } else if (messages.some(message => preReleaseWords.some(word => {
       if (message.includes(word)) {
-        foundWord = word;
-        return true;
+        foundWord = word
+        return true
       } else {
-        return false;
+        return false
       }
     }
   ))) {
-    const preid = foundWord.split("-")[1];
-    version = `prerelease --preid=${preid}`;
+    const preid = foundWord.split('-')[1]
+    version = `prerelease --preid=${preid}`
   } else if (patchWords && Array.isArray(patchWords)) {
     if (!messages.some(message => patchWords.some(word => message.includes(word)))) {
       version = null
