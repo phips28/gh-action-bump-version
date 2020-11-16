@@ -19,7 +19,7 @@ Toolkit.run(async tools => {
   const messages = event.commits ? event.commits.map(commit => commit.message + '\n' + commit.body) : []
 
   const commitMessage = 'version bump to'
-  console.log('messages:', messages);
+  console.log('messages:', messages)
   const isVersionBump = messages.map(message => message.toLowerCase().includes(commitMessage)).includes(true)
   if (isVersionBump) {
     tools.exit.success('No action necessary!')
@@ -31,25 +31,25 @@ Toolkit.run(async tools => {
   const patchWords = process.env['INPUT_PATCH-WORDING'].split(',')
   const preReleaseWords = process.env['INPUT_RC-WORDING'].split(',')
 
-  let version = process.env['INPUT_DEFAULT'] || 'patch'
-  let foundWord = null;
-  
+  let version = process.env.INPUT_DEFAULT || 'patch'
+  let foundWord = null
+
   if (messages.some(
     message => /^([a-zA-Z]+)(\(.+\))?(\!)\:/.test(message) || majorWords.some(word => message.includes(word)))) {
     version = 'major'
   } else if (messages.some(message => minorWords.some(word => message.includes(word)))) {
     version = 'minor'
   } else if (messages.some(message => preReleaseWords.some(word => {
-        if (message.includes(word)) {
-          foundWord = word;
-          return true;
-        } else {
-          return false;
-        }
-      }
-    ))) {
-      const preid = foundWord.split("-")[1];
-      version = `prerelease --preid=${preid}`;
+    if (message.includes(word)) {
+      foundWord = word
+      return true
+    } else {
+      return false
+    }
+  }
+  ))) {
+    const preid = foundWord.split('-')[1]
+    version = `prerelease --preid=${preid}`
   } else if (patchWords && Array.isArray(patchWords)) {
     if (!messages.some(message => patchWords.some(word => message.includes(word)))) {
       version = null
@@ -97,6 +97,7 @@ Toolkit.run(async tools => {
     newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim()
     newVersion = `${process.env['INPUT_TAG-PREFIX']}${newVersion}`
     console.log('new version:', newVersion)
+    console.log(`::set-output name=newTag::${newVersion}`)
     try {
       // to support "actions/checkout@v1"
       await tools.runInWorkspace('git', ['commit', '-a', '-m', `ci: ${commitMessage} ${newVersion}`])
