@@ -33,7 +33,7 @@ Toolkit.run(async tools => {
 
   let version = process.env['INPUT_DEFAULT'] || 'patch'
   let foundWord = null;
-  
+
   if (messages.some(
     message => /^([a-zA-Z]+)(\(.+\))?(\!)\:/.test(message) || majorWords.some(word => message.includes(word)))) {
     version = 'major'
@@ -97,6 +97,7 @@ Toolkit.run(async tools => {
     newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim()
     newVersion = `${process.env['INPUT_TAG-PREFIX']}${newVersion}`
     console.log('new version:', newVersion)
+    console.log(`::set-output name=newTag::${newVersion}`)
     try {
       // to support "actions/checkout@v1"
       await tools.runInWorkspace('git', ['commit', '-a', '-m', `ci: ${commitMessage} ${newVersion}`])
