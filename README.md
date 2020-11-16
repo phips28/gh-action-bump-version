@@ -22,6 +22,7 @@ Make sure you use the `actions/checkout@v2` action!
   * All other changes will increment the patch version.
 * Push the bumped npm version in package.json back into the repo.
 * Push a tag for the new version back into the repo.
+* An outputs variable called newTag will be available for other actions to use.
 
 ### Usage:
 **tag-prefix:** Prefix that is used for the git tag  (optional). Example:
@@ -75,4 +76,19 @@ Make sure you use the `actions/checkout@v2` action!
   env:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     PACKAGEJSON_DIR:  'frontend'
+```
+
+
+**Outputs:** An outputs variable called newTag will be available for other actions to use. Example:
+```yaml
+- name:  'Automated Version Bump'
+  id: version-bump
+  uses:  'phips28/gh-action-bump-version@master'
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    PACKAGEJSON_DIR:  'frontend'
+- name:  'Another Step'
+  uses:  'another/action'
+  with:
+    example: ${{ steps.version-bump.outputs.newTag }}
 ```
