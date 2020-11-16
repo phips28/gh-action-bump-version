@@ -35,3 +35,6 @@ inputs:
     description: 'Set a default version bump to use'
     default: 'patch'
     required: false
+outputs:
+  newTag:
+    description: 'The newly created tag'

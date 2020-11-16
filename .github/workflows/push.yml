@@ -22,6 +22,7 @@ jobs:
         with:
           node-version: 12
       - name: "Automated Version Bump"
+        id: version-bump
         uses: "phips28/gh-action-bump-version@master"
         with:
           tag-prefix: ''
@@ -29,3 +30,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: "cat package.json"
         run: cat ./package.json
+      - name:  'Output Step'
+        env:
+          NEW_TAG: ${{ steps.version-bump.outputs.newTag }}
+        run: echo "new tag $NEW_TAG"
