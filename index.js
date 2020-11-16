@@ -31,7 +31,7 @@ Toolkit.run(async tools => {
   const patchWords = process.env['INPUT_PATCH-WORDING'].split(',')
   const preReleaseWords = process.env['INPUT_RC-WORDING'].split(',')
 
-  let version = process.env['INPUT_DEFAULT'] || 'patch'
+  let version = process.env.INPUT_DEFAULT || 'patch'
   let foundWord = null
 
   if (messages.some(
@@ -40,13 +40,13 @@ Toolkit.run(async tools => {
   } else if (messages.some(message => minorWords.some(word => message.includes(word)))) {
     version = 'minor'
   } else if (messages.some(message => preReleaseWords.some(word => {
-      if (message.includes(word)) {
-        foundWord = word
-        return true
-      } else {
-        return false
-      }
+    if (message.includes(word)) {
+      foundWord = word
+      return true
+    } else {
+      return false
     }
+  }
   ))) {
     const preid = foundWord.split('-')[1]
     version = `prerelease --preid=${preid}`
