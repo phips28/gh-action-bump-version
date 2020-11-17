@@ -50,7 +50,7 @@ Toolkit.run(async tools => {
   ))) {
     const preid = foundWord.split('-')[1]
     version = `prerelease --preid=${preid}`
-  } else if (patchWords && Array.isArray(patchWords)) {
+  } else if (patchWords && Array.isArray(patchWords) && patchWords.length) {
     if (!messages.some(message => patchWords.some(word => message.includes(word)))) {
       version = null
     }
