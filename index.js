@@ -29,7 +29,7 @@ Toolkit.run(async tools => {
   const majorWords = process.env['INPUT_MAJOR-WORDING'].split(',')
   const minorWords = process.env['INPUT_MINOR-WORDING'].split(',')
   const preReleaseWords = process.env['INPUT_RC-WORDING'].split(',')
-  
+
   // if patch words aren't specified, any commit message qualifies as a patch
   const patchWords = process.env['INPUT_PATCH-WORDING'] ? process.env['INPUT_PATCH-WORDING'].split(',') : null
 
@@ -77,6 +77,10 @@ Toolkit.run(async tools => {
       // Comes from a pull request
       currentBranch = process.env.GITHUB_HEAD_REF
       isPullRequest = true
+    }
+    if (process.env['INPUT_TARGET-BRANCH']) {
+      // We want to override the branch that we are pulling / pushing to
+      currentBranch = process.env['INPUT_TARGET-BRANCH']
     }
     console.log('currentBranch:', currentBranch)
     // do it in the current checked out github branch (DETACHED HEAD)

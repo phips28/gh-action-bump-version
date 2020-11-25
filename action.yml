@@ -31,6 +31,10 @@ inputs:
     description: 'Custom dir to the package'
     default: ''
     required: false
+  target-branch:
+    description: 'A separate branch to perform the version bump on'
+    default: ''
+    required: false
   default:
     description: 'Set a default version bump to use'
     default: 'patch'
