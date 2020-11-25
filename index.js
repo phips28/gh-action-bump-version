@@ -78,8 +78,9 @@ Toolkit.run(async tools => {
       currentBranch = process.env.GITHUB_HEAD_REF
       isPullRequest = true
     }
-    if (process.env['INPUT_TAG-BRANCH']) {
-      currentBranch = process.env['INPUT_TAG-BRANCH']
+    if (process.env['INPUT_TARGET-BRANCH']) {
+      // We want to override the branch that we are pulling / pushing to
+      currentBranch = process.env['INPUT_TARGET-BRANCH']
     }
     console.log('currentBranch:', currentBranch)
     // do it in the current checked out github branch (DETACHED HEAD)
