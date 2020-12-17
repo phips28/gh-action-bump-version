@@ -23,7 +23,7 @@ jobs:
           node-version: 12
       - name: "Automated Version Bump"
         id: version-bump
-        uses: "phips28/gh-action-bump-version@master"
+        uses: "digitonic/gh-action-bump-version@master"
         with:
           tag-prefix: ''
         env:

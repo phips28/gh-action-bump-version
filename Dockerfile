@@ -23,7 +23,7 @@ COPY package*.json ./
 
 # Install dependencies
 RUN apt-get update
-RUN apt-get -y install git
+RUN apt-get -y install git diffutils patch
 
 RUN npm ci --only=production
 
