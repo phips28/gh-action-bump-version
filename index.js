@@ -86,9 +86,6 @@ Toolkit.run(async tools => {
       currentBranch = process.env['INPUT_TARGET-BRANCH']
     }
 
-    console.log('creating patch:', currentBranch, commitMessage)
-    // await tools.runInWorkspace('git', ['diff', current, commitMessage])
-
     console.log('currentBranch:', currentBranch)
     // do it in the current checked out github branch (DETACHED HEAD)
     // important for further usage of the package.json version
@@ -96,6 +93,9 @@ Toolkit.run(async tools => {
       ['version', '--allow-same-version=true', '--git-tag-version=false', current])
     console.log('current:', current, '/', 'version:', version)
     let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim()
+
+    console.log('creating patch:', current, newVersion);
+    // await tools.runInWorkspace('git', ['diff', current, commitMessage])
     // generate patch file
     await tools.runInWorkspace('git', ['commit', '-a', '-m', `ci: ${commitMessage} ${newVersion}`])
 
