@@ -99,8 +99,8 @@ Toolkit.run(async tools => {
     const patchTo = await tools.runInWorkspace('git', ['show-ref', '-s', `${process.env['INPUT_TAG-PREFIX']}${newVersion.replace('v', '')}`])
 
     console.log('comparing: ', patchFrom, patchTo)
-    const patch = await tools.runInWorkspace('git', ['diff', patchFrom, patchTo])
-    console.log(patch)
+    // const patch = await tools.runInWorkspace('git', ['diff', patchFrom, patchTo])
+    // console.log(patch)
 
     await tools.runInWorkspace('git', ['commit', '-a', '-m', `ci: ${commitMessage} ${newVersion}`])
 
