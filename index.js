@@ -96,19 +96,6 @@ Toolkit.run(async tools => {
 
     console.log('creating patch:', `${process.env['INPUT_TAG-PREFIX']}${current}`, `${process.env['INPUT_TAG-PREFIX']}${newVersion.replace('v', '')}`)
 
-    try {
-      await tools.runInWorkspace('git', ['fetch', '--tags'])
-      const patchFrom = await tools.runInWorkspace('git', ['show-ref', '-s', `${process.env['INPUT_TAG-PREFIX']}${current}`])
-      // const patchTo = await tools.runInWorkspace('git', ['show-ref', '-s', `${process.env['INPUT_TAG-PREFIX']}${newVersion.replace('v', '')}`])
-      console.log('comparing: ', patchFrom)
-      // console.log('comparing: ', patchFrom, patchTo)
-    } catch (e) {
-      console.error(e)
-    }
-
-    // const patch = await tools.runInWorkspace('git', ['diff', patchFrom, patchTo])
-    // console.log(patch)
-
     await tools.runInWorkspace('git', ['commit', '-a', '-m', `ci: ${commitMessage} ${newVersion}`])
 
     // now go to the actual branch to perform the same versioning
@@ -131,6 +118,19 @@ Toolkit.run(async tools => {
       console.warn('git commit failed because you are using "actions/checkout@v2"; ' +
         'but that doesnt matter because you dont need that git commit, thats only for "actions/checkout@v1"')
     }
+
+    try {
+      await tools.runInWorkspace('git', ['fetch', '--tags'])
+      const patchFrom = await tools.runInWorkspace('git', ['show-ref', '-s', `${process.env['INPUT_TAG-PREFIX']}${current}`])
+      // const patchTo = await tools.runInWorkspace('git', ['show-ref', '-s', `${process.env['INPUT_TAG-PREFIX']}${newVersion.replace('v', '')}`])
+      console.log('comparing: ', patchFrom)
+      // console.log('comparing: ', patchFrom, patchTo)
+    } catch (e) {
+      console.error(e)
+    }
+
+    // const patch = await tools.runInWorkspace('git', ['diff', patchFrom, patchTo])
+    // console.log(patch)
 
     const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}.git`
     if (process.env['INPUT_SKIP-TAG'] !== 'true') {
