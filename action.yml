@@ -7,6 +7,10 @@ branding:
   icon: chevron-up
   color: blue
 inputs:
+  patches-path:
+    description: 'relative path to keep the patches in'
+    default: 'patches'
+    required: false
   tag-prefix:
     description: 'Prefix that is used for the git tag'
     default: ''

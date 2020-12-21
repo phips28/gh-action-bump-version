@@ -64,6 +64,9 @@ Toolkit.run(async tools => {
   }
 
   try {
+    tools.log.info('Discovering latest release')
+    tools.log.info('Generating release')
+
     const current = pkg.version.toString()
     // set git user
     await tools.runInWorkspace('git',
@@ -82,6 +85,10 @@ Toolkit.run(async tools => {
       // We want to override the branch that we are pulling / pushing to
       currentBranch = process.env['INPUT_TARGET-BRANCH']
     }
+
+    console.log('creating patch:', currentBranch, commitMessage)
+    // await tools.runInWorkspace('git', ['diff', current, commitMessage])
+
     console.log('currentBranch:', currentBranch)
     // do it in the current checked out github branch (DETACHED HEAD)
     // important for further usage of the package.json version
@@ -89,6 +96,7 @@ Toolkit.run(async tools => {
       ['version', '--allow-same-version=true', '--git-tag-version=false', current])
     console.log('current:', current, '/', 'version:', version)
     let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim()
+    // generate patch file
     await tools.runInWorkspace('git', ['commit', '-a', '-m', `ci: ${commitMessage} ${newVersion}`])
 
     // now go to the actual branch to perform the same versioning
