@@ -118,7 +118,7 @@ Toolkit.run(async tools => {
         'but that doesnt matter because you dont need that git commit, thats only for "actions/checkout@v1"')
     }
 
-    const patchFrom = await tools.runInWorkspace('git', ['log', `${process.env['INPUT_TAG-PREFIX']}${current}^{}`, '-1', '--pretty=%H'])
+    const patchFrom = await tools.runInWorkspace('git', ['log', `${process.env['INPUT_TAG-PREFIX']}${current}`, '-1', '--pretty=%H'])
     console.log(patchFrom)
 
     const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}.git`
