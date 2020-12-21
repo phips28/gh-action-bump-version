@@ -64,7 +64,6 @@ Toolkit.run(async tools => {
   }
 
   try {
-    tools.log.info('Discovering latest release')
     tools.log.info('Generating release')
 
     const current = pkg.version.toString()
@@ -119,18 +118,8 @@ Toolkit.run(async tools => {
         'but that doesnt matter because you dont need that git commit, thats only for "actions/checkout@v1"')
     }
 
-    try {
-      await tools.runInWorkspace('git', ['fetch', '--tags'])
-      const patchFrom = await tools.runInWorkspace('git', ['rev-parse', `${process.env['INPUT_TAG-PREFIX']}${current}^{}`])
-      // const patchTo = await tools.runInWorkspace('git', ['show-ref', '-s', `${process.env['INPUT_TAG-PREFIX']}${newVersion.replace('v', '')}`])
-      console.log('comparing: ', patchFrom)
-      // console.log('comparing: ', patchFrom, patchTo)
-    } catch (e) {
-      console.error(e)
-    }
-
-    // const patch = await tools.runInWorkspace('git', ['diff', patchFrom, patchTo])
-    // console.log(patch)
+    const patchFrom = await tools.runInWorkspace('git', ['log', `${process.env['INPUT_TAG-PREFIX']}${current}^{}`, '-1', '--pretty=%H'])
+    console.log(patchFrom)
 
     const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}.git`
     if (process.env['INPUT_SKIP-TAG'] !== 'true') {
