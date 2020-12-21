@@ -95,7 +95,7 @@ Toolkit.run(async tools => {
     let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim()
 
     console.log('creating patch:', `${process.env['INPUT_TAG-PREFIX']}${current}`, `${process.env['INPUT_TAG-PREFIX']}${newVersion.replace('v', '')}`)
-    const patch = await tools.runInWorkspace('git', ['diff', current, newVersion.replace('v', '')]);
+    const patch = await tools.runInWorkspace('git', ['diff', `${process.env['INPUT_TAG-PREFIX']}${current}`, `${process.env['INPUT_TAG-PREFIX']}${newVersion.replace('v', '')}`])
     console.log(patch)
 
     await tools.runInWorkspace('git', ['commit', '-a', '-m', `ci: ${commitMessage} ${newVersion}`])
