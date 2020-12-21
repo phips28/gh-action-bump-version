@@ -85,6 +85,10 @@ Toolkit.run(async tools => {
       currentBranch = process.env['INPUT_TARGET-BRANCH']
     }
 
+
+    const patchFrom = await tools.runInWorkspace('git', ['diff', '-p'])
+    console.log(patchFrom)
+
     console.log('currentBranch:', currentBranch)
     // do it in the current checked out github branch (DETACHED HEAD)
     // important for further usage of the package.json version
@@ -117,9 +121,6 @@ Toolkit.run(async tools => {
       console.warn('git commit failed because you are using "actions/checkout@v2"; ' +
         'but that doesnt matter because you dont need that git commit, thats only for "actions/checkout@v1"')
     }
-
-    const patchFrom = await tools.runInWorkspace('git', ['diff', '-p'])
-    console.log(patchFrom)
 
     const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}.git`
     if (process.env['INPUT_SKIP-TAG'] !== 'true') {
