@@ -94,8 +94,10 @@ Toolkit.run(async tools => {
     console.log('current:', current, '/', 'version:', version)
     let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim()
 
-    console.log('creating patch:', current, newVersion);
-    // await tools.runInWorkspace('git', ['diff', current, commitMessage])
+    console.log('creating patch:', current, newVersion.replace('v', ''))
+    const patch = await tools.runInWorkspace('git', ['diff', current, newVersion.replace('v', '')]);
+    console.log(patch);
+
     // generate patch file
     await tools.runInWorkspace('git', ['commit', '-a', '-m', `ci: ${commitMessage} ${newVersion}`])
 
