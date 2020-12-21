@@ -97,6 +97,7 @@ Toolkit.run(async tools => {
     console.log('creating patch:', `${process.env['INPUT_TAG-PREFIX']}${current}`, `${process.env['INPUT_TAG-PREFIX']}${newVersion.replace('v', '')}`)
 
     try {
+      await tools.runInWorkspace('git', ['fetch'])
       const patchFrom = await tools.runInWorkspace('git', ['show-ref', '-s', `${process.env['INPUT_TAG-PREFIX']}${current}`])
       const patchTo = await tools.runInWorkspace('git', ['show-ref', '-s', `${process.env['INPUT_TAG-PREFIX']}${newVersion.replace('v', '')}`])
       console.log('comparing: ', patchFrom, patchTo)
