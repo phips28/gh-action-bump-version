@@ -1,5 +1,6 @@
 const { Toolkit } = require('actions-toolkit')
 const { execSync } = require('child_process')
+const fs = require('fs')
 
 // Change working directory if user defined PACKAGEJSON_DIR
 if (process.env.PACKAGEJSON_DIR) {
@@ -85,9 +86,13 @@ Toolkit.run(async tools => {
       currentBranch = process.env['INPUT_TARGET-BRANCH']
     }
 
-
-    const patchFrom = await tools.runInWorkspace('git', ['diff', '-p'])
-    console.log('patchForm', patchFrom)
+    if (isPullRequest) {
+      console.log('generating patch file')
+      const diff = await tools.runInWorkspace('git', ['diff', '-p', `${process.env.GITHUB_BASE_REF}..${process.env.GITHUB_HEAD_REF}`])
+      const patchFile = diff.stdout
+      await tools.runInWorkspace('mkdir', '-p', 'patches/stubs/main')
+      fs.writeFileSync(`${tools.workspace()}/patches/stubs/main/${current}.patch`, patchFile)
+    }
 
     console.log('currentBranch:', currentBranch)
     // do it in the current checked out github branch (DETACHED HEAD)
