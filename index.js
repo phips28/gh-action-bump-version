@@ -87,7 +87,7 @@ Toolkit.run(async tools => {
 
 
     const patchFrom = await tools.runInWorkspace('git', ['diff', '-p'])
-    console.log(patchFrom)
+    console.log('patchForm', patchFrom)
 
     console.log('currentBranch:', currentBranch)
     // do it in the current checked out github branch (DETACHED HEAD)
