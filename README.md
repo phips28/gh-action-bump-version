@@ -86,3 +86,13 @@ Make sure you use the `actions/checkout@v2` action!
   with:
     target-branch: 'master'
 ```
+
+**commit-message:** Set a custom commit message for version bump commit. Useful for skipping additional workflows run on push. Example:
+```yaml
+- name:  'Automated Version Bump'
+  uses:  'phips28/gh-action-bump-version@master'
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  with:
+    commit-message: 'CI: bumps version to {{version}} [skip ci]'
+```

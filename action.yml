@@ -39,6 +39,10 @@ inputs:
     description: 'Set a default version bump to use'
     default: 'patch'
     required: false
+  commit-message:
+    description: 'Set a custom commit message for version bump commit'
+    deafult: ''
+    required: false
 outputs:
   newTag:
     description: 'The newly created tag'
