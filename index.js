@@ -20,7 +20,7 @@ Toolkit.run(async tools => {
 
   const commitMessage = process.env['INPUT_COMMIT-MESSAGE'] || 'ci: version bump to {{version}}'
   console.log('messages:', messages)
-  const commitMessageRegex = new RegExp(commitMessage.replace('{{version}}', 'v\d\.\d\.\d'), 'ig');
+  const commitMessageRegex = new RegExp(commitMessage.replace(/{{version}}/g, 'v\d\.\d\.\d'), 'ig');
   const isVersionBump = messages.find(message => commitMessageRegex.test(message)) !== undefined
 
   if (isVersionBump) {
@@ -91,7 +91,7 @@ Toolkit.run(async tools => {
       ['version', '--allow-same-version=true', '--git-tag-version=false', current])
     console.log('current:', current, '/', 'version:', version)
     let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim()
-    await tools.runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace('{{version}}', newVersion)])
+    await tools.runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)])
 
     // now go to the actual branch to perform the same versioning
     if (isPullRequest) {
@@ -108,7 +108,7 @@ Toolkit.run(async tools => {
     console.log(`::set-output name=newTag::${newVersion}`)
     try {
       // to support "actions/checkout@v1"
-      await tools.runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace('{{version}}', newVersion)])
+      await tools.runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)])
     } catch (e) {
       console.warn('git commit failed because you are using "actions/checkout@v2"; ' +
         'but that doesnt matter because you dont need that git commit, thats only for "actions/checkout@v1"')
