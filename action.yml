@@ -41,7 +41,7 @@ inputs:
     required: false
   commit-message:
     description: 'Set a custom commit message for version bump commit'
-    deafult: ''
+    default: ''
     required: false
 outputs:
   newTag:
