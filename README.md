@@ -54,6 +54,17 @@ Make sure you use the `actions/checkout@v2` action!
     default: prerelease
 ```
 
+**preid:** Set a preid value will building prerelease version  (optional - defaults to 'rc'). Example:
+```yaml
+- name:  'Automated Version Bump'
+  uses:  'phips28/gh-action-bump-version@master'
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  with:
+    default: prerelease
+    preid: 'prc'
+```
+
 **wording:** Customize the messages that trigger the version bump. It must be a string, case sensitive, coma separated  (optional). Example:
 ```yaml
 - name:  'Automated Version Bump'
