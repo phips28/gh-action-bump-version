@@ -39,6 +39,10 @@ inputs:
     description: 'Set a default version bump to use'
     default: 'patch'
     required: false
+  preid:
+    description: 'Set a custom preid for prerelease build'
+    default: 'rc'
+    required: false
   commit-message:
     description: 'Set a custom commit message for version bump commit'
     default: ''

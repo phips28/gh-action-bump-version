@@ -52,7 +52,7 @@ Toolkit.run(async tools => {
     }
   }
   ))) {
-    const preid = foundWord.split('-')[1]
+    const preid = process.env.INPUT_PREID || foundWord.split('-')[1]
     version = `prerelease --preid=${preid}`
   } else if (Array.isArray(patchWords) && patchWords.length) {
     if (!messages.some(message => patchWords.some(word => message.includes(word)))) {
