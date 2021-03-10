@@ -1,5 +1,6 @@
+const messageRegex = /{([^{]*){message}([^{]*)}/i;
+
 function extactMessages(template, messages, messagePattern='https://[\\wéáőúíóüö/\\-\\.]+') {
-  const messageRegex = /{([^{]*){message}([^{]*)}/i;
   const messagesPattern = template.match(messageRegex);
 
   const extractedContent = messages.reduce(
@@ -19,3 +20,5 @@ function extactMessages(template, messages, messagePattern='https://[\\wéáőú
 }
 
 exports.extactMessages = extactMessages;
+
+exports.messageRegex = messageRegex;

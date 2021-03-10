@@ -1,6 +1,6 @@
 const { Toolkit } = require('actions-toolkit')
 const { execSync } = require('child_process')
-const { extactMessages } = require('./extactMessages')
+const { extactMessages, messageRegex } = require('./extactMessages')
 
 // Change working directory if user defined PACKAGEJSON_DIR
 if (process.env.PACKAGEJSON_DIR) {
