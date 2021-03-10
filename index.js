@@ -137,25 +137,15 @@ Toolkit.run(async tools => {
         .replace(messageRegex, extractedContent);
       console.log('body', body, 'filePattern', filePattern);
 
-      try {
-        await tools.runInWorkspace('echo',
-        [`"${body}"`, '>>', `${filePattern}1`])
-      } catch(e) {
-        console.log('error', e);
-      }
-      // newVersion = execSync(`echo "${body}" >> {`${filePattern}`}`).toString().trim()
-      try {
-        await tools.runInWorkspace(`echo "${body}" >> ${`${filePattern}2`}`);
-      } catch(e) {
-        console.log('error', e);
-      }
-      try {
-        let pwd = execSync(`pwd`).toString().trim();
-        console.log('pwd', pwd);
-        execSync(`echo "${body}" >> ${`${filePattern}3`}`);
-      } catch(e) {
-        console.log('error', e);
-      }
+      execSync(`echo "${body}" >> ${`${filePattern}`}`);
+
+      let status = execSync(`git status`).toString().trim()
+
+      let status = execSync(`git status`).toString().trim()
+      console.log('git status', status);
+
+      await tools.runInWorkspace('git', ['add', '*'])
+
       let status = execSync(`git status`).toString().trim()
       console.log('git status', status);
 
