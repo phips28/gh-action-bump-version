@@ -37,7 +37,7 @@ Toolkit.run(async tools => {
 
   let version = process.env.INPUT_DEFAULT || 'patch'
   let foundWord = null
-
+  let preid = process.env.INPUT_PREID;
   if (messages.some(
     message => /^([a-zA-Z]+)(\(.+\))?(\!)\:/.test(message) || majorWords.some(word => message.includes(word)))) {
     version = 'major'
@@ -52,12 +52,16 @@ Toolkit.run(async tools => {
     }
   }
   ))) {
-    const preid = process.env.INPUT_PREID || foundWord.split('-')[1]
-    version = `prerelease --preid=${preid}`
+    preid = foundWord.split('-')[1]
+    version = 'prerelease'
   } else if (Array.isArray(patchWords) && patchWords.length) {
     if (!messages.some(message => patchWords.some(word => message.includes(word)))) {
       version = null
     }
+  }
+
+  if (version === 'prerelease' && preid) {
+    version = `${version} --preid=${preid}`
   }
 
   if (version === null) {
