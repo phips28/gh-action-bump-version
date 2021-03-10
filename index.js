@@ -135,9 +135,14 @@ Toolkit.run(async tools => {
         .replace(/{{version}}/g, newVersion)
         .replace(/{{date}}/g, new Date().toISOString())
         .replace(messageRegex, extractedContent);
-      console.log('body', body);
-      await tools.runInWorkspace('echo',
-      [`"${body}"`, '>>', filePattern])
+      console.log('body', body, 'filePattern', filePattern);
+      // await tools.runInWorkspace('echo',
+      // [`"${body}"`, '>>', filePattern])
+      // newVersion = execSync(`echo "${body}" >> {filePattern}`).toString().trim()
+
+      execSync(`echo "${body}" >> {filePattern}`);
+      status = execSync(`git status`).toString().trim()
+      console.log('git status', status);
 
     }
 
