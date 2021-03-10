@@ -136,8 +136,8 @@ Toolkit.run(async tools => {
         .replace(/{{date}}/g, new Date().toISOString())
         .replace(messageRegex, extractedContent);
       console.log('body', body);
-      await tools.runInWorkspace('cat',
-      [`"$body"`, '>>', filePattern])
+      await tools.runInWorkspace('echo',
+      [`"${body}"`, '>>', filePattern])
 
     }
 
