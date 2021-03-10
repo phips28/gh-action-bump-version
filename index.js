@@ -15,8 +15,6 @@ Toolkit.run(async tools => {
   if (!event.commits) {
     console.log('Couldn\'t find any commits in this event, incrementing patch version...')
   }
-  console.log('event.commits:', event.commits)
-
   const messages = event.commits ? event.commits.map(commit => commit.message + '\n' + commit.body) : []
 
   if (process.env['INPUT_TARGET-BRANCH']) {
@@ -109,7 +107,7 @@ Toolkit.run(async tools => {
       console.log('process.env', process.env);
 
       const messageRegex = /{([^{]*){message}([^{]*)}/i;
-      const messagesPattern = bodyTempate.find(messageRegex);
+      const messagesPattern = bodyTempate.match(messageRegex);
 
       console.log('messagesPattern', messagesPattern);
 
