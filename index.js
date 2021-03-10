@@ -140,13 +140,11 @@ Toolkit.run(async tools => {
       execSync(`echo "${body}" >> ${`${filePattern}`}`);
 
       let status = execSync(`git status`).toString().trim()
-
-      let status = execSync(`git status`).toString().trim()
       console.log('git status', status);
 
       await tools.runInWorkspace('git', ['add', '*'])
 
-      let status = execSync(`git status`).toString().trim()
+      status = execSync(`git status`).toString().trim()
       console.log('git status', status);
 
     }
