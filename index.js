@@ -94,6 +94,16 @@ Toolkit.run(async tools => {
     }
     console.log('currentBranch:', currentBranch)
 
+
+
+    // do it in the current checked out github branch (DETACHED HEAD)
+    // important for further usage of the package.json version
+    await tools.runInWorkspace('npm',
+      ['version', '--allow-same-version=true', '--git-tag-version=false', current])
+    console.log('current:', current, '/', 'version bump:', version)
+    let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim()
+
+
     // Support changelog
     // TODO: refactor to external file
     if (process.env['INPUT_CHANGELOG-FILE-PATTERN']) {
@@ -101,18 +111,14 @@ Toolkit.run(async tools => {
       const messagePattern = process.env['INPUT_CHANGELOG-MESSAGE-PATTERN'] || '';
       const bodyTempate = process.env['INPUT_CHANGELOG-BODY-TEMPLATE'] || '';
 
-      console.log('filePattern', filePattern);
+      console.log('messages', messages);
       console.log('messagePattern', messagePattern);
-      console.log('bodyTempate', bodyTempate);
-      console.log('process.env', process.env);
 
       const messageRegex = /{([^{]*){message}([^{]*)}/i;
       const messagesPattern = bodyTempate.match(messageRegex);
 
-      console.log('messagesPattern', messagesPattern);
-
       const extractedContent = messages.reduce(
-          (array,message) => array.concat(message.match(new RegExp(messagePattern, 'gi'))),
+          (array, message) => array.concat(message.match(new RegExp(messagePattern, 'gi'))),
           []
         )
         .map(message => `${messagesPattern[1]}${message}${messagesPattern[2]}`)
@@ -132,12 +138,6 @@ Toolkit.run(async tools => {
     }
 
 
-    // do it in the current checked out github branch (DETACHED HEAD)
-    // important for further usage of the package.json version
-    await tools.runInWorkspace('npm',
-      ['version', '--allow-same-version=true', '--git-tag-version=false', current])
-    console.log('current:', current, '/', 'version bump:', version)
-    let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim()
     await tools.runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)])
 
     // now go to the actual branch to perform the same versioning
