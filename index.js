@@ -118,7 +118,11 @@ Toolkit.run(async tools => {
       const messagesPattern = bodyTempate.match(messageRegex);
 
       const extractedContent = messages.reduce(
-          (array, message) => array.concat(message.match(new RegExp(messagePattern, 'gi'))),
+          (array, message) => (
+            message.match(new RegExp(messagePattern, 'gi'))
+            ? array.concat(message.match(new RegExp(messagePattern, 'gi')))
+            : array
+            ),
           []
         )
         .map(message => `${messagesPattern[1]}${message}${messagesPattern[2]}`)
@@ -133,7 +137,7 @@ Toolkit.run(async tools => {
         .replace(messageRegex, extractedContent);
       console.log('body', body);
       await tools.runInWorkspace('cat',
-      ['<< EOF', '>>', filePattern, '\n', body, '\n', 'EOF'])
+      [`"$body"`, '>>', filePattern])
 
     }
 
