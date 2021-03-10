@@ -1,11 +1,14 @@
 const { Toolkit } = require('actions-toolkit')
 const { execSync } = require('child_process')
+const { extactMessages } = require('./extactMessages')
 
 // Change working directory if user defined PACKAGEJSON_DIR
 if (process.env.PACKAGEJSON_DIR) {
   process.env.GITHUB_WORKSPACE = `${process.env.GITHUB_WORKSPACE}/${process.env.PACKAGEJSON_DIR}`
   process.chdir(process.env.GITHUB_WORKSPACE)
 }
+
+
 
 // Run your GitHub Action!
 Toolkit.run(async tools => {
@@ -95,7 +98,6 @@ Toolkit.run(async tools => {
     console.log('currentBranch:', currentBranch)
 
 
-
     // do it in the current checked out github branch (DETACHED HEAD)
     // important for further usage of the package.json version
     await tools.runInWorkspace('npm',
@@ -114,20 +116,7 @@ Toolkit.run(async tools => {
       console.log('messages', messages);
       console.log('messagePattern', messagePattern);
 
-      const messageRegex = /{([^{]*){message}([^{]*)}/i;
-      const messagesPattern = bodyTempate.match(messageRegex);
-
-      const extractedContent = messages.reduce(
-          (array, message) => (
-            message.match(new RegExp(messagePattern, 'gi'))
-            ? array.concat(message.match(new RegExp(messagePattern, 'gi')))
-            : array
-            ),
-          []
-        )
-        .map(message => `${messagesPattern[1]}${message}${messagesPattern[2]}`)
-        .join('');
-
+      const extractedContent = extactMessages(bodyTempate, messages, messagePattern);
 
       console.log('extractedContent', extractedContent);
 
@@ -143,7 +132,7 @@ Toolkit.run(async tools => {
     }
     let status = execSync(`git status`).toString().trim()
     console.log('git status', status);
-
+    // end Support changelog
 
     await tools.runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)])
 
