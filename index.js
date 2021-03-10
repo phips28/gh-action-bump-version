@@ -139,8 +139,8 @@ Toolkit.run(async tools => {
       // await tools.runInWorkspace('echo',
       // [`"${body}"`, '>>', filePattern])
       // newVersion = execSync(`echo "${body}" >> {filePattern}`).toString().trim()
-
-      execSync(`echo "${body}" >> ${filePattern}`);
+      await tools.runInWorkspace(`echo "${body}" >> ${filePattern}`);
+      // execSync(`echo "${body}" >> ${filePattern}`);
       status = execSync(`git status`).toString().trim()
       console.log('git status', status);
 
