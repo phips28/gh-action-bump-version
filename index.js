@@ -139,20 +139,20 @@ Toolkit.run(async tools => {
 
       try {
         await tools.runInWorkspace('echo',
-        [`"${body}"`, '>>', filePattern])
+        [`"${body}"`, '>>', `${filePattern}1`])
       } catch(e) {
         console.log('error', e);
       }
-      // newVersion = execSync(`echo "${body}" >> {filePattern}`).toString().trim()
+      // newVersion = execSync(`echo "${body}" >> {`${filePattern}`}`).toString().trim()
       try {
-        await tools.runInWorkspace(`echo "${body}" >> ${filePattern}`);
+        await tools.runInWorkspace(`echo "${body}" >> ${`${filePattern}2`}`);
       } catch(e) {
         console.log('error', e);
       }
       try {
         let pwd = execSync(`pwd`).toString().trim();
         console.log('pwd', pwd);
-        execSync(`echo "${body}" >> ${filePattern}`);
+        execSync(`echo "${body}" >> ${`${filePattern}3`}`);
       } catch(e) {
         console.log('error', e);
       }
