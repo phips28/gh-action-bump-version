@@ -100,8 +100,14 @@ Toolkit.run(async tools => {
     // TODO: refactor to external file
     if (process.env['INPUT_CHANGELOG-FILE-PATTERN']) {
       const filePattern = process.env['INPUT_CHANGELOG-FILE-PATTERN'];
-      const messagePattern = process.env['INPUT_CHANGELOG-MESSAGE-PATTERN'];
-      const bodyTempate = process.env['INPUT_CHANGELOG-BODY-TEMPLATE'];
+      const messagePattern = process.env['INPUT_CHANGELOG-MESSAGE-PATTERN'] || '';
+      const bodyTempate = process.env['INPUT_CHANGELOG-BODY-TEMPLATE'] || '';
+
+      console.log('filePattern', filePattern);
+      console.log('messagePattern', messagePattern);
+      console.log('bodyTempate', bodyTempate);
+      console.log('process.env', process.env);
+
       const messageRegex = /{([^{]*){message}([^{]*)}/i;
       const messagesPattern = bodyTempate.find(messageRegex);
 
