@@ -135,19 +135,14 @@ Toolkit.run(async tools => {
         .replace(/{{version}}/g, newVersion)
         .replace(/{{date}}/g, new Date().toISOString())
         .replace(messageRegex, extractedContent);
-      console.log('body', body, 'filePattern', filePattern);
 
+      // write changelog file
       execSync(`echo "${body}" >> ${`${filePattern}`}`);
-
-      let status = execSync(`git status`).toString().trim()
-      console.log('git status', status);
-
+      // add file to repo, if it is new
       await tools.runInWorkspace('git', ['add', '*'])
-
-      status = execSync(`git status`).toString().trim()
-      console.log('git status', status);
-
     }
+    let status = execSync(`git status`).toString().trim()
+    console.log('git status', status);
 
 
     await tools.runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)])
