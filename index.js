@@ -136,12 +136,27 @@ Toolkit.run(async tools => {
         .replace(/{{date}}/g, new Date().toISOString())
         .replace(messageRegex, extractedContent);
       console.log('body', body, 'filePattern', filePattern);
-      // await tools.runInWorkspace('echo',
-      // [`"${body}"`, '>>', filePattern])
+
+      try {
+        await tools.runInWorkspace('echo',
+        [`"${body}"`, '>>', filePattern])
+      } catch(e) {
+        console.log('error', e);
+      }
       // newVersion = execSync(`echo "${body}" >> {filePattern}`).toString().trim()
-      await tools.runInWorkspace(`echo "${body}" >> ${filePattern}`);
-      // execSync(`echo "${body}" >> ${filePattern}`);
-      status = execSync(`git status`).toString().trim()
+      try {
+        await tools.runInWorkspace(`echo "${body}" >> ${filePattern}`);
+      } catch(e) {
+        console.log('error', e);
+      }
+      try {
+        let pwd = execSync(`pwd`).toString().trim();
+        console.log('pwd', pwd);
+        execSync(`echo "${body}" >> ${filePattern}`);
+      } catch(e) {
+        console.log('error', e);
+      }
+      let status = execSync(`git status`).toString().trim()
       console.log('git status', status);
 
     }
