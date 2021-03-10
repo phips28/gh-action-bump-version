@@ -15,11 +15,15 @@ Toolkit.run(async tools => {
   if (!event.commits) {
     console.log('Couldn\'t find any commits in this event, incrementing patch version...')
   }
+  console.log('event.commits:', event.commits)
 
   const messages = event.commits ? event.commits.map(commit => commit.message + '\n' + commit.body) : []
 
+  if (process.env['INPUT_TARGET-BRANCH']) {
+  }
+
   const commitMessage = process.env['INPUT_COMMIT-MESSAGE'] || 'ci: version bump to {{version}}'
-  console.log('messages:', messages)
+  console.log(`::set-output name=messages::${messages.join('\n')}`)
   const commitMessageRegex = new RegExp(commitMessage.replace(/{{version}}/g, 'v\d\.\d\.\d'), 'ig');
   const isVersionBump = messages.find(message => commitMessageRegex.test(message)) !== undefined
 
@@ -71,6 +75,8 @@ Toolkit.run(async tools => {
 
   try {
     const current = pkg.version.toString()
+    console.log(`::set-output name=oldVersion::${current}`)
+
     // set git user
     await tools.runInWorkspace('git',
       ['config', 'user.name', `"${process.env.GITHUB_USER || 'Automated Version Bump'}"`])
@@ -89,11 +95,44 @@ Toolkit.run(async tools => {
       currentBranch = process.env['INPUT_TARGET-BRANCH']
     }
     console.log('currentBranch:', currentBranch)
+
+    // Support changelog
+    // TODO: refactor to external file
+    if (process.env['INPUT_CHANGELOG-FILE-PATTERN']) {
+      const filePattern = process.env['INPUT_CHANGELOG-FILE-PATTERN'];
+      const messagePattern = process.env['INPUT_CHANGELOG-MESSAGE-PATTERN'];
+      const bodyTempate = process.env['INPUT_CHANGELOG-BODY-TEMPLATE'];
+      const messageRegex = /{([^{]*){message}([^{]*)}/i;
+      const messagesPattern = bodyTempate.find(messageRegex);
+
+      console.log('messagesPattern', messagesPattern);
+
+      const extractedContent = messages.reduce(
+          (array,message) => array.concat(message.match(new RegExp(messagePattern, 'gi'))),
+          []
+        )
+        .map(message => `${messagesPattern[1]}${message}${messagesPattern[2]}`)
+        .join('');
+
+
+      console.log('extractedContent', extractedContent);
+
+      const body = bodyTempate
+        .replace(/{{version}}/g, newVersion)
+        .replace(/{{date}}/g, new Date().toISOString())
+        .replace(messageRegex, extractedContent);
+      console.log('body', body);
+      await tools.runInWorkspace('cat',
+      ['<< EOF', '>>', filePattern, '\n', body, '\n', 'EOF'])
+
+    }
+
+
     // do it in the current checked out github branch (DETACHED HEAD)
     // important for further usage of the package.json version
     await tools.runInWorkspace('npm',
       ['version', '--allow-same-version=true', '--git-tag-version=false', current])
-    console.log('current:', current, '/', 'version:', version)
+    console.log('current:', current, '/', 'version bump:', version)
     let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim()
     await tools.runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)])
 
@@ -115,7 +154,7 @@ Toolkit.run(async tools => {
       await tools.runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)])
     } catch (e) {
       console.warn('git commit failed because you are using "actions/checkout@v2"; ' +
-        'but that doesnt matter because you dont need that git commit, thats only for "actions/checkout@v1"')
+        'but that doesnt matter because you dont need that additional workaround git commit, which should have needed only for supporting "actions/checkout@v1"')
     }
 
     const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}.git`
