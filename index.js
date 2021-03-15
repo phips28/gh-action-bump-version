@@ -20,7 +20,7 @@ Toolkit.run(async tools => {
 
   const commitMessage = process.env['INPUT_COMMIT-MESSAGE'] || 'ci: version bump to {{version}}'
   console.log('messages:', messages)
-  const commitMessageRegex = new RegExp(commitMessage.replace(/{{version}}/g, 'v\d\.\d\.\d'), 'ig');
+  const commitMessageRegex = new RegExp(commitMessage.replace(/{{version}}/g, 'v\\d+\\.\\d+\\.\\d+'), 'ig');
   const isVersionBump = messages.find(message => commitMessageRegex.test(message)) !== undefined
 
   if (isVersionBump) {
