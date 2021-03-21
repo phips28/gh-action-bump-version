@@ -1,6 +1,8 @@
 const { Toolkit } = require('actions-toolkit')
 const { execSync } = require('child_process')
 
+const ATTENTION_PATTERN = /^([a-zA-Z]+)(\(.+\))?(\!)\:/;
+
 // Change working directory if user defined PACKAGEJSON_DIR
 if (process.env.PACKAGEJSON_DIR) {
   process.env.GITHUB_WORKSPACE = `${process.env.GITHUB_WORKSPACE}/${process.env.PACKAGEJSON_DIR}`
@@ -28,30 +30,36 @@ Toolkit.run(async tools => {
     return
   }
 
-  const majorWords = process.env['INPUT_MAJOR-WORDING'].split(',')
-  const minorWords = process.env['INPUT_MINOR-WORDING'].split(',')
-  const preReleaseWords = process.env['INPUT_RC-WORDING'].split(',')
+  let majorWords, minorWords, preReleaseWords, patchWords;
 
-  // if patch words aren't specified, any commit message qualifies as a patch
-  const patchWords = process.env['INPUT_PATCH-WORDING'] ? process.env['INPUT_PATCH-WORDING'].split(',') : null
+  // handle empty or null value
+  try {
+    majorWords = (process.env['INPUT_MAJOR-WORDING'] || null).split(',');
+    minorWords = (process.env['INPUT_MINOR-WORDING'] || null).split(',');
+    preReleaseWords = (process.env['INPUT_RC-WORDING'] || null).split(',');
+    // if patch words aren't specified, any commit message qualifies as a patch
+    patchWords = (process.env['INPUT_PATCH-WORDING'] || null).split(',');
+  } catch (e) {
+    // do nothing
+  }
 
   let version = process.env.INPUT_DEFAULT || 'patch'
   let foundWord = null
   let preid = process.env.INPUT_PREID;
   if (messages.some(
-    message => /^([a-zA-Z]+)(\(.+\))?(\!)\:/.test(message) || majorWords.some(word => message.includes(word)))) {
+    message => ATTENTION_PATTERN.test(message) || 
+    (majorWords && majorWords.some(word => message.includes(word))))) {
     version = 'major'
-  } else if (messages.some(message => minorWords.some(word => message.includes(word)))) {
+  } else if (minorWords && messages.some(message => minorWords.some(word => message.includes(word)))) {
     version = 'minor'
-  } else if (messages.some(message => preReleaseWords.some(word => {
+  } else if (preReleaseWords && messages.some(message => preReleaseWords.some(word => {
     if (message.includes(word)) {
       foundWord = word
       return true
     } else {
       return false
     }
-  }
-  ))) {
+  }))) {
     preid = foundWord.split('-')[1]
     version = 'prerelease'
   } else if (Array.isArray(patchWords) && patchWords.length) {
