@@ -19,6 +19,8 @@ Toolkit.run(async tools => {
   const messages = event.commits ? event.commits.map(commit => commit.message + '\n' + commit.body) : []
 
   const commitMessage = process.env['INPUT_COMMIT-MESSAGE'] || 'ci: version bump to {{version}}'
+  const tagCommitMessage = process.env['INPUT_TAG-COMMIT-MESSAGE']
+
   console.log('messages:', messages)
   const commitMessageRegex = new RegExp(commitMessage.replace(/{{version}}/g, 'v\\d+\\.\\d+\\.\\d+'), 'ig');
   const isVersionBump = messages.find(message => commitMessageRegex.test(message)) !== undefined
@@ -121,6 +123,9 @@ Toolkit.run(async tools => {
     const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}.git`
     if (process.env['INPUT_SKIP-TAG'] !== 'true') {
       await tools.runInWorkspace('git', ['tag', newVersion])
+      if(tagCommitMessage) {
+        await tools.runInWorkspace('git', ['tag', newVersion, `${newVersion}^{}`, '-f', '-m', `"${tagCommitMessage.replace(/{{version}}/g, newVersion)}"`])
+      }
       await tools.runInWorkspace('git', ['push', remoteRepo, '--follow-tags'])
       await tools.runInWorkspace('git', ['push', remoteRepo, '--tags'])
     } else {

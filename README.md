@@ -107,3 +107,14 @@ Make sure you use the `actions/checkout@v2` action!
   with:
     commit-message: 'CI: bumps version to {{version}} [skip ci]'
 ```
+
+**tag-commit-message:** Set a custom commit message for the tag commit. Useful for triggering workflows on tag events when [skip-ci] is used on the original commit
+```yaml
+- name:  'Automated Version Bump'
+  uses:  'phips28/gh-action-bump-version@master'
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  with:
+    commit-message: 'CI: bumps version to {{version}} [skip ci]'
+    tag-commit-message: 'CI: bumps version to {{version}}'
+```
