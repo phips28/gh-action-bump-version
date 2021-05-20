@@ -3,7 +3,7 @@ name: "Bump Version"
 on:
   push:
     branches:
-      - "master"
+      - "15.12.0-slim"
 
 jobs:
   bump-version:
@@ -23,9 +23,9 @@ jobs:
           node-version: 12
       - name: "Automated Version Bump"
         id: version-bump
-        uses: "phips28/gh-action-bump-version@master"
+        uses: "phips28/gh-action-bump-version@15.12.0-slim"
         with:
-          tag-prefix: 'v'
+          tag-prefix: '15.12.0-slim'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: "cat package.json"
