@@ -32,7 +32,7 @@ jobs:
           minor-wording: 'minor'
           patch-wording: 'patch'
           rc-wording: 'alpha'
-          target-branch: 'master'
+          #          target-branch: 'master'
           # rc-wording will override the preid
           preid: 'alpha'
         env:
