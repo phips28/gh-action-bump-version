@@ -52,6 +52,7 @@ Toolkit.run(async (tools) => {
   } else if (
     messages.some((message) =>
       preReleaseWords.some((word) => {
+        console.log('preReleaseWords', preReleaseWords, 'word', word);
         if (message.includes(word)) {
           foundWord = word;
           return true;
@@ -63,6 +64,7 @@ Toolkit.run(async (tools) => {
   ) {
     preid = foundWord.split('-')[1];
     version = 'prerelease';
+    console.log({ foundWord, preid, version });
   } else if (Array.isArray(patchWords) && patchWords.length) {
     if (!messages.some((message) => patchWords.some((word) => message.includes(word)))) {
       version = null;
