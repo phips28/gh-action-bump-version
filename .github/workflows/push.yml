@@ -1,36 +1,45 @@
-name: "Bump Version"
+name: 'Bump Version'
 
 on:
   push:
     branches:
-      - "test/alpha"
+      - 'test/alpha'
 
 jobs:
   bump-version:
-    name: "Bump Version on master"
+    name: 'Bump Version on master'
     runs-on: ubuntu-latest
 
     steps:
-      - name: "Checkout source code"
-        uses: "actions/checkout@v2"
+      - name: 'Checkout source code'
+        uses: 'actions/checkout@v2'
         with:
           ref: ${{ github.ref }}
-      - name: "cat package.json"
+      - name: 'cat package.json'
         run: cat ./package.json
-      - name: "Setup Node.js"
-        uses: "actions/setup-node@v1"
+      - name: 'Setup Node.js'
+        uses: 'actions/setup-node@v1'
         with:
           node-version: 12
-      - name: "Automated Version Bump"
+      - name: 'Automated Version Bump'
         id: version-bump
-        uses: "phips28/gh-action-bump-version@test/alpha"
+        uses: 'phips28/gh-action-bump-version@test/alpha'
         with:
           tag-prefix: 'test'
+          commit-message: 'CI: bumps version to {{version}} [skip ci]'
+          default: prerelease
+          major-wording: 'MAJOR'
+          minor-wording: 'minor'
+          patch-wording: 'patch'
+          rc-wording: 'alpha'
+          target-branch: 'master'
+          # rc-wording will override the preid
+          preid: 'alpha'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: "cat package.json"
+      - name: 'cat package.json'
         run: cat ./package.json
-      - name:  'Output Step'
+      - name: 'Output Step'
         env:
           NEW_TAG: ${{ steps.version-bump.outputs.newTag }}
         run: echo "new tag $NEW_TAG"
