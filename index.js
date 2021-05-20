@@ -78,6 +78,7 @@ Toolkit.run(async (tools) => {
     return;
   }
 
+  // debug: add dispatch for release, breakout build to separate step
   console.log('version action:', version);
 
   try {
