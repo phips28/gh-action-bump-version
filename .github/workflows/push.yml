@@ -3,12 +3,14 @@ name: "Bump Version"
 on:
   push:
     branches:
-      - "master"
+      - "test/tag-prefix"
 
 jobs:
   bump-version:
     name: "Bump Version on master"
     runs-on: ubuntu-latest
+    outputs:
+      new-version: ${{ steps.version-bump.outputs.newTag }}
 
     steps:
       - name: "Checkout source code"

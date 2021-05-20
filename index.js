@@ -106,6 +106,7 @@ Toolkit.run(async (tools) => {
     await tools.runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', current]);
     console.log('current:', current, '/', 'version:', version);
     let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim();
+    console.log('1 newVersion', newVersion);
     await tools.runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)]);
 
     // now go to the actual branch to perform the same versioning
@@ -117,7 +118,10 @@ Toolkit.run(async (tools) => {
     await tools.runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', current]);
     console.log('current:', current, '/', 'version:', version);
     newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim();
+    console.log('2 newVersion', newVersion);
+    console.log("2 process.env['INPUT_TAG-PREFIX']", process.env['INPUT_TAG-PREFIX']);
     newVersion = `${process.env['INPUT_TAG-PREFIX']}${newVersion}`;
+    console.log('3 newVersion', newVersion);
     console.log('new version:', newVersion);
     console.log(`::set-output name=newTag::${newVersion}`);
     try {
