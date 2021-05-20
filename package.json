@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "jest": "^25.2.7",
-    "standard": "^14.3.3"
+    "standard": "^14.3.3",
+    "prettier": "^2.3.0"
   }
 }
