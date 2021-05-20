@@ -66,6 +66,12 @@ Toolkit.run(async (tools) => {
     }
   }
 
+  // case: if default=prerelease, but rc-wording is also set
+  // then unset it and do not run, when no rc words found in message
+  if (version === 'prerelease' && !messages.some((message) => preReleaseWords.some((word) => message.includes(word)))) {
+    version = null;
+  }
+
   if (version === 'prerelease' && preid) {
     version = `${version} --preid=${preid}`;
   }
