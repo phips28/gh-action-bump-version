@@ -9,7 +9,7 @@ branding:
 inputs:
   tag-prefix:
     description: 'Prefix that is used for the git tag'
-    default: ''
+    default: 'v'
     required: false
   minor-wording:
     description: 'Words list that trigger a minor version bump'
