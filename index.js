@@ -78,6 +78,8 @@ Toolkit.run(async (tools) => {
     return;
   }
 
+  console.log('version action:', version);
+
   try {
     const current = pkg.version.toString();
     // set git user
