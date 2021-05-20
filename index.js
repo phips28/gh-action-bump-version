@@ -105,7 +105,8 @@ Toolkit.run(async (tools) => {
     // important for further usage of the package.json version
     await tools.runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', current]);
     console.log('current:', current, '/', 'version:', version);
-    let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim();
+    let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim().replace(/^v/, '');
+    newVersion = `${process.env['INPUT_TAG-PREFIX']}${newVersion}`;
     await tools.runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)]);
 
     // now go to the actual branch to perform the same versioning
@@ -116,9 +117,8 @@ Toolkit.run(async (tools) => {
     await tools.runInWorkspace('git', ['checkout', currentBranch]);
     await tools.runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', current]);
     console.log('current:', current, '/', 'version:', version);
-    newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim();
+    newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim().replace(/^v/, '');
     newVersion = `${process.env['INPUT_TAG-PREFIX']}${newVersion}`;
-    console.log('new version:', newVersion);
     console.log(`::set-output name=newTag::${newVersion}`);
     try {
       // to support "actions/checkout@v1"
