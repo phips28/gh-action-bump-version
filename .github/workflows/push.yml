@@ -26,7 +26,6 @@ jobs:
         uses: "phips28/gh-action-bump-version@test/alpha"
         with:
           tag-prefix: 'test'
-          commit-message: 'CI: bumps version to {{version}} [skip ci]'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: "cat package.json"
