@@ -68,11 +68,17 @@ Toolkit.run(async (tools) => {
 
   // case: if default=prerelease, but rc-wording is also set
   // then unset it and do not run, when no rc words found in message
+  tools.log('Before Login');
+  tools.log(version);
+  tools.log('PreID: ' + preid);
+  tools.log(process.env.INPUT_DEFAULT);
   if (version === 'prerelease' && !messages.some((message) => preReleaseWords.some((word) => message.includes(word))) && process.env.INPUT_DEFAULT != 'prerelease') {
+    tools.log('Version is set to null');
     version = null;
   }
 
   if (version === 'prerelease' && preid) {
+    tools.log('Version is prerelease and it contains a preid');
     version = `${version} --preid=${preid}`;
   }
 
