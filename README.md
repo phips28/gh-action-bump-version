@@ -31,7 +31,7 @@ Make sure you use the `actions/checkout@v2` action!
   env:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   with:
-    tag-prefix:  ''
+    tag-prefix:  'v'
 ```
 
 **skip-tag:** The tag is not added to the git repository  (optional). Example:
