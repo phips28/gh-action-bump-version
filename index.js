@@ -30,8 +30,8 @@ Toolkit.run(async (tools) => {
 
   const majorWords = process.env['INPUT_MAJOR-WORDING'].split(',');
   const minorWords = process.env['INPUT_MINOR-WORDING'].split(',');
-  const preReleaseWords = process.env['INPUT_RC-WORDING'].split(',');
   const patchWords = process.env['INPUT_PATCH-WORDING'].split(',');
+  const preReleaseWords = process.env['INPUT_RC-WORDING'].split(',');
 
   let version = process.env.INPUT_DEFAULT;
   let foundWord = null;
@@ -48,6 +48,9 @@ Toolkit.run(async (tools) => {
   } else if (messages.some((message) => minorWords.some((word) => message.includes(word)))) {
     version = 'minor';
     tools.log('Version is set to minor');
+  } else if (messages.some((message) => patchWords.some((word) => message.includes(word)))) {
+    version = 'patch';
+    tools.log('Version is set to patch');
   } else if (
     messages.some((message) =>
       preReleaseWords.some((word) => {
@@ -63,16 +66,6 @@ Toolkit.run(async (tools) => {
     preid = foundWord.split('-')[1];
     version = 'prerelease';
     tools.log('Version is set to prerelease2');
-  } else if (Array.isArray(patchWords) && patchWords.length) {
-    tools.log('PatchWords is set : ' + patchWords);
-    if (!messages.some((message) => patchWords.some((word) => message.includes(word)))) {
-      tools.log('Messages found on the patchwords : ' + messages);
-      version = null;
-      tools.log('Version is set to null 2');
-    }
-  } else if (process.env.INPUT_DEFAULT === 'prerelease'){
-    tools.log('Version is set to prerelease');
-    version = 'prerelease';
   }
 
   // case: if default=prerelease, but rc-wording is also set
@@ -81,12 +74,12 @@ Toolkit.run(async (tools) => {
   tools.log(version); // null
   tools.log('PreID: ' + preid); //prc
   tools.log(process.env.INPUT_DEFAULT);
-  if (version === 'prerelease' && !messages.some((message) => preReleaseWords.some((word) => message.includes(word)))) {
-    tools.log('Version is set to null');
-    version = null;
-  }
+  // if (version === 'prerelease' && !messages.some((message) => preReleaseWords.some((word) => message.includes(word)))) {
+  //   tools.log('Version is set to null');
+  //   version = null;
+  // }
 
-  if (version === 'prerelease' || process.env.INPUT_DEFAULT === 'prerelease' && preid) {
+  if (version === 'prerelease' || (process.env.INPUT_DEFAULT === 'prerelease' && preid)) {
     tools.log('Version is prerelease and it contains a preid');
     version = 'prerelease';
     version = `${version} --preid=${preid}`;
