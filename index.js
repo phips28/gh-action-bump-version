@@ -73,6 +73,8 @@ Toolkit.run(async (tools) => {
     version = 'prerelease';
   }
 
+  tools.log('preReleaseWords - ' + preReleaseWords)
+
   // case: if default=prerelease,
   // rc-wording is also set
   // and does not include any of rc-wording
