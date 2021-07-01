@@ -1,38 +1,38 @@
-name: "Bump Version"
+name: 'Bump Version'
 
 on:
   push:
     branches:
-      - "test/cmario92"
+      - 'test/cmario92'
 
 # testing again
 
 jobs:
   bump-version:
-    name: "Bump Version on master"
+    name: 'Bump Version on master'
     runs-on: ubuntu-latest
 
     steps:
-      - name: "Checkout source code"
-        uses: "actions/checkout@v2"
+      - name: 'Checkout source code'
+        uses: 'actions/checkout@v2'
         with:
           ref: ${{ github.ref }}
-      - name: "cat package.json"
+      - name: 'cat package.json'
         run: cat ./package.json
-      - name: "Setup Node.js"
-        uses: "actions/setup-node@v1"
+      - name: 'Setup Node.js'
+        uses: 'actions/setup-node@v1'
         with:
           node-version: 12
-      - name: "Automated Version Bump"
+      - name: 'Automated Version Bump'
         id: version-bump
-        uses: "phips28/gh-action-bump-version@test/cmario92"
+        uses: 'phips28/gh-action-bump-version@test/cmario92'
         with:
           tag-prefix: 'x'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: "cat package.json"
+      - name: 'cat package.json'
         run: cat ./package.json
-      - name:  'Output Step'
+      - name: 'Output Step'
         env:
           NEW_TAG: ${{ steps.version-bump.outputs.newTag }}
         run: echo "new tag $NEW_TAG"
