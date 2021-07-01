@@ -35,6 +35,8 @@ Toolkit.run(async (tools) => {
   const patchWords = process.env['INPUT_PATCH-WORDING'].split(',');
   const preReleaseWords = process.env['INPUT_RC-WORDING'].split(',');
 
+  console.log('config words:', { majorWords, minorWords, patchWords, preReleaseWords });
+
   // get default version bump
   let version = process.env.INPUT_DEFAULT;
   let foundWord = null;
