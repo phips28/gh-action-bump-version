@@ -28,25 +28,36 @@ Toolkit.run(async (tools) => {
     return;
   }
 
+  // input wordings for MAJOR, MINOR, PATCH, PRE-RELEASE
   const majorWords = process.env['INPUT_MAJOR-WORDING'].split(',');
   const minorWords = process.env['INPUT_MINOR-WORDING'].split(',');
+  const patchWords = process.env['INPUT_PATCH-WORDING'].split(',');
   const preReleaseWords = process.env['INPUT_RC-WORDING'].split(',');
 
-  // if patch words aren't specified, any commit message qualifies as a patch
-  const patchWords = process.env['INPUT_PATCH-WORDING'] ? process.env['INPUT_PATCH-WORDING'].split(',') : null;
-
+  // get default version bump
   let version = process.env.INPUT_DEFAULT;
   let foundWord = null;
+  // get the pre-release prefix specified in action
   let preid = process.env.INPUT_PREID;
+
+  // case: if wording for MAJOR found
   if (
     messages.some(
       (message) => /^([a-zA-Z]+)(\(.+\))?(\!)\:/.test(message) || majorWords.some((word) => message.includes(word)),
     )
   ) {
     version = 'major';
-  } else if (messages.some((message) => minorWords.some((word) => message.includes(word)))) {
+  }
+  // case: if wording for MINOR found
+  else if (messages.some((message) => minorWords.some((word) => message.includes(word)))) {
     version = 'minor';
-  } else if (
+  }
+  // case: if wording for PATCH found
+  else if (messages.some((message) => patchWords.some((word) => message.includes(word)))) {
+    version = 'patch';
+  }
+  // case: if wording for PRE-RELEASE found
+  else if (
     messages.some((message) =>
       preReleaseWords.some((word) => {
         if (message.includes(word)) {
@@ -60,27 +71,35 @@ Toolkit.run(async (tools) => {
   ) {
     preid = foundWord.split('-')[1];
     version = 'prerelease';
-  } else if (Array.isArray(patchWords) && patchWords.length) {
-    if (!messages.some((message) => patchWords.some((word) => message.includes(word)))) {
-      version = null;
-    }
   }
 
-  // case: if default=prerelease, but rc-wording is also set
-  // then unset it and do not run, when no rc words found in message
-  if (version === 'prerelease' && !messages.some((message) => preReleaseWords.some((word) => message.includes(word)))) {
+  tools.log('preReleaseWords - ' + preReleaseWords);
+
+  // case: if default=prerelease,
+  // rc-wording is also set
+  // and does not include any of rc-wording
+  // then unset it and do not run
+  if (
+    version === 'prerelease' &&
+    preReleaseWords !== '' &&
+    !messages.some((message) => preReleaseWords.some((word) => message.includes(word)))
+  ) {
     version = null;
   }
 
+  // case: if default=prerelease, but rc-wording is NOT set
   if (version === 'prerelease' && preid) {
+    version = 'prerelease';
     version = `${version} --preid=${preid}`;
   }
 
+  // case: if nothing of the above matches
   if (version === null) {
     tools.exit.success('No version keywords found, skipping bump.');
     return;
   }
 
+  // GIT logic
   try {
     const current = pkg.version.toString();
     // set git user
