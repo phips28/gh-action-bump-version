@@ -3,7 +3,7 @@ name: "Bump Version"
 on:
   push:
     branches:
-      - "master"
+      - "test/cmario92"
 
 jobs:
   bump-version:
@@ -23,7 +23,7 @@ jobs:
           node-version: 12
       - name: "Automated Version Bump"
         id: version-bump
-        uses: "phips28/gh-action-bump-version@master"
+        uses: "cmario92/gh-action-bump-version@master"
         with:
           tag-prefix: 'v'
         env:
