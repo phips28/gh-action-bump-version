@@ -36,6 +36,8 @@ Toolkit.run(async (tools) => {
   let version = process.env.INPUT_DEFAULT;
   let foundWord = null;
   let preid = process.env.INPUT_PREID;
+
+  tools.log('Version is set to Begining: ' + version);
   if (
     messages.some(
       (message) => /^([a-zA-Z]+)(\(.+\))?(\!)\:/.test(message) || majorWords.some((word) => message.includes(word)),
@@ -62,7 +64,9 @@ Toolkit.run(async (tools) => {
     version = 'prerelease';
     tools.log('Version is set to prerelease2');
   } else if (Array.isArray(patchWords) && patchWords.length) {
+    tools.log('PatchWords is set : ' + patchWords);
     if (!messages.some((message) => patchWords.some((word) => message.includes(word)))) {
+      tools.log('Messages found on the patchwords : ' + messages);
       version = null;
       tools.log('Version is set to null 2');
     }
@@ -82,7 +86,7 @@ Toolkit.run(async (tools) => {
     version = null;
   }
 
-  if (version === 'prerelease' && preid) {
+  if (version === 'prerelease' || process.env.INPUT_DEFAULT === 'prerelease' && preid) {
     tools.log('Version is prerelease and it contains a preid');
     version = `${version} --preid=${preid}`;
   }
