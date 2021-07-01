@@ -81,7 +81,7 @@ Toolkit.run(async (tools) => {
   tools.log(version); // null
   tools.log('PreID: ' + preid); //prc
   tools.log(process.env.INPUT_DEFAULT);
-  if (version === 'prerelease' && !messages.some((message) => preReleaseWords.some((word) => message.includes(word))) && process.env.INPUT_DEFAULT != 'prerelease') {
+  if (version === 'prerelease' && !messages.some((message) => preReleaseWords.some((word) => message.includes(word)))) {
     tools.log('Version is set to null');
     version = null;
   }
