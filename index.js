@@ -64,6 +64,8 @@ Toolkit.run(async (tools) => {
     if (!messages.some((message) => patchWords.some((word) => message.includes(word)))) {
       version = null;
     }
+  } else if (process.env.INPUT_DEFAULT === 'prerelease'){
+    version = 'prerelease';
   }
 
   // case: if default=prerelease, but rc-wording is also set
