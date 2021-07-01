@@ -31,9 +31,7 @@ Toolkit.run(async (tools) => {
   const majorWords = process.env['INPUT_MAJOR-WORDING'].split(',');
   const minorWords = process.env['INPUT_MINOR-WORDING'].split(',');
   const preReleaseWords = process.env['INPUT_RC-WORDING'].split(',');
-
-  // if patch words aren't specified, any commit message qualifies as a patch
-  const patchWords = process.env['INPUT_PATCH-WORDING'] ? process.env['INPUT_PATCH-WORDING'].split(',') : null;
+  const patchWords = process.env['INPUT_PATCH-WORDING'].split(',');
 
   let version = process.env.INPUT_DEFAULT;
   let foundWord = null;
