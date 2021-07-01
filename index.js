@@ -88,6 +88,7 @@ Toolkit.run(async (tools) => {
 
   if (version === 'prerelease' || process.env.INPUT_DEFAULT === 'prerelease' && preid) {
     tools.log('Version is prerelease and it contains a preid');
+    version = 'prerelease';
     version = `${version} --preid=${preid}`;
   }
 
