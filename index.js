@@ -79,7 +79,7 @@ Toolkit.run(async (tools) => {
   //   version = null;
   // }
 
-  if (version === 'prerelease' && preid)) {
+  if (version === 'prerelease' && preid) {
     tools.log('Version is prerelease and it contains a preid');
     version = 'prerelease';
     version = `${version} --preid=${preid}`;
