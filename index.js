@@ -44,8 +44,10 @@ Toolkit.run(async (tools) => {
     )
   ) {
     version = 'major';
+    tools.log('Version is set to major');
   } else if (messages.some((message) => minorWords.some((word) => message.includes(word)))) {
     version = 'minor';
+    tools.log('Version is set to minor');
   } else if (
     messages.some((message) =>
       preReleaseWords.some((word) => {
@@ -60,19 +62,22 @@ Toolkit.run(async (tools) => {
   ) {
     preid = foundWord.split('-')[1];
     version = 'prerelease';
+    tools.log('Version is set to prerelease2');
   } else if (Array.isArray(patchWords) && patchWords.length) {
     if (!messages.some((message) => patchWords.some((word) => message.includes(word)))) {
       version = null;
+      tools.log('Version is set to null 2');
     }
   } else if (process.env.INPUT_DEFAULT === 'prerelease'){
+    tools.log('Version is set to prerelease');
     version = 'prerelease';
   }
 
   // case: if default=prerelease, but rc-wording is also set
   // then unset it and do not run, when no rc words found in message
   tools.log('Before Login');
-  tools.log(version);
-  tools.log('PreID: ' + preid);
+  tools.log(version); // null
+  tools.log('PreID: ' + preid); //prc
   tools.log(process.env.INPUT_DEFAULT);
   if (version === 'prerelease' && !messages.some((message) => preReleaseWords.some((word) => message.includes(word))) && process.env.INPUT_DEFAULT != 'prerelease') {
     tools.log('Version is set to null');
