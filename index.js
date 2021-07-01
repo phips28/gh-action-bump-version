@@ -32,7 +32,8 @@ Toolkit.run(async (tools) => {
   // input wordings for MAJOR, MINOR, PATCH, PRE-RELEASE
   const majorWords = process.env['INPUT_MAJOR-WORDING'].split(',');
   const minorWords = process.env['INPUT_MINOR-WORDING'].split(',');
-  const patchWords = process.env['INPUT_PATCH-WORDING'].split(',');
+  // patch is by default empty, and '' would always be true in the includes(''), thats why we handle it separately
+  const patchWords = process.env['INPUT_PATCH-WORDING'] ? process.env['INPUT_PATCH-WORDING'].split(',') : null;
   const preReleaseWords = process.env['INPUT_RC-WORDING'].split(',');
 
   console.log('config words:', { majorWords, minorWords, patchWords, preReleaseWords });
@@ -56,7 +57,7 @@ Toolkit.run(async (tools) => {
     version = 'minor';
   }
   // case: if wording for PATCH found
-  else if (messages.some((message) => patchWords.some((word) => message.includes(word)))) {
+  else if (patchWords && messages.some((message) => patchWords.some((word) => message.includes(word)))) {
     version = 'patch';
   }
   // case: if wording for PRE-RELEASE found
@@ -76,7 +77,7 @@ Toolkit.run(async (tools) => {
     version = 'prerelease';
   }
 
-  tools.log('preReleaseWords - ' + preReleaseWords);
+  console.log('version action after first waterfall:', version);
 
   // case: if default=prerelease,
   // rc-wording is also set
@@ -95,6 +96,8 @@ Toolkit.run(async (tools) => {
     version = 'prerelease';
     version = `${version} --preid=${preid}`;
   }
+
+  console.log('version action after final decision:', version);
 
   // case: if nothing of the above matches
   if (version === null) {
