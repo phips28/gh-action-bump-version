@@ -16,15 +16,16 @@ Toolkit.run(async (tools) => {
     console.log("Couldn't find any commits in this event, incrementing patch version...");
   }
 
+  const tagPrefix = process.env['INPUT_TAG-PREFIX'] || '';
   const messages = event.commits ? event.commits.map((commit) => commit.message + '\n' + commit.body) : [];
 
   const commitMessage = process.env['INPUT_COMMIT-MESSAGE'] || 'ci: version bump to {{version}}';
   console.log('messages:', messages);
-  const commitMessageRegex = new RegExp(commitMessage.replace(/{{version}}/g, 'v\\d+\\.\\d+\\.\\d+'), 'ig');
+  const commitMessageRegex = new RegExp(commitMessage.replace(/{{version}}/g, `${tagPrefix}\\d+\\.\\d+\\.\\d+`), 'ig');
   const isVersionBump = messages.find((message) => commitMessageRegex.test(message)) !== undefined;
 
   if (isVersionBump) {
-    tools.exit.success('No action necessary!');
+    tools.exit.success('No action necessary because we found a previous bump!');
     return;
   }
 
@@ -112,7 +113,7 @@ Toolkit.run(async (tools) => {
     await tools.runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', current]);
     console.log('current:', current, '/', 'version:', version);
     let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim().replace(/^v/, '');
-    newVersion = `${process.env['INPUT_TAG-PREFIX']}${newVersion}`;
+    newVersion = `${tagPrefix}${newVersion}`;
     await tools.runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)]);
 
     // now go to the actual branch to perform the same versioning
@@ -124,7 +125,7 @@ Toolkit.run(async (tools) => {
     await tools.runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', current]);
     console.log('current:', current, '/', 'version:', version);
     newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim().replace(/^v/, '');
-    newVersion = `${process.env['INPUT_TAG-PREFIX']}${newVersion}`;
+    newVersion = `${tagPrefix}${newVersion}`;
     console.log(`::set-output name=newTag::${newVersion}`);
     try {
       // to support "actions/checkout@v1"
