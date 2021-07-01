@@ -37,20 +37,16 @@ Toolkit.run(async (tools) => {
   let foundWord = null;
   let preid = process.env.INPUT_PREID;
 
-  tools.log('Version is set to Begining: ' + version);
   if (
     messages.some(
       (message) => /^([a-zA-Z]+)(\(.+\))?(\!)\:/.test(message) || majorWords.some((word) => message.includes(word)),
     )
   ) {
     version = 'major';
-    tools.log('Version is set to major');
   } else if (messages.some((message) => minorWords.some((word) => message.includes(word)))) {
     version = 'minor';
-    tools.log('Version is set to minor');
   } else if (messages.some((message) => patchWords.some((word) => message.includes(word)))) {
     version = 'patch';
-    tools.log('Version is set to patch');
   } else if (
     messages.some((message) =>
       preReleaseWords.some((word) => {
@@ -65,22 +61,9 @@ Toolkit.run(async (tools) => {
   ) {
     preid = foundWord.split('-')[1];
     version = 'prerelease';
-    tools.log('Version is set to prerelease2');
   }
 
-  // case: if default=prerelease, but rc-wording is also set
-  // then unset it and do not run, when no rc words found in message
-  tools.log('Before Login');
-  tools.log(version); // null
-  tools.log('PreID: ' + preid); //prc
-  tools.log(process.env.INPUT_DEFAULT);
-  // if (version === 'prerelease' && !messages.some((message) => preReleaseWords.some((word) => message.includes(word)))) {
-  //   tools.log('Version is set to null');
-  //   version = null;
-  // }
-
   if (version === 'prerelease' && preid) {
-    tools.log('Version is prerelease and it contains a preid');
     version = 'prerelease';
     version = `${version} --preid=${preid}`;
   }
