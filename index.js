@@ -16,23 +16,27 @@ Toolkit.run(async (tools) => {
     console.log("Couldn't find any commits in this event, incrementing patch version...");
   }
 
+  const tagPrefix = process.env['INPUT_TAG-PREFIX'] || '';
   const messages = event.commits ? event.commits.map((commit) => commit.message + '\n' + commit.body) : [];
 
   const commitMessage = process.env['INPUT_COMMIT-MESSAGE'] || 'ci: version bump to {{version}}';
-  console.log('messages:', messages);
-  const commitMessageRegex = new RegExp(commitMessage.replace(/{{version}}/g, 'v\\d+\\.\\d+\\.\\d+'), 'ig');
+  console.log('commit messages:', messages);
+  const commitMessageRegex = new RegExp(commitMessage.replace(/{{version}}/g, `${tagPrefix}\\d+\\.\\d+\\.\\d+`), 'ig');
   const isVersionBump = messages.find((message) => commitMessageRegex.test(message)) !== undefined;
 
   if (isVersionBump) {
-    tools.exit.success('No action necessary!');
+    tools.exit.success('No action necessary because we found a previous bump!');
     return;
   }
 
   // input wordings for MAJOR, MINOR, PATCH, PRE-RELEASE
   const majorWords = process.env['INPUT_MAJOR-WORDING'].split(',');
   const minorWords = process.env['INPUT_MINOR-WORDING'].split(',');
-  const patchWords = process.env['INPUT_PATCH-WORDING'].split(',');
+  // patch is by default empty, and '' would always be true in the includes(''), thats why we handle it separately
+  const patchWords = process.env['INPUT_PATCH-WORDING'] ? process.env['INPUT_PATCH-WORDING'].split(',') : null;
   const preReleaseWords = process.env['INPUT_RC-WORDING'].split(',');
+
+  console.log('config words:', { majorWords, minorWords, patchWords, preReleaseWords });
 
   // get default version bump
   let version = process.env.INPUT_DEFAULT;
@@ -53,7 +57,7 @@ Toolkit.run(async (tools) => {
     version = 'minor';
   }
   // case: if wording for PATCH found
-  else if (messages.some((message) => patchWords.some((word) => message.includes(word)))) {
+  else if (patchWords && messages.some((message) => patchWords.some((word) => message.includes(word)))) {
     version = 'patch';
   }
   // case: if wording for PRE-RELEASE found
@@ -73,13 +77,17 @@ Toolkit.run(async (tools) => {
     version = 'prerelease';
   }
 
-  tools.log('preReleaseWords - ' + preReleaseWords)
+  console.log('version action after first waterfall:', version);
 
   // case: if default=prerelease,
   // rc-wording is also set
   // and does not include any of rc-wording
   // then unset it and do not run
-  if (version === 'prerelease' && preReleaseWords !== '' && !messages.some((message) => preReleaseWords.some((word) => message.includes(word)))) {
+  if (
+    version === 'prerelease' &&
+    preReleaseWords !== '' &&
+    !messages.some((message) => preReleaseWords.some((word) => message.includes(word)))
+  ) {
     version = null;
   }
 
@@ -88,6 +96,8 @@ Toolkit.run(async (tools) => {
     version = 'prerelease';
     version = `${version} --preid=${preid}`;
   }
+
+  console.log('version action after final decision:', version);
 
   // case: if nothing of the above matches
   if (version === null) {
@@ -127,7 +137,7 @@ Toolkit.run(async (tools) => {
     await tools.runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', current]);
     console.log('current:', current, '/', 'version:', version);
     let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim().replace(/^v/, '');
-    newVersion = `${process.env['INPUT_TAG-PREFIX']}${newVersion}`;
+    newVersion = `${tagPrefix}${newVersion}`;
     await tools.runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)]);
 
     // now go to the actual branch to perform the same versioning
@@ -139,7 +149,7 @@ Toolkit.run(async (tools) => {
     await tools.runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', current]);
     console.log('current:', current, '/', 'version:', version);
     newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim().replace(/^v/, '');
-    newVersion = `${process.env['INPUT_TAG-PREFIX']}${newVersion}`;
+    newVersion = `${tagPrefix}${newVersion}`;
     console.log(`::set-output name=newTag::${newVersion}`);
     try {
       // to support "actions/checkout@v1"
