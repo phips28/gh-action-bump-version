@@ -18,11 +18,14 @@ inputs:
   major-wording:
     description: 'Words list that trigger a major version bump'
     default: 'BREAKING CHANGE,major'
+    required: false
   patch-wording:
     description: 'Words list that trigger a patch version bump'
+    required: false
   rc-wording:
-    description: 'Words list that trigger a patch version bump'
+    description: 'Words list that trigger a rc version bump'
     default: 'pre-alpha,pre-beta,pre-rc'
+    required: false
   skip-tag:
     description: 'Avoid to add a TAG to the version update commit'
     default: 'false'
