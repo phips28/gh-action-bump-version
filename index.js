@@ -73,7 +73,9 @@ Toolkit.run(async (tools) => {
       }),
     )
   ) {
-    preid = foundWord.split('-')[1];
+    if (foundWord != ''){
+      preid = foundWord.split('-')[1];
+    } 
     version = 'prerelease';
   }
 
