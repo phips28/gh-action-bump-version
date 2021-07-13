@@ -105,6 +105,11 @@ Toolkit.run(async (tools) => {
     return;
   }
 
+  // case: if user sets push == false
+  if ( process.env['INPUT_PUSH'] === "false" ) {
+    return;
+  }
+
   // GIT logic
   try {
     const current = pkg.version.toString();
