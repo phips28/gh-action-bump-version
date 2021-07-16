@@ -105,6 +105,13 @@ Toolkit.run(async (tools) => {
     return;
   }
 
+  // case: if user sets push to false, to skip pushing new tag/package.json
+  const push = process.env['INPUT_PUSH']
+  if ( push === "false" || push === false ) {
+    tools.exit.success('User requested to skip pushing new tag and package.json. Finished.');
+    return;
+  }
+
   // GIT logic
   try {
     const current = pkg.version.toString();

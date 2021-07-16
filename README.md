@@ -2,8 +2,8 @@
 
 GitHub Action for automated npm version bump.
 
-This Action bumps the version in package.json and pushes it back to the repo. 
-It is meant to be used on every successful merge to master but 
+This Action bumps the version in package.json and pushes it back to the repo.
+It is meant to be used on every successful merge to master but
 you'll need to configured that workflow yourself. You can look to the
 [`.github/workflows/push.yml`](./.github/workflows/push.yml) file in this project as an example.
 
@@ -14,7 +14,7 @@ Make sure you use the `actions/checkout@v2` action!
 ### Workflow
 
 * Based on the commit messages, increment the version from the latest release.
-  * If the string "BREAKING CHANGE", "major" or the Attention pattern `refactor!: drop support for Node 6` is found anywhere in any of the commit messages or descriptions the major 
+  * If the string "BREAKING CHANGE", "major" or the Attention pattern `refactor!: drop support for Node 6` is found anywhere in any of the commit messages or descriptions the major
     version will be incremented.
   * If a commit message begins with the string "feat" or includes "minor" then the minor version will be increased. This works
     for most common commit metadata for feature additions: `"feat: new API"` and `"feature: new API"`.
@@ -106,4 +106,14 @@ Make sure you use the `actions/checkout@v2` action!
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   with:
     commit-message: 'CI: bumps version to {{version}} [skip ci]'
+```
+
+**push:** Set false you want to avoid pushing the new version tag/package.json. Example:
+```yaml
+- name:  'Automated Version Bump'
+  uses:  'phips28/gh-action-bump-version@master'
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  with:
+    push: false
 ```
