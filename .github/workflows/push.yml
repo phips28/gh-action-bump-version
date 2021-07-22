@@ -28,7 +28,7 @@ jobs:
         id: extract_branch
       - name: 'Automated Version Bump'
         id: version-bump
-        uses: 'skillnation/gh-action-bump-version@${{ steps.extract_branch.outputs.branch }}'
+        uses: ./
         with:
           tag-prefix: 'v'
           always-pre-version: ${{ github.ref == 'refs/heads/develop' }}
