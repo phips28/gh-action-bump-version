@@ -110,7 +110,7 @@ Toolkit.run(async (tools) => {
   console.log('version action after final decision:', version);
 
   // case: if nothing of the above matches
-  if (version === null) {
+  if (version === null || version === undefined || version.trim().length === 0) {
     tools.exit.success('No version keywords found, skipping bump.');
     return;
   }
