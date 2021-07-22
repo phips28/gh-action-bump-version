@@ -96,6 +96,13 @@ Toolkit.run(async (tools) => {
     version = 'prerelease';
     version = `${version} --preid=${preid}`;
   }
+
+  // case: if nothing of the above matches
+  if (version === null || version === undefined || version.trim().length === 0) {
+    tools.exit.failure('No version keywords found, skipping bump.');
+    return;
+  }
+
   // handle when user opted-in to always create a pre-version
   else if (process.env['INPUT_ALWAYS-PRE-VERSION'] === "true") {
     console.log("Detected ALWAYS-PRE-VERSION to be true. Will create a pre version...");
@@ -108,12 +115,6 @@ Toolkit.run(async (tools) => {
   }
 
   console.log('version action after final decision:', version);
-
-  // case: if nothing of the above matches
-  if (version === null) {
-    tools.exit.success('No version keywords found, skipping bump.');
-    return;
-  }
 
   // case: if user sets push to false, to skip pushing new tag/package.json
   const push = process.env['INPUT_PUSH']
