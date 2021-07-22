@@ -91,9 +91,6 @@ Toolkit.run(async (tools) => {
     version = null;
   }
 
-  console.log("env:");
-  console.log(JSON.stringify(process.env, undefined, 2));
-
   // case: if default=prerelease, but rc-wording is NOT set
   if (version === 'prerelease' && preid) {
     version = 'prerelease';
