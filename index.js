@@ -96,6 +96,16 @@ Toolkit.run(async (tools) => {
     version = 'prerelease';
     version = `${version} --preid=${preid}`;
   }
+  // handle when user opted-in to always create a pre-version
+  else if (process.env['INPUT_ALWAYS-PRE-VERSION'] === "true") {
+    console.log("Detected ALWAYS-PRE-VERSION to be true. Will create a pre version...");
+    if (!version.startsWith("pre")) {
+      version = "pre" + version;
+    }
+    if (preid) {
+      version = `${version} --preid=${preid}`;
+    }
+  }
 
   console.log('version action after final decision:', version);
 
@@ -107,7 +117,7 @@ Toolkit.run(async (tools) => {
 
   // case: if user sets push to false, to skip pushing new tag/package.json
   const push = process.env['INPUT_PUSH']
-  if ( push === "false" || push === false ) {
+  if (push === "false" || push === false) {
     tools.exit.success('User requested to skip pushing new tag and package.json. Finished.');
     return;
   }
@@ -164,7 +174,7 @@ Toolkit.run(async (tools) => {
     } catch (e) {
       console.warn(
         'git commit failed because you are using "actions/checkout@v2"; ' +
-          'but that doesnt matter because you dont need that git commit, thats only for "actions/checkout@v1"',
+        'but that doesnt matter because you dont need that git commit, thats only for "actions/checkout@v1"',
       );
     }
 

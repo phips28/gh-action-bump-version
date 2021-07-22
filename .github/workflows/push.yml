@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - 'master'
+      - 'develop'
 
 jobs:
   bump-version:
@@ -26,6 +27,7 @@ jobs:
         uses: 'skillnation/gh-action-bump-version@master'
         with:
           tag-prefix: 'v'
+          always-pre-version: ${{ github.ref == 'refs/heads/develop' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: 'cat package.json'

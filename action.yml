@@ -7,6 +7,10 @@ branding:
   icon: chevron-up
   color: blue
 inputs:
+  always-pre-version:
+    description: 'Always use a pre version. If it should always b a pre version, specify a preid!'
+    default: 'false'
+    required: false
   tag-prefix:
     description: 'Prefix that is used for the git tag'
     default: ''
