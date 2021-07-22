@@ -28,6 +28,7 @@ jobs:
         with:
           tag-prefix: 'v'
           always-pre-version: ${{ github.ref == 'refs/heads/develop' }}
+          push: 'false'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: 'cat package.json'
