@@ -116,6 +116,15 @@ Toolkit.run(async (tools) => {
 
   console.log('version action after final decision:', version);
 
+<<<<<<< HEAD
+=======
+  // case: if nothing of the above matches
+  if (version === null || version === undefined || version.trim().length === 0) {
+    tools.exit.failure('No version keywords found, skipping bump.');
+    return;
+  }
+
+>>>>>>> 357b18af1ddd6c6ed3409e6762f326fb067415db
   // case: if user sets push to false, to skip pushing new tag/package.json
   const push = process.env['INPUT_PUSH']
   if (push === "false" || push === false) {
