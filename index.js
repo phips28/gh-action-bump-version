@@ -111,7 +111,7 @@ Toolkit.run(async (tools) => {
 
   // case: if nothing of the above matches
   if (version === null || version === undefined || version.trim().length === 0) {
-    tools.exit.success('No version keywords found, skipping bump.');
+    tools.exit.failure('No version keywords found, skipping bump.');
     return;
   }
 
