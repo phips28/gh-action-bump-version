@@ -1,17 +1,17 @@
 {
   "name": "gh-action-bump-version",
-  "version": "8.3.2",
+  "version": "8.3.3",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/phips28/gh-action-bump-version.git"
+    "url": "git+https://github.com/skillnation/gh-action-bump-version.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/phips28/gh-action-bump-version/issues"
+    "url": "https://github.com/skillnation/gh-action-bump-version"
   },
-  "homepage": "https://github.com/phips28/gh-action-bump-version#readme",
+  "homepage": "https://github.com/skillnation/gh-action-bump-version#readme",
   "private": true,
   "main": "index.js",
   "scripts": {

@@ -4,10 +4,11 @@ on:
   push:
     branches:
       - 'master'
+      - 'develop'
 
 jobs:
   bump-version:
-    name: 'Bump Version on master'
+    name: 'Bump Version'
     runs-on: ubuntu-latest
 
     steps:
@@ -21,11 +22,17 @@ jobs:
         uses: 'actions/setup-node@v1'
         with:
           node-version: 12
+      - name: Extract branch name
+        shell: bash
+        run: echo '##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})'
+        id: extract_branch
       - name: 'Automated Version Bump'
         id: version-bump
-        uses: 'phips28/gh-action-bump-version@master'
+        uses: ./
         with:
           tag-prefix: 'v'
+          always-pre-version: ${{ github.ref == 'refs/heads/develop' }}
+          push: ${{ github.ref != 'refs/heads/develop' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: 'cat package.json'
