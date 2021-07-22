@@ -8,7 +8,7 @@ on:
 
 jobs:
   bump-version:
-    name: 'Bump Version on master'
+    name: 'Bump Version'
     runs-on: ubuntu-latest
 
     steps:
@@ -22,9 +22,13 @@ jobs:
         uses: 'actions/setup-node@v1'
         with:
           node-version: 12
+      - name: Extract branch name
+        shell: bash
+        run: echo '##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})'
+        id: extract_branch
       - name: 'Automated Version Bump'
         id: version-bump
-        uses: 'skillnation/gh-action-bump-version@master'
+        uses: 'skillnation/gh-action-bump-version@${{ steps.extract_branch.outputs.branch }}'
         with:
           tag-prefix: 'v'
           always-pre-version: ${{ github.ref == 'refs/heads/develop' }}
