@@ -47,24 +47,24 @@ Toolkit.run(async (tools) => {
   // case: if wording for MAJOR found
   if (
     messages.some(
-      (message) => /^([a-zA-Z]+)(\(.+\))?(\!)\:/.test(message) || majorWords.some((word) => message.includes(word)),
+      (message) => /^([a-zA-Z]+)(\(.+\))?(\!)\:/.test(message) || majorWords.some((word) => message.trim().startsWith(word)),
     )
   ) {
     version = 'major';
   }
   // case: if wording for MINOR found
-  else if (messages.some((message) => minorWords.some((word) => message.includes(word)))) {
+  else if (messages.some((message) => minorWords.some((word) => message.trim().startsWith(word)))) {
     version = 'minor';
   }
   // case: if wording for PATCH found
-  else if (patchWords && messages.some((message) => patchWords.some((word) => message.includes(word)))) {
+  else if (patchWords && messages.some((message) => patchWords.some((word) => message.trim().startsWith(word)))) {
     version = 'patch';
   }
   // case: if wording for PRE-RELEASE found
   else if (
     messages.some((message) =>
       preReleaseWords.some((word) => {
-        if (message.includes(word)) {
+        if (message.trim().startsWith(word)) {
           foundWord = word;
           return true;
         } else {
@@ -99,7 +99,7 @@ Toolkit.run(async (tools) => {
 
   // case: if nothing of the above matches
   if (version === null || version === undefined || version.trim().length === 0) {
-    tools.exit.failure('No version keywords found, skipping bump.');
+    tools.exit.neutral('No version keywords found, skipping bump.');
     return;
   }
 
