@@ -7,6 +7,12 @@ It is meant to be used on every successful merge to master but
 you'll need to configured that workflow yourself. You can look to the
 [`.github/workflows/push.yml`](./.github/workflows/push.yml) file in this project as an example.
 
+## Changes:
+
+* Will only check the beginning of the commit messages, not the whole body
+* If default is an empty string it will skip making a bump if no conventional commit has been found
+* Added an `always-pre-version` option to force that a pre version gets created
+
 **Attention**
 
 Make sure you use the `actions/checkout@v2` action!
