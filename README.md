@@ -23,7 +23,29 @@ Make sure you use the `actions/checkout@v2` action!
 * Push the bumped npm version in package.json back into the repo.
 * Push a tag for the new version back into the repo.
 
+
 ### Usage:
+
+## Docker 
+
+You can choose to build the image each time you run this action by using the 'native' GitHub actions `uses:` statement
+like the examples found below in Action Options.
+
+You can also opt to skip building, and instead pull the image directly from DockerHub using a slightly modified version
+of the `uses:` statement 
+
+```yaml
+      - name: 'Automated Version Bump'
+        id: version-bump
+        uses: 'docker://phips28/gh-action-bump-version:master'
+        with:
+          tag-prefix: 'v'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+## Action Options
+
 **tag-prefix:** Prefix that is used for the git tag  (optional). Example:
 ```yaml
 - name:  'Automated Version Bump'
