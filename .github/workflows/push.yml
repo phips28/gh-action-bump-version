@@ -6,9 +6,35 @@ on:
       - 'master'
 
 jobs:
+  commit-dependencies:
+    name: 'Commit dependencies'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 'Checkout source code'
+        uses: 'actions/checkout@v2'
+        with:
+          ref: ${{ github.ref }}
+      - name: 'Setup Node.js'
+        uses: 'actions/setup-node@v1'
+        with:
+          node-version: 12
+      - name: 'commit dependencies'
+        run: |
+          npm ci --production
+          git config user.name "Automated Version Bump"
+          git config user.email "gh-action-bump-version@users.noreply.github.com"
+          git add node_modules -f
+          if [ $(git status --porcelain=v1 2>/dev/null | wc -l) -gt 0 ]
+          then
+            git commit -m "ci: commit dependencies"
+            git push
+          fi
+
   bump-version:
     name: 'Bump Version on master'
     runs-on: ubuntu-latest
+    needs: commit-dependencies
 
     steps:
       - name: 'Checkout source code'
@@ -17,13 +43,9 @@ jobs:
           ref: ${{ github.ref }}
       - name: 'cat package.json'
         run: cat ./package.json
-      - name: 'Setup Node.js'
-        uses: 'actions/setup-node@v1'
-        with:
-          node-version: 12
       - name: 'Automated Version Bump'
         id: version-bump
-        uses: 'phips28/gh-action-bump-version@master'
+        uses: 'melody-universe/gh-action-bump-version@master'
         with:
           tag-prefix: 'v'
         env:
