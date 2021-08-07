@@ -3,11 +3,11 @@ name: 'Bump Version'
 on:
   push:
     branches:
-      - 'master'
+      - 'bundle-assets'
 
 jobs:
-  commit-dependencies:
-    name: 'Commit dependencies'
+  generate-bundle:
+    name: 'Generate bundle'
     runs-on: ubuntu-latest
 
     steps:
@@ -19,22 +19,23 @@ jobs:
         uses: 'actions/setup-node@v1'
         with:
           node-version: 12
-      - name: 'commit dependencies'
+      - name: 'generate bundle'
         run: |
-          npm ci --production
+          npm ci
+          npm run build
           git config user.name "Automated Version Bump"
           git config user.email "gh-action-bump-version@users.noreply.github.com"
-          git add node_modules -f
+          git add dist -f
           if [ $(git status --porcelain=v1 2>/dev/null | wc -l) -gt 0 ]
           then
-            git commit -m "ci: commit dependencies"
+            git commit -m "ci: generate bundle"
             git push
           fi
 
   bump-version:
     name: 'Bump Version on master'
     runs-on: ubuntu-latest
-    needs: commit-dependencies
+    needs: generate-bundle
 
     steps:
       - name: 'Checkout source code'
@@ -45,7 +46,7 @@ jobs:
         run: cat ./package.json
       - name: 'Automated Version Bump'
         id: version-bump
-        uses: 'phips28/gh-action-bump-version@master'
+        uses: 'melody-universe/gh-action-bump-version@bundle-assets'
         with:
           tag-prefix: 'v'
         env:
