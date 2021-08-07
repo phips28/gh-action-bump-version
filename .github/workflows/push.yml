@@ -45,7 +45,7 @@ jobs:
         run: cat ./package.json
       - name: 'Automated Version Bump'
         id: version-bump
-        uses: 'melody-universe/gh-action-bump-version@master'
+        uses: 'phips28/gh-action-bump-version@master'
         with:
           tag-prefix: 'v'
         env:
