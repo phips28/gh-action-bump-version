@@ -1,7 +1,6 @@
-const { execSync } = require('child_process');
-const execa = require('execa');
+const { execSync, spawn } = require('child_process');
 const { existsSync } = require('fs');
-const { Signale } = require('signale');
+const { EOL } = require('os');
 const path = require('path');
 
 // Change working directory if user defined PACKAGEJSON_DIR
@@ -11,11 +10,10 @@ if (process.env.PACKAGEJSON_DIR) {
 }
 
 const workspace = process.env.GITHUB_WORKSPACE;
-const logger = new Signale({ config: { underlineLabel: false } });
 
 (async () => {
   const pkg = getPackageJson();
-  const event = process.env.GITHUB_EVENT_PATH ? __non_webpack_require__(process.env.GITHUB_EVENT_PATH) : {};
+  const event = process.env.GITHUB_EVENT_PATH ? require(process.env.GITHUB_EVENT_PATH) : {};
 
   if (!event.commits) {
     console.log("Couldn't find any commits in this event, incrementing patch version...");
@@ -178,7 +176,7 @@ const logger = new Signale({ config: { underlineLabel: false } });
       await runInWorkspace('git', ['push', remoteRepo]);
     }
   } catch (e) {
-    logger.fatal(e);
+    logError(e);
     exitFailure('Failed to bump version');
     return;
   }
@@ -188,19 +186,44 @@ const logger = new Signale({ config: { underlineLabel: false } });
 function getPackageJson() {
   const pathToPackage = path.join(workspace, 'package.json');
   if (!existsSync(pathToPackage)) throw new Error("package.json could not be found in your project's root.");
-  return __non_webpack_require__(pathToPackage);
+  return require(pathToPackage);
 }
 
 function exitSuccess(message) {
-  logger.success(message);
+  console.info(`✔  success   ${message}`);
   process.exit(0);
 }
 
 function exitFailure(message) {
-  logger.fatal(message);
+  logError(message);
   process.exit(1);
 }
 
+function logError(error) {
+  console.error(`✖  fatal     ${error.stack || error}`);
+}
+
 function runInWorkspace(command, args) {
-  return execa(command, args, { cwd: workspace });
+  return new Promise((resolve, reject) => {
+    const child = spawn(command, args, { cwd: workspace });
+    let isDone = false;
+    const errorMessages = [];
+    child.on('error', (error) => {
+      if (!isDone) {
+        isDone = true;
+        reject(error);
+      }
+    });
+    child.stderr.on('data', (chunk) => errorMessages.push(chunk));
+    child.on('exit', (code) => {
+      if (!isDone) {
+        if (code === 0) {
+          resolve();
+        } else {
+          reject(`${errorMessages.join('')}${EOL}${command} exited with code ${code}`);
+        }
+      }
+    });
+  });
+  //return execa(command, args, { cwd: workspace });
 }
