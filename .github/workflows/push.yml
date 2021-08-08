@@ -3,7 +3,7 @@ name: 'Bump Version'
 on:
   push:
     branches:
-      - 'remove-dependencies'
+      - 'master'
 
 jobs:
   bump-version:
@@ -19,7 +19,7 @@ jobs:
         run: cat ./package.json
       - name: 'Automated Version Bump'
         id: version-bump
-        uses: 'melody-universe/gh-action-bump-version@remove-dependencies'
+        uses: 'phips28/gh-action-bump-version@master'
         with:
           tag-prefix: 'v'
         env:
