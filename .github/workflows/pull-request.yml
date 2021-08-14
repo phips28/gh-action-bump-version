@@ -1,0 +1,14 @@
+on:
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  write-something:
+    name: 'Hello'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 'Hello world'
+        run: echo "Hello world"
