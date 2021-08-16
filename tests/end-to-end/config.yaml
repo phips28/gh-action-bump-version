@@ -1,0 +1,33 @@
+suites:
+  - name: default
+    yaml:
+      name: Bump Version
+      on:
+        push:
+      jobs:
+        bump-version:
+          runs-on: ubuntu-latest
+          steps:
+            - uses: actions/checkout@v2
+            - id: version-bump
+              uses: ./action
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    commits:
+      - message: This commit should update the third number.
+        expected-version: 1.0.1
+      - message: Because this commit contains the word 'feat', it should update the second number.
+        expected-version: 1.1.0
+      - message: Because this commit contains the word 'minor', it should update the second number.
+        expected-version: 1.2.0
+      - message: Because this commit contains the words 'BREAKING CHANGE', it should update the first number.
+        expected-version: 2.0.0
+      - message: Because this commit contains the word 'major', it should update the first number.
+        expected-version: 3.0.0
+action-files:
+  - index.js
+  - Dockerfile
+  - package.json
+  - package-lock.json
+  - action.yml
+image: catthehacker/ubuntu:act-latest
