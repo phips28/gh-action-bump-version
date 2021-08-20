@@ -16,7 +16,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./index.js",
-    "test": "jest"
+    "test": "npm run end-to-end-test",
+    "end-to-end-test": "jest --roots=tests/end-to-end --testTimeout=300000 --runInBand"
   },
   "dependencies": {},
   "devDependencies": {
