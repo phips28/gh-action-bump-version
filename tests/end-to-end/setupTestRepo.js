@@ -3,7 +3,7 @@ const { rm, mkdir, copyFile, stat } = require('fs/promises');
 const { chdir, cwd } = require('process');
 const { resolve, join, dirname } = require('path');
 const exec = require('./exec');
-const { default: git } = require('./git');
+const git = require('./git');
 const glob = require('tiny-glob');
 const { clearWorkflowRuns } = require('./actionsApi');
 
@@ -21,7 +21,8 @@ module.exports = async function setupTestRepo(actionFileGlobPaths) {
   await git('config', 'user.email', 'gh-action-bump-version-test@users.noreply.github.com');
   await git('add', '.');
   await git('commit', '--message', 'initial commit (version 1.0.0)');
-  await deleteTags();
+  await git('push', '--force', '--set-upstream', 'origin', 'main');
+  await deleteTagsAndBranches();
 };
 
 function createNpmPackage() {
@@ -57,13 +58,13 @@ async function copyActionFiles(globPaths) {
   );
 }
 
-async function deleteTags() {
-  const listTagsResult = await git({ suppressOutput: true }, 'ls-remote', '--tags', 'origin');
-  if (listTagsResult.stdout) {
-    const lines = listTagsResult.stdout.split('\n');
-    const tags = lines.map((line) => line.split('\t')[1]);
-    for (const tag of tags) {
-      await git('push', 'origin', '--delete', tag);
+async function deleteTagsAndBranches() {
+  const listResult = await git({ suppressOutput: true }, 'ls-remote', '--tags', '--heads', 'origin');
+  if (listResult.stdout) {
+    const lines = listResult.stdout.split('\n');
+    const refs = lines.map((line) => line.split('\t')[1]).filter((ref) => ref !== 'refs/heads/main');
+    if (refs.length > 0) {
+      await git('push', 'origin', '--delete', ...refs);
     }
   }
 }
