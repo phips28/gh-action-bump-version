@@ -11,6 +11,16 @@ you'll need to configured that workflow yourself. You can look to the
 
 Make sure you use the `actions/checkout@v2` action!
 
+**Migration: Version v9 and up**
+
+Remove the 'actions/setup-node@v1' step from your action.yml file
+```
+      - name: 'Setup Node.js'
+        uses: 'actions/setup-node@v1'
+        with:
+          node-version: 14
+```
+
 ### Workflow
 
 * Based on the commit messages, increment the version from the latest release.
