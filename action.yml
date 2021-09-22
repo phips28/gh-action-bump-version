@@ -1,8 +1,8 @@
 name: Automated Version Bump
 description: Automated version bump for npm packages.
 runs:
-  using: docker
-  image: Dockerfile
+  using: node12
+  main: index.js
 branding:
   icon: chevron-up
   color: blue

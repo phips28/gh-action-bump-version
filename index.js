@@ -1,5 +1,7 @@
-const { Toolkit } = require('actions-toolkit');
-const { execSync } = require('child_process');
+const { execSync, spawn } = require('child_process');
+const { existsSync } = require('fs');
+const { EOL } = require('os');
+const path = require('path');
 
 // Change working directory if user defined PACKAGEJSON_DIR
 if (process.env.PACKAGEJSON_DIR) {
@@ -7,10 +9,11 @@ if (process.env.PACKAGEJSON_DIR) {
   process.chdir(process.env.GITHUB_WORKSPACE);
 }
 
-// Run your GitHub Action!
-Toolkit.run(async (tools) => {
-  const pkg = tools.getPackageJSON();
-  const event = tools.context.payload;
+const workspace = process.env.GITHUB_WORKSPACE;
+
+(async () => {
+  const pkg = getPackageJson();
+  const event = process.env.GITHUB_EVENT_PATH ? require(process.env.GITHUB_EVENT_PATH) : {};
 
   if (!event.commits) {
     console.log("Couldn't find any commits in this event, incrementing patch version...");
@@ -25,7 +28,7 @@ Toolkit.run(async (tools) => {
   const isVersionBump = messages.find((message) => commitMessageRegex.test(message)) !== undefined;
 
   if (isVersionBump) {
-    tools.exit.success('No action necessary because we found a previous bump!');
+    exitSuccess('No action necessary because we found a previous bump!');
     return;
   }
 
@@ -101,14 +104,14 @@ Toolkit.run(async (tools) => {
 
   // case: if nothing of the above matches
   if (version === null) {
-    tools.exit.success('No version keywords found, skipping bump.');
+    exitSuccess('No version keywords found, skipping bump.');
     return;
   }
 
   // case: if user sets push to false, to skip pushing new tag/package.json
-  const push = process.env['INPUT_PUSH']
-  if ( push === "false" || push === false ) {
-    tools.exit.success('User requested to skip pushing new tag and package.json. Finished.');
+  const push = process.env['INPUT_PUSH'];
+  if (push === 'false' || push === false) {
+    exitSuccess('User requested to skip pushing new tag and package.json. Finished.');
     return;
   }
 
@@ -116,12 +119,8 @@ Toolkit.run(async (tools) => {
   try {
     const current = pkg.version.toString();
     // set git user
-    await tools.runInWorkspace('git', [
-      'config',
-      'user.name',
-      `"${process.env.GITHUB_USER || 'Automated Version Bump'}"`,
-    ]);
-    await tools.runInWorkspace('git', [
+    await runInWorkspace('git', ['config', 'user.name', `"${process.env.GITHUB_USER || 'Automated Version Bump'}"`]);
+    await runInWorkspace('git', [
       'config',
       'user.email',
       `"${process.env.GITHUB_EMAIL || 'gh-action-bump-version@users.noreply.github.com'}"`,
@@ -141,26 +140,26 @@ Toolkit.run(async (tools) => {
     console.log('currentBranch:', currentBranch);
     // do it in the current checked out github branch (DETACHED HEAD)
     // important for further usage of the package.json version
-    await tools.runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', current]);
+    await runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', current]);
     console.log('current:', current, '/', 'version:', version);
     let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim().replace(/^v/, '');
     newVersion = `${tagPrefix}${newVersion}`;
-    await tools.runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)]);
+    await runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)]);
 
     // now go to the actual branch to perform the same versioning
     if (isPullRequest) {
       // First fetch to get updated local version of branch
-      await tools.runInWorkspace('git', ['fetch']);
+      await runInWorkspace('git', ['fetch']);
     }
-    await tools.runInWorkspace('git', ['checkout', currentBranch]);
-    await tools.runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', current]);
+    await runInWorkspace('git', ['checkout', currentBranch]);
+    await runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', current]);
     console.log('current:', current, '/', 'version:', version);
     newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim().replace(/^v/, '');
     newVersion = `${tagPrefix}${newVersion}`;
     console.log(`::set-output name=newTag::${newVersion}`);
     try {
       // to support "actions/checkout@v1"
-      await tools.runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)]);
+      await runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)]);
     } catch (e) {
       console.warn(
         'git commit failed because you are using "actions/checkout@v2"; ' +
@@ -170,15 +169,61 @@ Toolkit.run(async (tools) => {
 
     const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}.git`;
     if (process.env['INPUT_SKIP-TAG'] !== 'true') {
-      await tools.runInWorkspace('git', ['tag', newVersion]);
-      await tools.runInWorkspace('git', ['push', remoteRepo, '--follow-tags']);
-      await tools.runInWorkspace('git', ['push', remoteRepo, '--tags']);
+      await runInWorkspace('git', ['tag', newVersion]);
+      await runInWorkspace('git', ['push', remoteRepo, '--follow-tags']);
+      await runInWorkspace('git', ['push', remoteRepo, '--tags']);
     } else {
-      await tools.runInWorkspace('git', ['push', remoteRepo]);
+      await runInWorkspace('git', ['push', remoteRepo]);
     }
   } catch (e) {
-    tools.log.fatal(e);
-    tools.exit.failure('Failed to bump version');
+    logError(e);
+    exitFailure('Failed to bump version');
+    return;
   }
-  tools.exit.success('Version bumped!');
-});
+  exitSuccess('Version bumped!');
+})();
+
+function getPackageJson() {
+  const pathToPackage = path.join(workspace, 'package.json');
+  if (!existsSync(pathToPackage)) throw new Error("package.json could not be found in your project's root.");
+  return require(pathToPackage);
+}
+
+function exitSuccess(message) {
+  console.info(`✔  success   ${message}`);
+  process.exit(0);
+}
+
+function exitFailure(message) {
+  logError(message);
+  process.exit(1);
+}
+
+function logError(error) {
+  console.error(`✖  fatal     ${error.stack || error}`);
+}
+
+function runInWorkspace(command, args) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(command, args, { cwd: workspace });
+    let isDone = false;
+    const errorMessages = [];
+    child.on('error', (error) => {
+      if (!isDone) {
+        isDone = true;
+        reject(error);
+      }
+    });
+    child.stderr.on('data', (chunk) => errorMessages.push(chunk));
+    child.on('exit', (code) => {
+      if (!isDone) {
+        if (code === 0) {
+          resolve();
+        } else {
+          reject(`${errorMessages.join('')}${EOL}${command} exited with code ${code}`);
+        }
+      }
+    });
+  });
+  //return execa(command, args, { cwd: workspace });
+}

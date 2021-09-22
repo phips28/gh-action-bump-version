@@ -16,15 +16,19 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./index.js",
-    "test": "jest"
+    "test": "npm run end-to-end-test",
+    "end-to-end-test": "jest --roots=tests/end-to-end --testTimeout=300000 --runInBand"
   },
-  "dependencies": {
-    "actions-toolkit": "^2.2.0",
-    "yargs": "^15.3.1"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "jest": "^25.2.7",
+    "@types/jest": "^27.0.1",
+    "dotenv": "^10.0.0",
+    "execa": "^5.1.1",
+    "jest": "^25.5.4",
+    "js-yaml": "^4.1.0",
+    "node-fetch": "^2.6.1",
+    "prettier": "^2.3.0",
     "standard": "^14.3.3",
-    "prettier": "^2.3.0"
+    "tiny-glob": "^0.2.9"
   }
 }
