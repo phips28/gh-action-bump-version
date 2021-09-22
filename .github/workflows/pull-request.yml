@@ -1,11 +1,11 @@
-name: Confirm Pull Request
-
-on:
-  pull_request:
-
-concurrency: end-to-end-test
-
-jobs:
+#name: Confirm Pull Request
+#
+#on:
+#  pull_request:
+#
+#concurrency: end-to-end-test
+#
+#jobs:
 #  end-to-end-tests:
 #    name: Conduct end-to-end tests
 #    runs-on: ubuntu-latest
