@@ -1,6 +1,6 @@
 {
   "name": "gh-action-bump-version",
-  "version": "8.3.5",
+  "version": "8.3.6",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/phips28/gh-action-bump-version.git"
