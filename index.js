@@ -1,5 +1,8 @@
 const { Toolkit } = require('actions-toolkit');
 const { execSync } = require('child_process');
+const gitLog = require('git-log-parser');
+const through2 = require('through2');
+const { exec } = require('child_process');
 
 // Change working directory if user defined PACKAGEJSON_DIR
 if (process.env.PACKAGEJSON_DIR) {
@@ -7,17 +10,54 @@ if (process.env.PACKAGEJSON_DIR) {
   process.chdir(process.env.GITHUB_WORKSPACE);
 }
 
-// Run your GitHub Action!
+// https://stackoverflow.com/questions/12082981/get-all-git-commits-since-last-tag
+const getLastTagName = async () => { // string
+  return new Promise((resolve) => {
+    exec("git describe --tags --abbrev=0", (error, stdout, stderr) => { resolve(stdout.replace("\n", "")); });
+  });
+};
+
+const getCommitsSinceLastTag = async () => {
+  const lastTagName = await getLastTagName();
+
+  return new Promise((resolve) => {
+    const commits = [];
+    gitLog
+      .parse({
+        "_": `${lastTagName}..@`
+      })
+      .pipe(through2.obj(function (chunk, enc, callback) {
+        this.push(chunk);
+        callback()
+      }))
+      .on('data', (data) => {
+        commits.push(data)
+      })
+      .on("end", () => {
+        // map the commits subject field to -> message, for it to be compatible with the rest of the code
+        resolve(commits.map((commit) => ({
+          ...commit,
+          message: commit.subject,
+        })));
+      })
+  })
+};
+
 Toolkit.run(async (tools) => {
   const pkg = tools.getPackageJSON();
-  const event = tools.context.payload;
 
-  if (!event.commits) {
-    console.log("Couldn't find any commits in this event, incrementing patch version...");
+  // const event = tools.context.payload;
+  // if (!event.commits) {
+  //   console.log("Couldn't find any commits in this event, incrementing patch version...");
+  // }
+  const commits = await getCommitsSinceLastTag();
+  if (commits == null || commits.length === 0) {
+    tools.exit.neutral("There were no commits to process!");
+    return;
   }
 
   const tagPrefix = process.env['INPUT_TAG-PREFIX'] || '';
-  const messages = event.commits ? event.commits.map((commit) => commit.message + '\n' + commit.body) : [];
+  const messages = commits.map((commit) => commit.message + '\n' + commit.body);
 
   const commitMessage = process.env['INPUT_COMMIT-MESSAGE'] || 'ci: version bump to {{version}}';
   console.log('commit messages:', messages);
