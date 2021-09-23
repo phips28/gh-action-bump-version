@@ -10,15 +10,32 @@ if (process.env.PACKAGEJSON_DIR) {
   process.chdir(process.env.GITHUB_WORKSPACE);
 }
 
+const executeCmd = async (cmd) => {
+  console.log(">", cmd);
+  return new Promise((resolve, reject) => {
+    exec(cmd, (error, stdout, stderr) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      if (stderr) {
+        console.error(stderr);
+      }
+
+      resolve(stdout.replace("\n", ""));
+    });
+  });
+}
+
 // https://stackoverflow.com/questions/12082981/get-all-git-commits-since-last-tag
 const getLastTagName = async () => { // string
-  return new Promise((resolve) => {
-    exec("git describe --tags --abbrev=0", (error, stdout, stderr) => { resolve(stdout.replace("\n", "")); });
-  });
+  await executeCmd("git fetch");
+  return executeCmd("git tag --sort=committerdate | tail -1");
 };
 
 const getCommitsSinceLastTag = async () => {
   const lastTagName = await getLastTagName();
+  console.log("Last Tag name:", lastTagName);
 
   return new Promise((resolve) => {
     const commits = [];
