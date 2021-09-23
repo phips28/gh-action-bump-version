@@ -30,6 +30,9 @@ const executeCmd = async (cmd) => {
 // https://stackoverflow.com/questions/12082981/get-all-git-commits-since-last-tag
 const getLastTagName = async () => { // string
   await executeCmd("git fetch");
+  await executeCmd("git fetch --tags");
+  await executeCmd("git pull --all");
+  await executeCmd("git pull --tags");
   return executeCmd("git tag --sort=committerdate | tail -1");
 };
 
