@@ -42,3 +42,7 @@ jobs:
         env:
           NEW_TAG: ${{ steps.version-bump.outputs.newTag }}
         run: echo "new tag $NEW_TAG"
+      - name: 'Create a GitHub release'
+        run: npx conventional-github-releaser -p angular
+        env:
+          CONVENTIONAL_GITHUB_RELEASER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
