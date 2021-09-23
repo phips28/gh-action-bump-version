@@ -33,6 +33,7 @@ const getLastTagName = async () => { // string
   await executeCmd("git fetch --tags");
   await executeCmd("git pull --all");
   await executeCmd("git pull --tags");
+  console.log(await executeCmd("git status"));
   return executeCmd("git tag --sort=committerdate | tail -1");
 };
 
