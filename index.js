@@ -167,7 +167,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
       );
     }
 
-    const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}.git`;
+    const remoteRepo = formatRemoteRepoUrl(process.env.GITHUB_SERVER_URL, process.env.GITHUB_REPOSITORY, process.env.GITHUB_ACTOR, process.env.GITHUB_TOKEN)
     if (process.env['INPUT_SKIP-TAG'] !== 'true') {
       await runInWorkspace('git', ['tag', newVersion]);
       await runInWorkspace('git', ['push', remoteRepo, '--follow-tags']);
@@ -187,6 +187,11 @@ function getPackageJson() {
   const pathToPackage = path.join(workspace, 'package.json');
   if (!existsSync(pathToPackage)) throw new Error("package.json could not be found in your project's root.");
   return require(pathToPackage);
+}
+
+function formatRemoteRepoUrl (serverUrl, repo, actor, token) {
+  const [protocol, server] = serverUrl.split('//')
+  return `${protocol}//${actor}:${token}@${server}/${repo}.git`
 }
 
 function exitSuccess(message) {
