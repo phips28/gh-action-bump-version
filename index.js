@@ -158,6 +158,16 @@ const workspace = process.env.GITHUB_WORKSPACE;
     newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim().replace(/^v/, '');
     newVersion = `${tagPrefix}${newVersion}`;
     console.log(`::set-output name=newTag::${newVersion}`);
+
+    // case: when user wants to skip updating package-lock.json v2
+    try {
+      if (process.env['INPUT_BUMP_PACKAGE-LOCK'] === 'true') {
+        await runInWorkspace('npm', ['install', '--package-lock-only', '--ignore-scripts'])
+      }
+    } catch(e) {
+      logError(e);
+    }
+
     try {
       // to support "actions/checkout@v1"
       await runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)]);
