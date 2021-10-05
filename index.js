@@ -160,8 +160,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
 
     // case: when user wants to skip updating package-lock.json v2
     try {
-      const bumpPackageLock = process.env['INPUT_BUMP_PACKAGE-LOCK']
-      if (bumpPackageLock) {
+      if (process.env['INPUT_BUMP_PACKAGE-LOCK'] === 'true') {
         await runInWorkspace('npm', ['install', '--package-lock-only', '--ignore-scripts'])
       }
     } catch(e) {
