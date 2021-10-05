@@ -1,3 +1,4 @@
+// test
 const { execSync, spawn } = require('child_process');
 const { existsSync } = require('fs');
 const { EOL } = require('os');
