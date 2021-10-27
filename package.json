@@ -17,12 +17,18 @@
   "scripts": {
     "start": "node ./index.js",
     "test": "npm run end-to-end-test",
-    "end-to-end-test": "jest --roots=tests/end-to-end --testTimeout=300000 --runInBand"
+    "end-to-end-test": "jest --roots=tests/end-to-end --testTimeout=300000 --runInBand",
+    "lint": "./node_modules/.bin/eslint ./index.js"
   },
   "dependencies": {},
   "devDependencies": {
     "@types/jest": "^27.0.1",
     "dotenv": "^10.0.0",
+    "eslint": "^8.1.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-jest": "^25.2.2",
+    "eslint-plugin-node": "^11.1.0",
     "execa": "^5.1.1",
     "jest": "^25.5.4",
     "js-yaml": "^4.1.0",

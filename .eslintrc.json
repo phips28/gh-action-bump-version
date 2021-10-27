@@ -1,0 +1,29 @@
+{
+    "plugins": [
+        "jest"
+    ],
+    "env": {
+        "browser": true,
+        "es6": true,
+        "node": true,
+        "jest/globals": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 2018
+    },
+    "extends": "airbnb-base",
+    "rules": {
+        "max-len": ["error", 130],
+        "camelcase": ["off"],
+        "max-lines": ["error", 350],
+        "indent": ["error", 2, { "SwitchCase": 1 }],
+        "semi": [2, "always"],
+        "no-unused-vars": ["warn", { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }],
+        "no-undef": "warn",
+        "eqeqeq": "off",
+        "no-bitwise": "off",
+        "no-magic-numbers": ["warn", { "ignore": [-1, 0, 1, 2] }],
+        "no-plusplus": ["off"],
+        "class-methods-use-this": ["off"]
+    }
+}
