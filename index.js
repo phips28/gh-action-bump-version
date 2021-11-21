@@ -38,7 +38,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
   const minorWords = process.env['INPUT_MINOR-WORDING'].split(',');
   // patch is by default empty, and '' would always be true in the includes(''), thats why we handle it separately
   const patchWords = process.env['INPUT_PATCH-WORDING'] ? process.env['INPUT_PATCH-WORDING'].split(',') : null;
-  const preReleaseWords = process.env['INPUT_RC-WORDING'].split(',');
+  const preReleaseWords = process.env['INPUT_RC-WORDING'] ? process.env['INPUT_RC-WORDING'].split(',') : [];
 
   console.log('config words:', { majorWords, minorWords, patchWords, preReleaseWords });
 
