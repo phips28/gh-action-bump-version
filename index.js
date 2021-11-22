@@ -38,7 +38,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
   const minorWords = process.env['INPUT_MINOR-WORDING'].split(',');
   // patch is by default empty, and '' would always be true in the includes(''), thats why we handle it separately
   const patchWords = process.env['INPUT_PATCH-WORDING'] ? process.env['INPUT_PATCH-WORDING'].split(',') : null;
-  const preReleaseWords = process.env['INPUT_RC-WORDING'] ? process.env['INPUT_RC-WORDING'].split(',') : [];
+  const preReleaseWords = process.env['INPUT_RC-WORDING'] ? process.env['INPUT_RC-WORDING'].split(',') : null;
 
   console.log('config words:', { majorWords, minorWords, patchWords, preReleaseWords });
 
@@ -66,6 +66,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
   }
   // case: if wording for PRE-RELEASE found
   else if (
+    preReleaseWords &&
     messages.some((message) =>
       preReleaseWords.some((word) => {
         if (message.includes(word)) {
@@ -89,7 +90,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
   // then unset it and do not run
   if (
     version === 'prerelease' &&
-    preReleaseWords !== '' &&
+    preReleaseWords &&
     !messages.some((message) => preReleaseWords.some((word) => message.includes(word)))
   ) {
     version = null;
