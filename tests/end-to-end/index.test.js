@@ -99,7 +99,12 @@ async function getMostRecentWorkflowRunDate() {
   return date;
 }
 
-function generateExpectationText({ version: expectedVersion, tag: expectedTag, branch: expectedBranch }) {
+function generateExpectationText({
+  version: expectedVersion,
+  tag: expectedTag,
+  branch: expectedBranch,
+  message: expectedMessage,
+}) {
   const results = [`- **Version:** ${expectedVersion}`];
   if (expectedTag) {
     results.push(`- **Tag:** ${expectedTag}`);
@@ -107,10 +112,18 @@ function generateExpectationText({ version: expectedVersion, tag: expectedTag, b
   if (expectedBranch) {
     results.push(`- **Branch:** ${expectedBranch}`);
   }
+  if (expectedMessage) {
+    results.push(`- **Message:** ${expectedMessage}`);
+  }
   return results.join('\n');
 }
 
-async function assertExpectation({ version: expectedVersion, tag: expectedTag, branch: expectedBranch }) {
+async function assertExpectation({
+  version: expectedVersion,
+  tag: expectedTag,
+  branch: expectedBranch,
+  message: expectedMessage,
+}) {
   if (expectedTag === undefined) {
     expectedTag = expectedVersion;
   }
@@ -119,9 +132,17 @@ async function assertExpectation({ version: expectedVersion, tag: expectedTag, b
     await git('checkout', expectedBranch);
   }
   await git('pull');
-  const [packageVersion, latestTag] = await Promise.all([getPackageJsonVersion(), getLatestTag()]);
+  const [packageVersion, latestTag, latestMessage] = await Promise.all([
+    getPackageJsonVersion(),
+    getLatestTag(),
+    getLatestCommitMessage(),
+  ]);
+  if (!expectedMessage) {
+    expectedMessage = latestMessage;
+  }
   expect(packageVersion).toBe(expectedVersion);
   expect(latestTag).toBe(expectedTag);
+  expect(latestMessage).toBe(expectedMessage);
   if (expectedBranch) {
     await git('checkout', 'main');
   }
@@ -136,5 +157,10 @@ async function getPackageJsonVersion() {
 
 async function getLatestTag() {
   const result = await git({ suppressOutput: true }, 'describe', '--tags', '--abbrev=0');
+  return result.stdout;
+}
+
+async function getLatestCommitMessage() {
+  const result = await git({ suppressOutput: true }, 'show', '--no-patch', '--format=%s');
   return result.stdout;
 }

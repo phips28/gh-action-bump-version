@@ -155,6 +155,27 @@ suites:
         expected:
           version: 4.1.3
           branch: other-branch
+  - name: skip-commit
+    yaml:
+      name: Bump Version (Skip Commit)
+      on:
+        push:
+      jobs:
+        bump-version:
+          runs-on: ubuntu-latest
+          steps:
+            - uses: actions/checkout@v2
+            - id: version-bump
+              uses: ./action
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                skip-commit: true
+    tests:
+      - message: no keywords
+        expected:
+          version: 4.1.4
+          message: 'ci: version bump to 4.1.3'
 
 actionFiles:
   - index.js

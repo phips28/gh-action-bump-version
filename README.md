@@ -54,6 +54,16 @@ Remove the 'actions/setup-node@v1' step from your action.yml file
     skip-tag:  'true'
 ```
 
+**skip-commit:** No commit is made after the version is bumped  (optional). Example:
+```yaml
+- name:  'Automated Version Bump'
+  uses:  'phips28/gh-action-bump-version@master'
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  with:
+    skip-commit:  'true'
+```
+
 **default:** Set a default version bump to use  (optional - defaults to patch). Example:
 ```yaml
 - name:  'Automated Version Bump'

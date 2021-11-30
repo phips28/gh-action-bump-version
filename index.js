@@ -146,7 +146,9 @@ const workspace = process.env.GITHUB_WORKSPACE;
     console.log('current:', current, '/', 'version:', version);
     let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim().replace(/^v/, '');
     newVersion = `${tagPrefix}${newVersion}`;
-    await runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)]);
+    if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
+      await runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)]);
+    }
 
     // now go to the actual branch to perform the same versioning
     if (isPullRequest) {
@@ -161,7 +163,9 @@ const workspace = process.env.GITHUB_WORKSPACE;
     console.log(`::set-output name=newTag::${newVersion}`);
     try {
       // to support "actions/checkout@v1"
-      await runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)]);
+      if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
+        await runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)]);
+      }
     } catch (e) {
       console.warn(
         'git commit failed because you are using "actions/checkout@v2"; ' +
