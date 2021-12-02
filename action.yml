@@ -30,6 +30,10 @@ inputs:
     description: 'Avoid to add a TAG to the version update commit'
     default: 'false'
     required: false
+  skip-commit:
+    description: 'Avoid to add a commit after the version is bumped'
+    default: 'false'
+    required: false
   PACKAGEJSON_DIR:
     description: 'Custom dir to the package'
     default: ''
