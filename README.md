@@ -34,58 +34,10 @@ Remove the 'actions/setup-node@v1' step from your action.yml file
 * Push a tag for the new version back into the repo.
 
 ### Usage:
-**tag-prefix:** Prefix that is used for the git tag  (optional). Example:
-```yaml
-- name:  'Automated Version Bump'
-  uses:  'phips28/gh-action-bump-version@master'
-  env:
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  with:
-    tag-prefix:  'v'
-```
 
-**skip-tag:** The tag is not added to the git repository  (optional). Example:
-```yaml
-- name:  'Automated Version Bump'
-  uses:  'phips28/gh-action-bump-version@master'
-  env:
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  with:
-    skip-tag:  'true'
-```
 
-**skip-commit:** No commit is made after the version is bumped  (optional). Example:
-```yaml
-- name:  'Automated Version Bump'
-  uses:  'phips28/gh-action-bump-version@master'
-  env:
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  with:
-    skip-commit:  'true'
-```
-
-**default:** Set a default version bump to use  (optional - defaults to patch). Example:
-```yaml
-- name:  'Automated Version Bump'
-  uses:  'phips28/gh-action-bump-version@master'
-  env:
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  with:
-    default: prerelease
-```
-
-**preid:** Set a preid value will building prerelease version  (optional - defaults to 'rc'). Example:
-```yaml
-- name:  'Automated Version Bump'
-  uses:  'phips28/gh-action-bump-version@master'
-  env:
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  with:
-    default: prerelease
-    preid: 'prc'
-```
-
-**wording:** Customize the messages that trigger the version bump. It must be a string, case sensitive, coma separated  (optional). Example:
+#### **wording:** 
+Customize the messages that trigger the version bump. It must be a string, case sensitive, coma separated  (optional). Example:
 ```yaml
 - name:  'Automated Version Bump'
   uses:  'phips28/gh-action-bump-version@master'
@@ -98,8 +50,65 @@ Remove the 'actions/setup-node@v1' step from your action.yml file
                                       # defaulting to a patch bump.
     rc-wording:     'RELEASE,alpha'
 ```
+#### **default:**
+Set a default version bump to use  (optional - defaults to patch). Example:
+```yaml
+- name:  'Automated Version Bump'
+  uses:  'phips28/gh-action-bump-version@master'
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  with:
+    default: prerelease
+```
 
-**PACKAGEJSON_DIR:** Param to parse the location of the desired package.json (optional). Example:
+#### **preid:**
+Set a preid value will building prerelease version  (optional - defaults to 'rc'). Example:
+```yaml
+- name:  'Automated Version Bump'
+  uses:  'phips28/gh-action-bump-version@master'
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  with:
+    default: prerelease
+    preid: 'prc'
+```
+
+#### **tag-prefix:**
+Prefix that is used for the git tag  (optional). Example:
+```yaml
+- name:  'Automated Version Bump'
+  uses:  'phips28/gh-action-bump-version@master'
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  with:
+    tag-prefix:  'v'
+```
+
+#### **skip-tag:**
+The tag is not added to the git repository  (optional). Example:
+```yaml
+- name:  'Automated Version Bump'
+  uses:  'phips28/gh-action-bump-version@master'
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  with:
+    skip-tag:  'true'
+```
+
+#### **skip-commit:**
+No commit is made after the version is bumped  (optional). Example:
+```yaml
+- name:  'Automated Version Bump'
+  uses:  'phips28/gh-action-bump-version@master'
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  with:
+    skip-commit:  'true'
+```
+
+
+#### **PACKAGEJSON_DIR:**
+Param to parse the location of the desired package.json (optional). Example:
 ```yaml
 - name:  'Automated Version Bump'
   uses:  'phips28/gh-action-bump-version@master'
@@ -108,7 +117,8 @@ Remove the 'actions/setup-node@v1' step from your action.yml file
     PACKAGEJSON_DIR:  'frontend'
 ```
 
-**TARGET-BRANCH:** Set a custom target branch to use when bumping the version. Useful in cases such as updating the version on master after a tag has been set (optional). Example:
+#### **TARGET-BRANCH:**
+Set a custom target branch to use when bumping the version. Useful in cases such as updating the version on master after a tag has been set (optional). Example:
 ```yaml
 - name:  'Automated Version Bump'
   uses:  'phips28/gh-action-bump-version@master'
@@ -118,7 +128,8 @@ Remove the 'actions/setup-node@v1' step from your action.yml file
     target-branch: 'master'
 ```
 
-**commit-message:** Set a custom commit message for version bump commit. Useful for skipping additional workflows run on push. Example:
+#### **commit-message:**
+Set a custom commit message for version bump commit. Useful for skipping additional workflows run on push. Example:
 ```yaml
 - name:  'Automated Version Bump'
   uses:  'phips28/gh-action-bump-version@master'
@@ -128,7 +139,8 @@ Remove the 'actions/setup-node@v1' step from your action.yml file
     commit-message: 'CI: bumps version to {{version}} [skip ci]'
 ```
 
-**push:** Set false you want to avoid pushing the new version tag/package.json. Example:
+#### **push:**
+Set false you want to avoid pushing the new version tag/package.json. Example:
 ```yaml
 - name:  'Automated Version Bump'
   uses:  'phips28/gh-action-bump-version@master'
