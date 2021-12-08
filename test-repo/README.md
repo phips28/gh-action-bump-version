@@ -17,6 +17,6 @@
 
 ```
 ## Message
-major
+pre-alpha
 ## Expectation
-- **Version:** 3.0.0
+- **Version:** 3.0.1-alpha.0
