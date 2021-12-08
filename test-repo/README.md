@@ -21,6 +21,6 @@
 
 ```
 ## Message
-custom-minor
+custom-major
 ## Expectation
-- **Version:** 3.1.0
+- **Version:** 4.0.0
