@@ -17,6 +17,6 @@
 
 ```
 ## Message
-pre-alpha
+pre-beta
 ## Expectation
-- **Version:** 3.0.1-alpha.0
+- **Version:** 3.0.1-beta.0
