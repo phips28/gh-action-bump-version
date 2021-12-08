@@ -1,4 +1,4 @@
-name: Do Nothing
+name: Bump Version (Custom Wording)
 'on':
   push: null
 jobs:
@@ -11,4 +11,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          push: false
+          minor-wording: custom-minor
+          major-wording: custom-major
+          rc-wording: custom-pre
