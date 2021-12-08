@@ -2,7 +2,7 @@
 ## .github/workflows/push.yml
 ```YAML
 |
-  name: Bump Version (Custom Wording)
+  name: Bump Version (Default="Minor")
   'on':
     push: null
   jobs:
@@ -15,12 +15,11 @@
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           with:
-            minor-wording: custom-minor
-            major-wording: custom-major
-            rc-wording: custom-pre
+            default: minor
+            patch-wording: patch
 
 ```
 ## Message
-custom-pre
+no hint
 ## Expectation
-- **Version:** 4.0.1-pre.0
+- **Version:** 4.1.0
