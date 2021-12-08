@@ -1,4 +1,4 @@
-name: Bump Version (Default="Minor")
+name: Bump Version (Custom Tag Prefix)
 'on':
   push: null
 jobs:
@@ -11,5 +11,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          default: minor
-          patch-wording: patch
+          tag-prefix: v

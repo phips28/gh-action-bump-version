@@ -2,7 +2,7 @@
 ## .github/workflows/push.yml
 ```YAML
 |
-  name: Bump Version (Default="Minor")
+  name: Bump Version (Custom Tag Prefix)
   'on':
     push: null
   jobs:
@@ -15,11 +15,11 @@
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           with:
-            default: minor
-            patch-wording: patch
+            tag-prefix: v
 
 ```
 ## Message
-patch
+no keywords
 ## Expectation
-- **Version:** 4.1.1
+- **Version:** 4.1.2
+- **Tag:** v4.1.2
