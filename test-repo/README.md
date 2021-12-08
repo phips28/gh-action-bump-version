@@ -21,6 +21,6 @@
 
 ```
 ## Message
-custom-major
+custom-pre
 ## Expectation
-- **Version:** 4.0.0
+- **Version:** 4.0.1-pre.0
