@@ -21,7 +21,7 @@ config.suites.forEach((suite) => {
       const pushYamlPath = join('.github', 'workflows', 'push.yml');
       await mkdir(join(cwd(), '.github', 'workflows'), { recursive: true });
       await writeFile(join(cwd(), pushYamlPath), suiteYaml);
-      await git('add', pushYamlPath);
+      await git('add', pushYamlPath, '--force');
     });
     suite.tests.forEach((commit) => {
       test(commit.message, async () => {
@@ -62,7 +62,7 @@ async function generateReadMe(commit, suiteYaml) {
     generateExpectationText(commit.expected),
   ].join('\n');
   await writeFile(join(cwd(), readmePath), readMeContents);
-  await git('add', readmePath);
+  await git('add', readmePath, '--force');
 }
 
 async function getCompletedRunAfter(date) {

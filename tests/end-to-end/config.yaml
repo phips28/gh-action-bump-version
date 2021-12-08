@@ -176,6 +176,30 @@ suites:
         expected:
           version: 4.1.4
           message: 'ci: version bump to 4.1.3'
+  - name: skip-push
+    yaml:
+      name: Bump Version (Skip Push)
+      on:
+        push:
+      jobs:
+        bump-version:
+          runs-on: ubuntu-latest
+          steps:
+            - uses: actions/checkout@v2
+            - id: version-bump
+              uses: ./action
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                skip-push: true
+    tests:
+      - message: skip pushing the bumped version commit
+        expected:
+          # But on the action runner, 4.1.5
+          version: 4.1.4
+          # But on the action runner, 'ci: version bump to 4.1.5'
+          message: skip pushing the bumped version commit
+
 
 actionFiles:
   - index.js
