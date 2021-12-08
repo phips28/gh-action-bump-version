@@ -1,4 +1,4 @@
-name: Bump Version
+name: Do Nothing
 'on':
   push: null
 jobs:
@@ -10,3 +10,5 @@ jobs:
         uses: ./action
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          push: false

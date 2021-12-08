@@ -2,7 +2,7 @@
 ## .github/workflows/push.yml
 ```YAML
 |
-  name: Bump Version
+  name: Do Nothing
   'on':
     push: null
   jobs:
@@ -14,9 +14,11 @@
           uses: ./action
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            push: false
 
 ```
 ## Message
-pre-rc
+no keywords
 ## Expectation
 - **Version:** 3.0.1-rc.0
