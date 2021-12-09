@@ -35,7 +35,7 @@ inputs:
     default: 'false'
     required: false
   skip-push:
-    description: 'Skip pushing the commit with the version bump'
+    description: 'If true, skip pushing any commits or tags created after the version bump'
     default: false
     required: false
   PACKAGEJSON_DIR:
