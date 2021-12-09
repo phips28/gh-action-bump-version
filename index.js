@@ -181,7 +181,6 @@ const workspace = process.env.GITHUB_WORKSPACE;
         await runInWorkspace('git', ['push', remoteRepo, '--tags']);
       }
     } else {
-      // skip-tag: true, so we push without pushing tags.
       if (process.env['INPUT_SKIP-PUSH'] !== 'true') {
         await runInWorkspace('git', ['push', remoteRepo]);
       }
