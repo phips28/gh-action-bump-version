@@ -58,6 +58,10 @@ inputs:
     description: 'Set a custom commit message for version bump commit'
     default: ''
     required: false
+  bump-policy:
+    description: 'Set version bump ignore policy'
+    default: 'all'
+    required: false
   push:
     description: '[DEPRECATED] Set to false to skip pushing the new tag'
     default: 'true'
