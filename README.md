@@ -150,6 +150,23 @@ Set a custom commit message for version bump commit. Useful for skipping additio
     commit-message: 'CI: bumps version to {{version}} [skip ci]'
 ```
 
+#### **bump-policy:**
+Set version bump ignore policy. Useful for pull requests between branches with version bumps. Options are as follows:
+
+* `'all'` (default): checks all commit messages and skips bump if any previous bumps found
+* `'ignore'`: always bump regardless of whether bumps included in commit messages
+* `'last-commit'`: bump if last commit was not version bump
+
+Example:
+```yaml
+- name:  'Automated Version Bump'
+  uses:  'phips28/gh-action-bump-version@master'
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  with:
+    bump-policy: 'ignore'
+```
+
 #### [DEPRECATED] **push:**
 **DEPRECATED** Set false you want to avoid pushing the new version tag/package.json. Example:
 ```yaml
