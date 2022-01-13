@@ -25,8 +25,21 @@ const workspace = process.env.GITHUB_WORKSPACE;
 
   const commitMessage = process.env['INPUT_COMMIT-MESSAGE'] || 'ci: version bump to {{version}}';
   console.log('commit messages:', messages);
+
+  const bumpPolicy = process.env['INPUT_BUMP-POLICY'] || 'all';
   const commitMessageRegex = new RegExp(commitMessage.replace(/{{version}}/g, `${tagPrefix}\\d+\\.\\d+\\.\\d+`), 'ig');
-  const isVersionBump = messages.find((message) => commitMessageRegex.test(message)) !== undefined;
+
+  let isVersionBump = false;
+
+  if (bumpPolicy === 'all') {
+    isVersionBump = messages.find((message) => commitMessageRegex.test(message)) !== undefined;
+  } else if (bumpPolicy === 'last-commit') {
+    isVersionBump = messages.length > 0 && commitMessageRegex.test(messages[messages.length - 1]);
+  } else if (bumpPolicy === 'ignore') {
+    console.log('Ignoring any version bumps in commits...');
+  } else {
+    console.warn(`Unknown bump policy: ${bumpPolicy}`);
+  }
 
   if (isVersionBump) {
     exitSuccess('No action necessary because we found a previous bump!');
