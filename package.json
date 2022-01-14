@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "git-log-parser": "^1.2.0",
-    "through2": "^4.0.2",
+    "through2": "^4.0.2"
   },
   "devDependencies": {
     "@types/jest": "^27.0.1",
