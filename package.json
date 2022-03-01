@@ -1,6 +1,6 @@
 {
   "name": "gh-action-bump-version",
-  "version": "9.1.9",
+  "version": "9.1.10",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Troperty/gh-action-bump-version.git"
