@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - 'master'
-
 jobs:
   bump-version:
     name: 'Bump Version on master'
@@ -19,9 +18,8 @@ jobs:
         run: cat ./package.json
       - name: 'Automated Version Bump'
         id: version-bump
-        uses: 'SudevAtST/gh-action-bump-version@master'
+        uses: 'Troperty/gh-action-bump-version@master'
         with:
-          tag-prefix: 'v'
           extra-version-file: 'version.info'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
