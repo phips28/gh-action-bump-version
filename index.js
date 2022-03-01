@@ -4,6 +4,7 @@ const { existsSync } = require('fs');
 const { EOL } = require('os');
 const path = require('path');
 
+
 // Change working directory if user defined PACKAGEJSON_DIR
 if (process.env.PACKAGEJSON_DIR) {
   process.env.GITHUB_WORKSPACE = `${process.env.GITHUB_WORKSPACE}/${process.env.PACKAGEJSON_DIR}`;
@@ -52,8 +53,10 @@ const workspace = process.env.GITHUB_WORKSPACE;
   // patch is by default empty, and '' would always be true in the includes(''), thats why we handle it separately
   const patchWords = process.env['INPUT_PATCH-WORDING'] ? process.env['INPUT_PATCH-WORDING'].split(',') : null;
   const preReleaseWords = process.env['INPUT_RC-WORDING'] ? process.env['INPUT_RC-WORDING'].split(',') : null;
+  const extraVersionFile = isValidFilename(process.env['INPUT_EXTRA-VERSION-FILE']) ? process.env['INPUT_EXTRA-VERSION-FILE'] : '';
 
   console.log('config words:', { majorWords, minorWords, patchWords, preReleaseWords });
+  console.log('Extra Version File:', extraVersionFile);
 
   // get default version bump
   let version = process.env.INPUT_DEFAULT;
@@ -159,6 +162,14 @@ const workspace = process.env.GITHUB_WORKSPACE;
     console.log('current:', current, '/', 'version:', version);
     let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim().replace(/^v/, '');
     newVersion = `${tagPrefix}${newVersion}`;
+
+    if(extraVersionFile !== '') {
+      await runInWorkspace('touch', [extraVersionFile]);
+      console.log(`Writing ${newVersion} to ${extraVersionFile}`);
+      await runInWorkspaceWithShell('echo', [newVersion, '>', extraVersionFile]);
+      await runInWorkspace('git', ['add', extraVersionFile]);
+    }
+
     if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
       await runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)]);
     }
@@ -174,6 +185,14 @@ const workspace = process.env.GITHUB_WORKSPACE;
     newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim().replace(/^v/, '');
     newVersion = `${tagPrefix}${newVersion}`;
     console.log(`::set-output name=newTag::${newVersion}`);
+
+    if(extraVersionFile !== '') {
+      await runInWorkspace('touch', [extraVersionFile]);
+      console.log(`Writing ${newVersion} to ${extraVersionFile}`);
+      await runInWorkspaceWithShell('echo', [newVersion, '>', extraVersionFile]);
+      await runInWorkspace('git', ['add', extraVersionFile]);
+    }
+
     try {
       // to support "actions/checkout@v1"
       if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
@@ -224,6 +243,45 @@ function exitFailure(message) {
 
 function logError(error) {
   console.error(`✖  fatal     ${error.stack || error}`);
+}
+function runInWorkspaceWithShell(command, args) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(command, args, { cwd: workspace, shell: true, stdio: 'inherit' });
+    let isDone = false;
+    const errorMessages = [];
+    child.on('error', (error) => {
+      if (!isDone) {
+        isDone = true;
+        reject(error);
+      }
+    });
+    
+    child.on('exit', (code) => {
+      if (!isDone) {
+        if (code === 0) {
+          resolve();
+        } else {
+          reject(`${errorMessages.join('')}${EOL}${command} exited with code ${code}`);
+        }
+      }
+    });
+  });
+}
+
+function isValidFilename(string) {
+	if (!string || string.length > 255) {
+		return false;
+	}
+
+	if (/[<>:"/\\|?*\u0000-\u001F]/g.test(string) || /^(con|prn|aux|nul|com\d|lpt\d)$/i.test(string)) {
+		return false;
+	}
+
+	if (string === '.' || string === '..') {
+		return false;
+	}
+
+	return true;
 }
 
 function runInWorkspace(command, args) {

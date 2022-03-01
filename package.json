@@ -1,6 +1,6 @@
 {
   "name": "gh-action-bump-version",
-  "version": "9.0.16",
+  "version": "9.1.8",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/phips28/gh-action-bump-version.git"
@@ -19,16 +19,15 @@
     "test": "npm run end-to-end-test",
     "end-to-end-test": "jest --roots=tests/end-to-end --testTimeout=300000 --runInBand"
   },
-  "dependencies": {},
   "devDependencies": {
     "@types/jest": "^27.0.1",
     "dotenv": "^10.0.0",
     "execa": "^5.1.1",
-    "jest": "^25.5.4",
+    "jest": "^27.5.1",
     "js-yaml": "^4.1.0",
     "node-fetch": "^2.6.1",
     "prettier": "^2.3.0",
-    "standard": "^14.3.3",
+    "standard": "^16.0.4",
     "tiny-glob": "^0.2.9"
   }
 }

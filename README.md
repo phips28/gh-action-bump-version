@@ -167,6 +167,19 @@ Example:
     bump-policy: 'ignore'
 ```
 
+#### **extra-version-file:**
+Writes version to additional file specified.
+
+Example:
+```yaml
+- name:  'Automated Version Bump'
+  uses:  'phips28/gh-action-bump-version@master'
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  with:
+    extra-version-file: 'version.info'
+```
+
 #### [DEPRECATED] **push:**
 **DEPRECATED** Set false you want to avoid pushing the new version tag/package.json. Example:
 ```yaml
