@@ -21,6 +21,7 @@ jobs:
         uses: 'Troperty/gh-action-bump-version@master'
         with:
           extra-version-file: 'version.info'
+          skip-tag: 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_USER: 'CI-System'
