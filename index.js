@@ -132,7 +132,9 @@ const workspace = process.env.GITHUB_WORKSPACE;
 
   // GIT logic
   try {
-    const current = pkg.version.toString();
+    const currentVersion = pkg.version.toString();
+    const currentBuild = pkg.version.parseInt();
+    const newBuild = currentBuild + 1;
     // set git user
     await runInWorkspace('git', ['config', 'user.name', `"${process.env.GITHUB_USER || 'Automated Version Bump'}"`]);
     await runInWorkspace('git', [
@@ -155,8 +157,10 @@ const workspace = process.env.GITHUB_WORKSPACE;
     console.log('currentBranch:', currentBranch);
     // do it in the current checked out github branch (DETACHED HEAD)
     // important for further usage of the package.json version
-    await runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', current]);
-    console.log('current:', current, '/', 'version:', version);
+    await runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', currentVersion]);
+    console.log('currentVersion:', currentVersion, '/', 'version:', version);
+    console.log('currentBuild:', currentBuild, '/', 'build:', version);
+    console.log('newBuild:', newBuild, '/', 'newBuild:', version);
     let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim().replace(/^v/, '');
     newVersion = `${tagPrefix}${newVersion}`;
     if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
@@ -169,9 +173,10 @@ const workspace = process.env.GITHUB_WORKSPACE;
       await runInWorkspace('git', ['fetch']);
     }
     await runInWorkspace('git', ['checkout', currentBranch]);
-    await runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', current]);
-    console.log('current:', current, '/', 'version:', version);
+    await runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', currentVersion]);
+    console.log('current:', currentVersion, '/', 'version:', version);
     newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim().replace(/^v/, '');
+    //update build Number here
     newVersion = `${tagPrefix}${newVersion}`;
     console.log(`::set-output name=newTag::${newVersion}`);
     try {
