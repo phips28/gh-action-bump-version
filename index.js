@@ -134,7 +134,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
   try {
     const currentVersion = pkg.version.toString();
     const currentBuild = pkg.buildNumber.toString();
-    const newBuild = currentBuild.parseInt() + 1;
+    const newBuild = currentBuild.toString().parseInt() + 1;
     // set git user
     await runInWorkspace('git', ['config', 'user.name', `"${process.env.GITHUB_USER || 'Automated Version Bump'}"`]);
     await runInWorkspace('git', [
