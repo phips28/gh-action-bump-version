@@ -176,8 +176,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
     await runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', currentVersion]);
     console.log('current:', currentVersion, '/', 'version:', version);
     newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim().replace(/^v/, '');
-    console.log(pkg)
-    execSync(`sed "s/\"buildNumber\": \"[0-9]*\"/\"buildNumber\" : \"${newBuild}\"/" ${pkg} > INPUT.tmp && mv INPUT.tmp ${pkg}`)
+    execSync(`sed "s/\"buildNumber\": \"[0-9]*\"/\"buildNumber\" : \"${newBuild}\"/" ${path.join(workspace, 'package.json')} > INPUT.tmp && mv INPUT.tmp ${path.join(workspace, 'package.json')}`)
     //update build Number here
     newVersion = `${tagPrefix}${newVersion}`;
     console.log(`::set-output name=newTag::${newVersion}`);
