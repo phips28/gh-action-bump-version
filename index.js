@@ -174,9 +174,11 @@ const workspace = process.env.GITHUB_WORKSPACE;
     }
     await runInWorkspace('git', ['checkout', currentBranch]);
     await runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', currentVersion]);
-    console.log('current:', currentVersion, '/', 'version:', version);
+    console.log('current:', currentVersion, '/', 'version:', version); 
     newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim().replace(/^v/, '');
-    execSync(`sed "s/\"buildNumber\": \"[0-9]*\"/\"buildNumber\" : \"${newBuild}\"/" ${path.join(workspace, 'package.json')} > INPUT.tmp && mv INPUT.tmp ${path.join(workspace, 'package.json')}`)
+    
+    updateBuildNumber(newBuild)
+    // execSync(`sed "s/\"buildNumber\": \"[0-9]*\"/\"buildNumber\" : \"${newBuild}\"/" ${path.join(workspace, 'package.json')} > INPUT.tmp && mv INPUT.tmp ${path.join(workspace, 'package.json')}`)
     //update build Number here
     console.log(getPackageJson().buildNumber)
     newVersion = `${tagPrefix}${newVersion}`;
@@ -212,6 +214,20 @@ const workspace = process.env.GITHUB_WORKSPACE;
   }
   exitSuccess('Version bumped!');
 })();
+
+function updateBuildNumber(buildNumber) {
+  const fs = require('fs');
+  const fileName = path.join(workspace, 'package.json');
+  const file = require(fileName);
+      
+  file.buildNumber = `${buildNumber}`;
+      
+  fs.writeFile(fileName, JSON.stringify(file), function writeJSON(err) {
+    if (err) return console.log(err);
+    console.log(JSON.stringify(file));
+    console.log('writing to ' + fileName);
+  });
+}
 
 function getPackageJson() {
   const pathToPackage = path.join(workspace, 'package.json');
