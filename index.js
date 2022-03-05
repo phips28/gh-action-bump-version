@@ -135,6 +135,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
     const currentVersion = pkg.version.toString();
     const currentBuild = pkg.buildNumber.toString();
     const newBuild = parseInt(currentBuild) + 1;
+    const buildTag = `${tagPrefix}${newBuild}`;
     // set git user
     await runInWorkspace('git', ['config', 'user.name', `"${process.env.GITHUB_USER || 'Automated Version Bump'}"`]);
     await runInWorkspace('git', [
@@ -162,7 +163,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
     console.log('currentBuild:', currentBuild, '/', 'build:', version);
     console.log('newBuild:', newBuild, '/', 'newBuild:', version);
     let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim().replace(/^v/, '');
-    newVersion = `${tagPrefix}${newVersion}`;
+    // newVersion = `${tagPrefix}${newVersion}`;
     if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
       await runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{buildNumber}}/g, newBuild)]);
     }
@@ -181,7 +182,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
     updateBuildNumber(newBuild)
     
     console.log(getPackageJson().buildNumber)
-    newVersion = `${tagPrefix}${newVersion}`;
+    // newVersion = `${tagPrefix}${newVersion}`;
     console.log(`::set-output name=newTag::${newVersion}`);
     try {
       // to support "actions/checkout@v1"
@@ -197,7 +198,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
 
     const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}.git`;
     if (process.env['INPUT_SKIP-TAG'] !== 'true') {
-      await runInWorkspace('git', ['tag', newVersion]);
+      await runInWorkspace('git', ['tag', buildTag]);
       if (process.env['INPUT_SKIP-PUSH'] !== 'true') {
         await runInWorkspace('git', ['push', remoteRepo, '--follow-tags']);
         await runInWorkspace('git', ['push', remoteRepo, '--tags']);
