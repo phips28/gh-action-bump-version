@@ -130,9 +130,10 @@ const workspace = process.env.GITHUB_WORKSPACE;
     // console.log('currentVersion:', currentVersion, '/', 'version:', version);
     console.log('currentBuild:', currentBuild);
     console.log('newBuild:', newBuild);
-    // let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim().replace(/^v/, '');
-    // newVersion = `${tagPrefix}${newVersion}`;
+    let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim().replace(/^v/, '');
+    newVersion = `${tagPrefix}${newVersion}`;
     if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
+      console.log('Step 0');
       await runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{buildNumber}}/g, newBuild)]);
     }
     console.log('Step 1');
