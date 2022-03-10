@@ -134,12 +134,13 @@ const workspace = process.env.GITHUB_WORKSPACE;
     // newVersion = `${tagPrefix}${newVersion}`;
     if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
       console.log('Step 0');
-      await runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{buildNumber}}/g, newBuild)]);
+      // await runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{buildNumber}}/g, newBuild)]);
     }
     console.log('Step 1');
 
     // now go to the actual branch to perform the same versioning
     if (isPullRequest) {
+      console.log('Step 1.1');
       // First fetch to get updated local version of branch
       await runInWorkspace('git', ['fetch']);
     }
