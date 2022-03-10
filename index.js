@@ -126,11 +126,11 @@ const workspace = process.env.GITHUB_WORKSPACE;
     console.log('currentBranch:', currentBranch);
     // do it in the current checked out github branch (DETACHED HEAD)
     // important for further usage of the package.json version
-    await runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', currentVersion]);
-    console.log('currentVersion:', currentVersion, '/', 'version:', version);
-    console.log('currentBuild:', currentBuild, '/', 'build:', version);
-    console.log('newBuild:', newBuild, '/', 'newBuild:', version);
-    let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim().replace(/^v/, '');
+    // await runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', currentVersion]);
+    // console.log('currentVersion:', currentVersion, '/', 'version:', version);
+    console.log('currentBuild:', currentBuild);
+    console.log('newBuild:', newBuild);
+    // let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim().replace(/^v/, '');
     // newVersion = `${tagPrefix}${newVersion}`;
     if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
       await runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{buildNumber}}/g, newBuild)]);
@@ -142,16 +142,16 @@ const workspace = process.env.GITHUB_WORKSPACE;
       await runInWorkspace('git', ['fetch']);
     }
     await runInWorkspace('git', ['checkout', currentBranch]);
-    await runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', currentVersion]);
-    console.log('current:', currentVersion, '/', 'version:', version); 
+    // await runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', currentVersion]);
+    // console.log('current:', currentVersion, '/', 'version:', version); 
     // newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim().replace(/^v/, '');
     
     //update build Number here
-    updateBuildNumber(newBuild)
+    updateBuildNumber(newBuild);
     
-    console.log(getPackageJson().buildNumber)
+    console.log('buildNumber in package.json', getPackageJson().buildNumber);
     // newVersion = `${tagPrefix}${newVersion}`;
-    console.log(`::set-output name=newTag::${newVersion}`);
+    // console.log(`::set-output name=newTag::${newVersion}`);
     try {
       // to support "actions/checkout@v1"
       if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
