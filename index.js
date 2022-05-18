@@ -140,13 +140,14 @@ const workspace = process.env.GITHUB_WORKSPACE;
       'user.email',
       `"${process.env.GITHUB_EMAIL || 'gh-action-bump-version@users.noreply.github.com'}"`,
     ]);
-
-    let currentBranch = /refs\/[a-zA-Z]+\/(.*)/.exec(process.env.GITHUB_REF)[1];
+    let currentBranch;
     let isPullRequest = false;
     if (process.env.GITHUB_HEAD_REF) {
       // Comes from a pull request
       currentBranch = process.env.GITHUB_HEAD_REF;
       isPullRequest = true;
+    }else{
+       currentBranch = /refs\/[a-zA-Z]+\/(.*)/.exec(process.env.GITHUB_REF)[1];
     }
     if (process.env['INPUT_TARGET-BRANCH']) {
       // We want to override the branch that we are pulling / pushing to
