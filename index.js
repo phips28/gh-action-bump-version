@@ -166,6 +166,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
     await runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', current]);
     console.log('current 1:', current, '/', 'version:', version);
     let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim().replace(/^v/, '');
+    console.log('newVersion 1:', newVersion);
     newVersion = `${tagPrefix}${newVersion}`;
     if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
       await runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)]);
@@ -181,8 +182,9 @@ const workspace = process.env.GITHUB_WORKSPACE;
     console.log('current 2:', current, '/', 'version:', version);
     console.log('execute npm version now with the new version:', version);
     newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim().replace(/^v/, '');
+    console.log('newVersion 2:', newVersion);
     newVersion = `${tagPrefix}${newVersion}`;
-    console.log(`newVersion: ${newVersion}`);
+    console.log(`newVersion after merging tagPrefix+newVersion: ${newVersion}`);
     console.log(`::set-output name=newTag::${newVersion}`);
     try {
       // to support "actions/checkout@v1"
