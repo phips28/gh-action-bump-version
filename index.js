@@ -141,7 +141,8 @@ const workspace = process.env.GITHUB_WORKSPACE;
       `"${process.env.GITHUB_EMAIL || 'gh-action-bump-version@users.noreply.github.com'}"`,
     ]);
 
-    let currentBranch = /refs\/[a-zA-Z]+\/(.*)/.exec(process.env.GITHUB_REF)[1];
+    const refsRegExResult = /refs\/[a-zA-Z]+\/(.*)/.exec(process.env.GITHUB_REF);
+    let currentBranch = refsRegExResult ? refsRegExResult[1] : undefined;
     let isPullRequest = false;
     if (process.env.GITHUB_HEAD_REF) {
       // Comes from a pull request
@@ -153,6 +154,12 @@ const workspace = process.env.GITHUB_WORKSPACE;
       currentBranch = process.env['INPUT_TARGET-BRANCH'];
     }
     console.log('currentBranch:', currentBranch);
+
+    if (!currentBranch) {
+      exitFailure('No branch found');
+      return;
+    }
+
     // do it in the current checked out github branch (DETACHED HEAD)
     // important for further usage of the package.json version
     await runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', current]);
