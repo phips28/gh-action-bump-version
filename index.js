@@ -21,6 +21,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
   }
 
   const tagPrefix = process.env['INPUT_TAG-PREFIX'] || '';
+  console.log('tagPrefix:', tagPrefix);
   const messages = event.commits ? event.commits.map((commit) => commit.message + '\n' + commit.body) : [];
 
   const commitMessage = process.env['INPUT_COMMIT-MESSAGE'] || 'ci: version bump to {{version}}';
@@ -163,7 +164,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
     // do it in the current checked out github branch (DETACHED HEAD)
     // important for further usage of the package.json version
     await runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', current]);
-    console.log('current:', current, '/', 'version:', version);
+    console.log('current 1:', current, '/', 'version:', version);
     let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim().replace(/^v/, '');
     newVersion = `${tagPrefix}${newVersion}`;
     if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
@@ -177,9 +178,11 @@ const workspace = process.env.GITHUB_WORKSPACE;
     }
     await runInWorkspace('git', ['checkout', currentBranch]);
     await runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', current]);
-    console.log('current:', current, '/', 'version:', version);
+    console.log('current 2:', current, '/', 'version:', version);
+    console.log('execute npm version now with the new version:', version);
     newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim().replace(/^v/, '');
     newVersion = `${tagPrefix}${newVersion}`;
+    console.log(`newVersion: ${newVersion}`);
     console.log(`::set-output name=newTag::${newVersion}`);
     try {
       // to support "actions/checkout@v1"
