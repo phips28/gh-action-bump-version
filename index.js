@@ -92,9 +92,9 @@ const workspace = process.env.GITHUB_WORKSPACE;
       }),
     )
   ) {
-    if (foundWord != ''){
+    if (foundWord !== ''){
       preid = foundWord.split('-')[1];
-    } 
+    }
     version = 'prerelease';
   }
 
