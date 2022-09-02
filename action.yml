@@ -1,4 +1,4 @@
-name: Automated Version Bump
+name: Automated Version Bump with version-type
 description: Automated version bump for npm packages.
 runs:
   using: node12
