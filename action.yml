@@ -11,6 +11,10 @@ inputs:
     description: 'Prefix that is used for the git tag'
     default: ''
     required: false
+  version-type:
+    description: 'Overrides version type from commit message'
+    default: ''
+    required: false
   minor-wording:
     description: 'Words list that trigger a minor version bump'
     default: 'feat,minor'
