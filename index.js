@@ -21,7 +21,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
   }
 
   const allowedTypes = ['major', 'minor', 'patch', 'rc']
-  if (process.env['INPUT_VERSION-TYPE'] && allowedTypes.includes(process.env['INPUT_VERSION-TYPE'])) {
+  if (process.env['INPUT_VERSION-TYPE'] && !allowedTypes.includes(process.env['INPUT_VERSION-TYPE'])) {
     exitFailure('Invalid version type');
     return;
   }
