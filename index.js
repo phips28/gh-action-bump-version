@@ -16,10 +16,17 @@ const workspace = process.env.GITHUB_WORKSPACE;
   const pkg = getPackageJson();
   const event = process.env.GITHUB_EVENT_PATH ? require(process.env.GITHUB_EVENT_PATH) : {};
 
-  if (!event.commits) {
+  if (!event.commits && !process.env['INPUT_VERSION-TYPE']) {
     console.log("Couldn't find any commits in this event, incrementing patch version...");
   }
 
+  const allowedTypes = ['major', 'minor', 'patch', 'rc']
+  if (process.env['INPUT_VERSION-TYPE'] && !allowedTypes.includes(process.env['INPUT_VERSION-TYPE'])) {
+    exitFailure('Invalid version type');
+    return;
+  }
+
+  const versionType = process.env['INPUT_VERSION-TYPE'];
   const tagPrefix = process.env['INPUT_TAG-PREFIX'] || '';
   console.log('tagPrefix:', tagPrefix);
   const messages = event.commits ? event.commits.map((commit) => commit.message + '\n' + commit.body) : [];
@@ -62,8 +69,12 @@ const workspace = process.env.GITHUB_WORKSPACE;
   // get the pre-release prefix specified in action
   let preid = process.env.INPUT_PREID;
 
+  // case if version-type found
+  if (versionType) {
+    version = versionType;
+  }
   // case: if wording for MAJOR found
-  if (
+  else if (
     messages.some(
       (message) => /^([a-zA-Z]+)(\(.+\))?(\!)\:/.test(message) || majorWords.some((word) => message.includes(word)),
     )

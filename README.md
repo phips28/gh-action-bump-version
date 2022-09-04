@@ -50,6 +50,16 @@ Customize the messages that trigger the version bump. It must be a string, case 
                                       # defaulting to a patch bump.
     rc-wording:     'RELEASE,alpha'
 ```
+#### **version-type:** 
+Override the version type taken from the commit message. Usefull when manually running workflow via workflow_dispatch 
+```yaml
+- name:  'Automated Version Bump'
+  uses:  'phips28/gh-action-bump-version@master'
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  with:
+    version-type:  'minor'
+```
 #### **default:**
 Set a default version bump to use  (optional - defaults to patch). Example:
 ```yaml

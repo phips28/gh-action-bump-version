@@ -1,4 +1,4 @@
-name: Automated Version Bump
+name: Automated Version Bump with version-type
 description: Automated version bump for npm packages.
 runs:
   using: node12
@@ -9,6 +9,10 @@ branding:
 inputs:
   tag-prefix:
     description: 'Prefix that is used for the git tag'
+    default: ''
+    required: false
+  version-type:
+    description: 'Overrides version type from commit message'
     default: ''
     required: false
   minor-wording:
