@@ -20,7 +20,8 @@ const workspace = process.env.GITHUB_WORKSPACE;
   if (!event.commits) {
     console.log("Couldn't find any commits in this event, incrementing patch version...");
   }
-
+  const extraPackageDir = process.env[INPUT_EXTRA-PACKAGE-DIR];
+  console.log(extraPackageDir);
   const tagPrefix = process.env['INPUT_TAG-PREFIX'] || '';
   const messages = event.commits ? event.commits.map((commit) => commit.message + '\n' + commit.body) : [];
 

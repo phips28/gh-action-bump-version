@@ -66,6 +66,10 @@ inputs:
     description: 'Prints new version to specified file'
     default: ''
     required: false
+  extra-package-dir:
+    description: 'Additional package.json files for version bump'
+    default: ''
+    required: false
   push:
     description: '[DEPRECATED] Set to false to skip pushing the new tag'
     default: 'true'
