@@ -1,17 +1,17 @@
 {
   "name": "gh-action-bump-version",
-  "version": "9.1.9",
+  "version": "9.1.13",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/phips28/gh-action-bump-version.git"
+    "url": "git+https://github.com/Troperty/gh-action-bump-version.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/phips28/gh-action-bump-version/issues"
+    "url": "https://github.com/Troperty/gh-action-bump-version/issues"
   },
-  "homepage": "https://github.com/phips28/gh-action-bump-version#readme",
+  "homepage": "https://github.com/Troperty/gh-action-bump-version#readme",
   "private": true,
   "main": "index.js",
   "scripts": {

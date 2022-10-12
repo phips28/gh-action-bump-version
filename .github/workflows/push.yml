@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - 'master'
-
 jobs:
   bump-version:
     name: 'Bump Version on master'
@@ -12,17 +11,17 @@ jobs:
 
     steps:
       - name: 'Checkout source code'
-        uses: 'actions/checkout@v2'
+        uses: 'actions/checkout@v3'
         with:
           ref: ${{ github.ref }}
       - name: 'cat package.json'
         run: cat ./package.json
       - name: 'Automated Version Bump'
         id: version-bump
-        uses: 'SudevAtST/gh-action-bump-version@master'
+        uses: 'Troperty/gh-action-bump-version@master'
         with:
-          tag-prefix: 'v'
           extra-version-file: 'version.info'
+          skip-tag: 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_USER: 'CI-System'
