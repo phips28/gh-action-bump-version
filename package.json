@@ -15,7 +15,7 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "start": "node ./index.js",
+    "start": "npm install && node ./index.js",
     "test": "npm run end-to-end-test",
     "end-to-end-test": "jest --roots=tests/end-to-end --testTimeout=300000 --runInBand"
   },
