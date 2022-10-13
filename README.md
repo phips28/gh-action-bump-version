@@ -18,7 +18,7 @@ Remove the 'actions/setup-node@v1' step from your action.yml file
       - name: 'Setup Node.js'
         uses: 'actions/setup-node@v1'
         with:
-          node-version: 14
+          node-version: 16
 ```
 
 ### Workflow
