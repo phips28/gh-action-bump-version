@@ -20,10 +20,10 @@ const workspace = process.env.GITHUB_WORKSPACE;
   if (!event.commits) {
     console.log("Couldn't find any commits in this event, incrementing patch version...");
   }
-  const extrapackageExtraDirectory = process.env['INPUT_EXTRA-PACKAGE-DIR'];
+  const extraPackagesDirectory = process.env['INPUT_EXTRA-PACKAGE-DIR'];
   var extraPackages = [];
-  if(extrapackageExtraDirectory) {
-    extraPackages = extrapackageExtraDirectory.split(":");
+  if (extraPackagesDirectory) {
+    extraPackages = extraPackagesDirectory.split(":");
   }
   const tagPrefix = process.env['INPUT_TAG-PREFIX'] || '';
   const messages = event.commits ? event.commits.map((commit) => commit.message + '\n' + commit.body) : [];
@@ -167,7 +167,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
     let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim().replace(/^v/, '');
     newVersion = `${tagPrefix}${newVersion}`;
 
-    if(extraVersionFile !== '') {
+    if (extraVersionFile !== '') {
       await runInWorkspace('touch', [extraVersionFile]);
       console.log(`Writing ${newVersion} to ${extraVersionFile}`);
       await runInWorkspaceWithShell('echo', [newVersion, '>', extraVersionFile]);
@@ -175,11 +175,11 @@ const workspace = process.env.GITHUB_WORKSPACE;
     }
 
     if (extraPackages.length > 0) {
-      extraPackages.forEach(extraPackage => {
-          let packageExtraDirectory = path.join(workspace, extraPackage);
-          yield runInDirectory(`npm version --git-tag-version=false --allow-same-version=true ${newVersion}`, packageExtraDirectory);
-          yield runInDirectory('git', packageExtraDirectory, ['add', 'package.json']);
-      });
+      for (let idx = 0; idx < extraPackages.length; idx++) {
+        let packageExtraDirectory = path.join(workspace, extraPackages[idx]);
+        await runInDirectory(`npm version --git-tag-version=false --allow-same-version=true ${newVersion}`, packageExtraDirectory);
+        await runInDirectory('git', packageExtraDirectory, ['add', 'package.json']);
+      }
     }
 
     if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
@@ -198,7 +198,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
     newVersion = `${tagPrefix}${newVersion}`;
     console.log(`::set-output name=newTag::${newVersion}`);
 
-    if(extraVersionFile !== '') {
+    if (extraVersionFile !== '') {
       await runInWorkspace('touch', [extraVersionFile]);
       console.log(`Writing ${newVersion} to ${extraVersionFile}`);
       await runInWorkspaceWithShell('echo', [newVersion, '>', extraVersionFile]);
@@ -206,11 +206,11 @@ const workspace = process.env.GITHUB_WORKSPACE;
     }
 
     if (extraPackages.length > 0) {
-      extraPackages.forEach(extraPackage => {
-          let packageExtraDirectory = path.join(workspace, extraPackage);
-          yield runInDirectory(`npm version --git-tag-version=false --allow-same-version=true ${newVersion}`, packageExtraDirectory);
-          yield runInDirectory('git', packageExtraDirectory, ['add', 'package.json']);
-      });
+      for (let idx = 0; idx < extraPackages.length; idx++) {
+        let packageExtraDirectory = path.join(workspace, extraPackages[idx]);
+        await runInDirectory(`npm version --git-tag-version=false --allow-same-version=true ${newVersion}`, packageExtraDirectory);
+        await runInDirectory('git', packageExtraDirectory, ['add', 'package.json']);
+      }
     }
 
     try {
@@ -221,7 +221,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
     } catch (e) {
       console.warn(
         'git commit failed because you are using "actions/checkout@v2"; ' +
-          'but that doesnt matter because you dont need that git commit, thats only for "actions/checkout@v1"',
+        'but that doesnt matter because you dont need that git commit, thats only for "actions/checkout@v1"',
       );
     }
 
@@ -275,7 +275,7 @@ function runInWorkspaceWithShell(command, args) {
         reject(error);
       }
     });
-    
+
     child.on('exit', (code) => {
       if (!isDone) {
         if (code === 0) {
@@ -289,19 +289,19 @@ function runInWorkspaceWithShell(command, args) {
 }
 
 function isValidFilename(string) {
-	if (!string || string.length > 255) {
-		return false;
-	}
+  if (!string || string.length > 255) {
+    return false;
+  }
 
-	if (/[<>:"/\\|?*\u0000-\u001F]/g.test(string) || /^(con|prn|aux|nul|com\d|lpt\d)$/i.test(string)) {
-		return false;
-	}
+  if (/[<>:"/\\|?*\u0000-\u001F]/g.test(string) || /^(con|prn|aux|nul|com\d|lpt\d)$/i.test(string)) {
+    return false;
+  }
 
-	if (string === '.' || string === '..') {
-		return false;
-	}
+  if (string === '.' || string === '..') {
+    return false;
+  }
 
-	return true;
+  return true;
 }
 
 function runInWorkspace(command, args) {
@@ -328,7 +328,8 @@ function runInWorkspace(command, args) {
   });
   //return execa(command, args, { cwd: workspace });
 }
-function runInDirectory(command, directory, args){
+
+function runInDirectory(command, directory, args) {
   return new Promise((resolve, reject) => {
     const child = spawn(command, args, { cwd: directory });
     let isDone = false;
