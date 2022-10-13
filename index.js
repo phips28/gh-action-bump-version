@@ -20,10 +20,10 @@ const workspace = process.env.GITHUB_WORKSPACE;
   if (!event.commits) {
     console.log("Couldn't find any commits in this event, incrementing patch version...");
   }
-  const extraPackageDir = process.env['INPUT_EXTRA-PACKAGE-DIR'];
+  const extrapackageExtraDirectory = process.env['INPUT_EXTRA-PACKAGE-DIR'];
   var extraPackages = [];
-  if(extraPackageDir) {
-    extraPackages = extraPackageDir.split(":");
+  if(extrapackageExtraDirectory) {
+    extraPackages = extrapackageExtraDirectory.split(":");
   }
   const tagPrefix = process.env['INPUT_TAG-PREFIX'] || '';
   const messages = event.commits ? event.commits.map((commit) => commit.message + '\n' + commit.body) : [];
@@ -176,9 +176,9 @@ const workspace = process.env.GITHUB_WORKSPACE;
 
     if (extraPackages.length > 0) {
       extraPackages.forEach(extraPackage => {
-          let packageDir = path.join(workspace, extraPackage);
-          yield runInDirectory(`npm version --git-tag-version=false --allow-same-version=true ${newVersion}`, packageDir);
-          yield runInDirectory('git', packageDir, ['add', 'package.json']);
+          let packageExtraDirectory = path.join(workspace, extraPackage);
+          yield runInDirectory(`npm version --git-tag-version=false --allow-same-version=true ${newVersion}`, packageExtraDirectory);
+          yield runInDirectory('git', packageExtraDirectory, ['add', 'package.json']);
       });
     }
 
@@ -207,9 +207,9 @@ const workspace = process.env.GITHUB_WORKSPACE;
 
     if (extraPackages.length > 0) {
       extraPackages.forEach(extraPackage => {
-          let packageDir = path.join(workspace, extraPackage);
-          yield runInDirectory(`npm version --git-tag-version=false --allow-same-version=true ${newVersion}`, packageDir);
-          yield runInDirectory('git', packageDir, ['add', 'package.json']);
+          let packageExtraDirectory = path.join(workspace, extraPackage);
+          yield runInDirectory(`npm version --git-tag-version=false --allow-same-version=true ${newVersion}`, packageExtraDirectory);
+          yield runInDirectory('git', packageExtraDirectory, ['add', 'package.json']);
       });
     }
 
