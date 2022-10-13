@@ -29,5 +29,9 @@
     "prettier": "^2.3.0",
     "standard": "^16.0.4",
     "tiny-glob": "^0.2.9"
+  },
+  "dependencies": {
+    "read-pkg": "^7.1.0",
+    "write-pkg": "^5.1.0"
   }
 }

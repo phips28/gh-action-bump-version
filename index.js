@@ -3,6 +3,8 @@ const { execSync, spawn } = require('child_process');
 const { existsSync } = require('fs');
 const { EOL } = require('os');
 const path = require('path');
+const { readPackage } = require('read-pkg');
+const { writePackage } = require('write-pkg');
 
 
 // Change working directory if user defined PACKAGEJSON_DIR
@@ -177,7 +179,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
     if (extraPackages.length > 0) {
       for (let idx = 0; idx < extraPackages.length; idx++) {
         let packageExtraDirectory = path.join(workspace, extraPackages[idx]);
-        await runInDirectory(`npm version --git-tag-version=false --allow-same-version=true ${newVersion}`, packageExtraDirectory);
+        await updatePackageJson(packageExtraDirectory, newVersion);
         await runInDirectory('git', packageExtraDirectory, ['add', 'package.json']);
       }
     }
@@ -208,7 +210,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
     if (extraPackages.length > 0) {
       for (let idx = 0; idx < extraPackages.length; idx++) {
         let packageExtraDirectory = path.join(workspace, extraPackages[idx]);
-        await runInDirectory(`npm version --git-tag-version=false --allow-same-version=true ${newVersion}`, packageExtraDirectory);
+        await updatePackageJson(packageExtraDirectory, newVersion);
         await runInDirectory('git', packageExtraDirectory, ['add', 'package.json']);
       }
     }
@@ -327,6 +329,14 @@ function runInWorkspace(command, args) {
     });
   });
   //return execa(command, args, { cwd: workspace });
+}
+
+async function updatePackageJson(directory, suppliedVersion) {
+  let currentPJson = await readPackage({cwd: directory});
+  console.debug(currentPJson);
+  await writePackage(path.join(directory, 'package.json'), {"version": suppliedVersion});
+  let newPJson = await readPackage({cwd: directory});
+  console.debug(newPJson);
 }
 
 function runInDirectory(command, directory, args) {
