@@ -21,12 +21,9 @@ const workspace = process.env.GITHUB_WORKSPACE;
     console.log("Couldn't find any commits in this event, incrementing patch version...");
   }
   const extraPackageDir = process.env['INPUT_EXTRA-PACKAGE-DIR'];
-  var packages = [];
+  var extraPackages = [];
   if(extraPackageDir) {
-    packages = extraPackageDir.split(":");
-    packages.forEach(element => {
-      console.log(element);
-    });
+    extraPackages = extraPackageDir.split(":");
   }
   const tagPrefix = process.env['INPUT_TAG-PREFIX'] || '';
   const messages = event.commits ? event.commits.map((commit) => commit.message + '\n' + commit.body) : [];
@@ -177,6 +174,14 @@ const workspace = process.env.GITHUB_WORKSPACE;
       await runInWorkspace('git', ['add', extraVersionFile]);
     }
 
+    if (extraPackages.length > 0) {
+      extraPackages.forEach(extraPackage => {
+          let packageDir = path.join(workspace, extraPackage);
+          yield runInDirectory(`npm version --git-tag-version=false --allow-same-version=true ${newVersion}`, packageDir);
+          yield runInDirectory('git', packageDir, ['add', 'package.json']);
+      });
+    }
+
     if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
       await runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)]);
     }
@@ -198,6 +203,14 @@ const workspace = process.env.GITHUB_WORKSPACE;
       console.log(`Writing ${newVersion} to ${extraVersionFile}`);
       await runInWorkspaceWithShell('echo', [newVersion, '>', extraVersionFile]);
       await runInWorkspace('git', ['add', extraVersionFile]);
+    }
+
+    if (extraPackages.length > 0) {
+      extraPackages.forEach(extraPackage => {
+          let packageDir = path.join(workspace, extraPackage);
+          yield runInDirectory(`npm version --git-tag-version=false --allow-same-version=true ${newVersion}`, packageDir);
+          yield runInDirectory('git', packageDir, ['add', 'package.json']);
+      });
     }
 
     try {
@@ -314,4 +327,27 @@ function runInWorkspace(command, args) {
     });
   });
   //return execa(command, args, { cwd: workspace });
+}
+function runInDirectory(command, directory, args){
+  return new Promise((resolve, reject) => {
+    const child = spawn(command, args, { cwd: directory });
+    let isDone = false;
+    const errorMessages = [];
+    child.on('error', (error) => {
+      if (!isDone) {
+        isDone = true;
+        reject(error);
+      }
+    });
+    child.stderr.on('data', (chunk) => errorMessages.push(chunk));
+    child.on('exit', (code) => {
+      if (!isDone) {
+        if (code === 0) {
+          resolve();
+        } else {
+          reject(`${errorMessages.join('')}${EOL}${command} exited with code ${code}`);
+        }
+      }
+    });
+  });
 }
