@@ -250,7 +250,8 @@ const workspace = process.env.GITHUB_WORKSPACE;
 function getPackageJson() {
   const pathToPackage = path.join(workspace, 'package.json');
   if (!existsSync(pathToPackage)) throw new Error("package.json could not be found in your project's root.");
-  return readPackageSync({cwd: pathToPackage});
+  return JSON.parse(readFileSync(pathToPackage, {encoding:'utf8', flag:'r'}));
+  //return readPackageSync({cwd: pathToPackage});
 }
 
 function exitSuccess(message) {
@@ -293,7 +294,7 @@ function runInWorkspaceWithShell(command, args) {
 function getEventData(filePath){
   if(existsSync(filePath))
   {
-    return JSON.parse(readFileSync(filePath));
+    return JSON.parse(readFileSync(filePath, {encoding:'utf8', flag:'r'}));
   }
 }
 
