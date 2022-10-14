@@ -343,6 +343,7 @@ async function updatePackageJson(directory, suppliedVersion) {
   console.debug(`Updating package in ${directory}`);
   let currentPJson = await readPackage({cwd: directory});
   currentPJson.version = suppliedVersion;
+  currentPJson._id = `${currentPJson.name}@${suppliedVersion}`;
   console.debug(currentPJson);
   await writePackage(path.join(directory, 'package.json'), currentPJson);
   let newPJson = await readPackage({cwd: directory});
