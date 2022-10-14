@@ -3,7 +3,7 @@ const { execSync, spawn } = require('child_process');
 const { existsSync } = require('fs');
 const { EOL } = require('os');
 const path = require('path');
-// const { readPackage } = require('read-pkg');
+const { readPackage } = require('read-pkg');
 const { writePackage } = require('write-pkg');
 
 
@@ -332,11 +332,12 @@ function runInWorkspace(command, args) {
 }
 
 async function updatePackageJson(directory, suppliedVersion) {
-  // let currentPJson = await readPackage({cwd: directory});
-  // console.debug(currentPJson);
+  console.debug(`Updating package in ${directory}`);
+  let currentPJson = await readPackage({cwd: directory});
+  console.debug(currentPJson);
   await writePackage(path.join(directory, 'package.json'), {"version": suppliedVersion});
-  // let newPJson = await readPackage({cwd: directory});
-  // console.debug(newPJson);
+  let newPJson = await readPackage({cwd: directory});
+  console.debug(newPJson);
 }
 
 function runInDirectory(command, directory, args) {
