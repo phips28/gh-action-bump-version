@@ -1,9 +1,9 @@
 // test
 import { execSync, spawn } from 'node:child_process';
-import { existsSync } from 'node:fs';
+import { existsSync, fstat, readFileSync } from 'node:fs';
 import { EOL } from 'node:os';
 import path from 'node:path';
-import { readPackage } from 'read-pkg';
+import { readPackage, readPackageSync } from 'read-pkg';
 import { writePackage } from 'write-pkg';
 
 
@@ -17,7 +17,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
 
 (async () => {
   const pkg = getPackageJson();
-  const event = process.env.GITHUB_EVENT_PATH ? require(process.env.GITHUB_EVENT_PATH) : {};
+  const event = process.env.GITHUB_EVENT_PATH ? getEventData(process.env.GITHUB_EVENT_PATH) : {};
 
   if (!event.commits) {
     console.log("Couldn't find any commits in this event, incrementing patch version...");
@@ -250,7 +250,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
 function getPackageJson() {
   const pathToPackage = path.join(workspace, 'package.json');
   if (!existsSync(pathToPackage)) throw new Error("package.json could not be found in your project's root.");
-  return require(pathToPackage);
+  return readPackageSync({cwd: pathToPackage});
 }
 
 function exitSuccess(message) {
@@ -288,6 +288,13 @@ function runInWorkspaceWithShell(command, args) {
       }
     });
   });
+}
+
+function getEventData(filePath){
+  if(existsSync(filePath))
+  {
+    return JSON.parse(readFileSync(filePath));
+  }
 }
 
 function isValidFilename(string) {
