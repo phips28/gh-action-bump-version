@@ -14,6 +14,7 @@
   "homepage": "https://github.com/SudevAtST/gh-action-bump-version#readme",
   "private": true,
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "npm install && node ./index.js",
     "test": "npm run end-to-end-test",

@@ -1,8 +1,8 @@
 // test
-const { execSync, spawn } = require('child_process');
-const { existsSync } = require('fs');
-const { EOL } = require('os');
-const path = require('path');
+import { execSync, spawn } from 'node:child_process';
+import { existsSync } from 'node:fs';
+import { EOL } from 'node:os';
+import path from 'node:path';
 import { readPackage } from 'read-pkg';
 import { writePackage } from 'write-pkg';
 
