@@ -3,8 +3,8 @@ const { execSync, spawn } = require('child_process');
 const { existsSync } = require('fs');
 const { EOL } = require('os');
 const path = require('path');
-const { readPackage } = require('read-pkg');
-const { writePackage } = require('write-pkg');
+import { readPackage } from 'read-pkg';
+import { writePackage } from 'write-pkg';
 
 
 // Change working directory if user defined PACKAGEJSON_DIR
