@@ -20,7 +20,7 @@ const pkg = getPackageJson();
     console.log("Couldn't find any commits in this event, incrementing patch version...");
   }
 
-  const allowedTypes = ['major', 'minor', 'patch', 'prerelease']
+  const allowedTypes = ['major', 'minor', 'patch', 'prerelease'];
   if (process.env['INPUT_VERSION-TYPE'] && !allowedTypes.includes(process.env['INPUT_VERSION-TYPE'])) {
     exitFailure('Invalid version type');
     return;
@@ -103,7 +103,7 @@ const pkg = getPackageJson();
       }),
     )
   ) {
-    if (foundWord !== ''){
+    if (foundWord !== '') {
       preid = foundWord.split('-')[1];
     }
     version = 'prerelease';
@@ -119,8 +119,7 @@ const pkg = getPackageJson();
   if (
     version === 'prerelease' &&
     preReleaseWords &&
-    !messages.some((message) => preReleaseWords.some((word) => message.includes(word)) &&
-    !versionType)
+    !messages.some((message) => preReleaseWords.some((word) => message.includes(word)) && !versionType)
   ) {
     version = null;
   }
