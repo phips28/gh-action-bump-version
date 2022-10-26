@@ -20,7 +20,7 @@ const pkg = getPackageJson();
     console.log("Couldn't find any commits in this event, incrementing patch version...");
   }
 
-  const allowedTypes = ['major', 'minor', 'patch', 'prerelease']
+  const allowedTypes = ['major', 'minor', 'patch', 'prerelease'];
   if (process.env['INPUT_VERSION-TYPE'] && !allowedTypes.includes(process.env['INPUT_VERSION-TYPE'])) {
     exitFailure('Invalid version type');
     return;
@@ -103,7 +103,7 @@ const pkg = getPackageJson();
       }),
     )
   ) {
-    if (foundWord !== ''){
+    if (foundWord !== '') {
       preid = foundWord.split('-')[1];
     }
     version = 'prerelease';
@@ -114,18 +114,18 @@ const pkg = getPackageJson();
   // case: if default=prerelease,
   // rc-wording is also set
   // and does not include any of rc-wording
+  // and version-type is not strictly set
   // then unset it and do not run
   if (
     version === 'prerelease' &&
     preReleaseWords &&
-    !messages.some((message) => preReleaseWords.some((word) => message.includes(word)))
+    !messages.some((message) => preReleaseWords.some((word) => message.includes(word)) && !versionType)
   ) {
     version = null;
   }
 
   // case: if default=prerelease, but rc-wording is NOT set
   if (version === 'prerelease' && preid) {
-    version = 'prerelease';
     version = `${version} --preid=${preid}`;
   }
 
