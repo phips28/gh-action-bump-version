@@ -114,18 +114,19 @@ const pkg = getPackageJson();
   // case: if default=prerelease,
   // rc-wording is also set
   // and does not include any of rc-wording
+  // and version-type is not strictly set
   // then unset it and do not run
   if (
     version === 'prerelease' &&
     preReleaseWords &&
-    !messages.some((message) => preReleaseWords.some((word) => message.includes(word)))
+    !messages.some((message) => preReleaseWords.some((word) => message.includes(word)) &&
+    !versionType)
   ) {
     version = null;
   }
 
   // case: if default=prerelease, but rc-wording is NOT set
   if (version === 'prerelease' && preid) {
-    version = 'prerelease';
     version = `${version} --preid=${preid}`;
   }
 
