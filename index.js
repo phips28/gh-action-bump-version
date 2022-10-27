@@ -10,6 +10,7 @@ if (process.env.PACKAGEJSON_DIR) {
   process.chdir(process.env.GITHUB_WORKSPACE);
 }
 
+console.log('process.env.GITHUB_WORKSPACE', process.env.GITHUB_WORKSPACE);
 const workspace = process.env.GITHUB_WORKSPACE;
 const pkg = getPackageJson();
 
@@ -258,6 +259,7 @@ function logError(error) {
 
 function runInWorkspace(command, args) {
   return new Promise((resolve, reject) => {
+    console.log('runInWorkspace | command:', command, 'args:', args);
     const child = spawn(command, args, { cwd: workspace });
     let isDone = false;
     const errorMessages = [];
