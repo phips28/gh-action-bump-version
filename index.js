@@ -202,7 +202,8 @@ const pkg = getPackageJson();
     console.log('newVersion 2:', newVersion);
     newVersion = `${tagPrefix}${newVersion}`;
     console.log(`newVersion after merging tagPrefix+newVersion: ${newVersion}`);
-    console.log(`::set-output name=newTag::${newVersion}`);
+    // Using sh as command instead of directly echo to be able to use file redirection
+    await runInWorkspace('sh', ['-c', `echo "newTag=${newVersion}" >> $GITHUB_OUTPUT`]);
     try {
       // to support "actions/checkout@v1"
       if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
@@ -210,7 +211,7 @@ const pkg = getPackageJson();
       }
     } catch (e) {
       console.warn(
-        'git commit failed because you are using "actions/checkout@v2"; ' +
+        'git commit failed because you are using "actions/checkout@v2" or later; ' +
           'but that doesnt matter because you dont need that git commit, thats only for "actions/checkout@v1"',
       );
     }
