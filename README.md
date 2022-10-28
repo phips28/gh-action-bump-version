@@ -9,7 +9,7 @@ you'll need to configured that workflow yourself. You can look to the
 
 **Attention**
 
-Make sure you use the `actions/checkout@v2` action!
+Make sure you use the `actions/checkout@v2` (or later) action!
 
 **Migration: Version v9 and up**
 
@@ -20,6 +20,8 @@ Remove the 'actions/setup-node@v1' step from your action.yml file
         with:
           node-version: 16
 ```
+
+⚠️ **Windows** is not fully supported (see [#193](https://github.com/phips28/gh-action-bump-version/issues/193)), if someone uses windows, and wants to run this action, happy to review your PR ;)
 
 ### Workflow
 
