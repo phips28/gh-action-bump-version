@@ -123,17 +123,9 @@ const pkg = getPackageJson();
   if (
     version === 'prerelease' &&
     preReleaseWords &&
-    !messages.some((message) => preReleaseWords.some((word) => message.includes(word)) && !versionType)
+    !messages.some((message) => preReleaseWords.some((word) => message.includes(word))) &&
+    !versionType
   ) {
-    console.log(version === 'prerelease');
-    console.log(preReleaseWords);
-    console.log(!messages.some((message) => preReleaseWords.some((word) => message.includes(word))));
-    console.log(!versionType);
-    console.log(
-      version === 'prerelease' &&
-        preReleaseWords &&
-        !messages.some((message) => preReleaseWords.some((word) => message.includes(word)) && !versionType),
-    );
     version = null;
   }
 
