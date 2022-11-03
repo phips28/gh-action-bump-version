@@ -8,6 +8,9 @@ const path = require('path');
 if (process.env.PACKAGEJSON_DIR) {
   process.env.GITHUB_WORKSPACE = `${process.env.GITHUB_WORKSPACE}/${process.env.PACKAGEJSON_DIR}`;
   process.chdir(process.env.GITHUB_WORKSPACE);
+} else if (process.env.INPUT_PACKAGEJSON_DIR) {
+  process.env.GITHUB_WORKSPACE = `${process.env.GITHUB_WORKSPACE}/${process.env.INPUT_PACKAGEJSON_DIR}`;
+  process.chdir(process.env.GITHUB_WORKSPACE);
 }
 
 console.log('process.env.GITHUB_WORKSPACE', process.env.GITHUB_WORKSPACE);
