@@ -11,6 +11,20 @@ you'll need to configured that workflow yourself. You can look to the
 
 Make sure you use the `actions/checkout@v2` (or later) action!
 
+**Private repos**
+
+To use this Action with `${{ secrets.GITHUB_TOKEN }}` in a private repo, you must set the `contents: write` [permission for the token](https://docs.github.com/en/actions/using-jobs/assigning-permissions-to-jobs) to write to the package.json file specified in the workflow.
+
+```yml
+# .github/workflows/[your_workflow].yml
+
+jobs:
+  publish:
+    ...
+    permissions:
+      contents: write
+```
+
 **Migration: Version v9 and up**
 
 Remove the 'actions/setup-node@v1' step from your action.yml file
