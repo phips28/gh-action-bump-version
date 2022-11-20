@@ -110,6 +110,17 @@ Prefix that is used for the git tag  (optional). Example:
     tag-prefix:  'v'
 ```
 
+#### **tag-suffix:**
+Suffix that is used for the git tag  (optional). Example:
+```yaml
+- name:  'Automated Version Bump'
+  uses:  'phips28/gh-action-bump-version@master'
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  with:
+    tag-suffix:  '-beta'
+```
+
 #### **skip-tag:**
 The tag is not added to the git repository  (optional). Example:
 ```yaml

@@ -131,6 +131,49 @@ suites:
         expected:
           version: 4.1.2
           tag: v4.1.2
+  - name: custom-tag-suffix
+    yaml:
+      name: Bump Version (Custom Tag Suffix)
+      on:
+        push:
+      jobs:
+        bump-version:
+          runs-on: ubuntu-latest
+          steps:
+            - uses: actions/checkout@v2
+            - id: version-bump
+              uses: ./action
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                tag-suffix: '-beta'
+    tests:
+      - message: no keywords
+        expected:
+          version: 4.1.2
+          tag: 4.1.2-beta
+  - name: custom-tag-prefix-with-suffix
+    yaml:
+      name: Bump Version (Custom Tag Prefix With Suffix)
+      on:
+        push:
+      jobs:
+        bump-version:
+          runs-on: ubuntu-latest
+          steps:
+            - uses: actions/checkout@v2
+            - id: version-bump
+              uses: ./action
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                tag-prefix: 'v'
+                tag-suffix: '-beta'
+    tests:
+      - message: no keywords
+        expected:
+          version: 4.1.2
+          tag: v4.1.2-beta
   - name: target-branch
     yaml:
       name: Bump Version (Target Branch)
