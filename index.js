@@ -32,14 +32,16 @@ const pkg = getPackageJson();
 
   const versionType = process.env['INPUT_VERSION-TYPE'];
   const tagPrefix = process.env['INPUT_TAG-PREFIX'] || '';
+  const tagSuffix = process.env['INPUT_TAG-SUFFIX'] || '';
   console.log('tagPrefix:', tagPrefix);
+  console.log('tagSuffix:', tagSuffix);
   const messages = event.commits ? event.commits.map((commit) => commit.message + '\n' + commit.body) : [];
 
   const commitMessage = process.env['INPUT_COMMIT-MESSAGE'] || 'ci: version bump to {{version}}';
   console.log('commit messages:', messages);
 
   const bumpPolicy = process.env['INPUT_BUMP-POLICY'] || 'all';
-  const commitMessageRegex = new RegExp(commitMessage.replace(/{{version}}/g, `${tagPrefix}\\d+\\.\\d+\\.\\d+`), 'ig');
+  const commitMessageRegex = new RegExp(commitMessage.replace(/{{version}}/g, `${tagPrefix}\\d+\\.\\d+\\.\\d+${tagSuffix}`), 'ig');
 
   let isVersionBump = false;
 
@@ -186,7 +188,7 @@ const pkg = getPackageJson();
     console.log('current 1:', current, '/', 'version:', version);
     let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim().replace(/^v/, '');
     console.log('newVersion 1:', newVersion);
-    newVersion = `${tagPrefix}${newVersion}`;
+    newVersion = `${tagPrefix}${newVersion}${tagSuffix}`;
     if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
       await runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)]);
     }
@@ -205,8 +207,8 @@ const pkg = getPackageJson();
     // https://github.com/phips28/gh-action-bump-version/issues/166#issuecomment-1142640018
     newVersion = newVersion.split(/\n/)[1] || newVersion;
     console.log('newVersion 2:', newVersion);
-    newVersion = `${tagPrefix}${newVersion}`;
-    console.log(`newVersion after merging tagPrefix+newVersion: ${newVersion}`);
+    newVersion = `${tagPrefix}${newVersion}${tagSuffix}`;
+    console.log(`newVersion after merging tagPrefix+newVersion+tagSuffix: ${newVersion}`);
     // Using sh as command instead of directly echo to be able to use file redirection
     await runInWorkspace('sh', ['-c', `echo "newTag=${newVersion}" >> $GITHUB_OUTPUT`]);
     try {
