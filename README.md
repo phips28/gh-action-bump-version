@@ -53,7 +53,7 @@ Remove the 'actions/setup-node@v1' step from your action.yml file
 
 
 #### **wording:** 
-Customize the messages that trigger the version bump. It must be a string, case sensitive, coma separated  (optional). Example:
+Customize the messages that trigger the version bump. It must be a string, case sensitive, comma separated  (optional). Example:
 ```yaml
 - name:  'Automated Version Bump'
   uses:  'phips28/gh-action-bump-version@master'
