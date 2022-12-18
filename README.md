@@ -4,7 +4,7 @@ GitHub Action for automated npm version bump.
 
 This Action bumps the version in package.json and pushes it back to the repo.
 It is meant to be used on every successful merge to master but
-you'll need to configured that workflow yourself. You can look to the
+you'll need to configure that workflow yourself. You can look to the
 [`.github/workflows/push.yml`](./.github/workflows/push.yml) file in this project as an example.
 
 **Attention**
