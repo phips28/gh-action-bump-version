@@ -204,7 +204,7 @@ Example:
     bump-policy: 'ignore'
 ```
 
-### **check-only-last-commit**
+#### **check-last-commit-only:**
 
 Set check-last-commit-only to only read last commit's message (optional). Example:
 
