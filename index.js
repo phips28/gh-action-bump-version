@@ -36,10 +36,10 @@ const pkg = getPackageJson();
   console.log('tagPrefix:', tagPrefix);
   console.log('tagSuffix:', tagSuffix);
 
-  const checkLAstCommitOnly = process.env['INPUT_CHECK-LAST-COMMIT-ONLY'] || 'false';
+  const checkLastCommitOnly = process.env['INPUT_CHECK-LAST-COMMIT-ONLY'] || 'false';
 
   let messages = []
-  if (checkLAstCommitOnly === 'true') {
+  if (checkLastCommitOnly === 'true') {
     console.log('Only checking the last commit...');
     const commit = event.commits ? event.commits[event.commits.length - 1] : null;
     messages = commit ? [commit.message + '\n' + commit.body] : [];
