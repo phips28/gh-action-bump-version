@@ -71,7 +71,7 @@ inputs:
     default: 'all'
     required: false
   check-last-commit-only:
-    description: 'Check only last commit's message'
+    description: 'Check only last commit message'
     default: 'false'
     required: false
   push:
