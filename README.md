@@ -204,6 +204,19 @@ Example:
     bump-policy: 'ignore'
 ```
 
+### **check-only-last-commit**
+
+Set check-last-commit-only to only read last commit's message (optional). Example:
+
+```yaml
+- name:  'Automated Version Bump'
+  uses:  'phips28/gh-action-bump-version@master'
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  with:
+    check-last-commit-only: 'true'
+```
+
 #### [DEPRECATED] **push:**
 **DEPRECATED** Set false you want to avoid pushing the new version tag/package.json. Example:
 ```yaml

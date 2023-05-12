@@ -35,6 +35,19 @@ const pkg = getPackageJson();
   const tagSuffix = process.env['INPUT_TAG-SUFFIX'] || '';
   console.log('tagPrefix:', tagPrefix);
   console.log('tagSuffix:', tagSuffix);
+
+  const checkLAstCommitOnly = process.env['INPUT_CHECK-LAST-COMMIT-ONLY'] || 'false';
+
+  if (checkLAstCommitOnly === 'true') {
+    console.log('Only checking the last commit...');
+    const commit = event.commits ? event.commits[event.commits.length - 1] : null;
+    const messages = commit ? [commit.message + '\n' + commit.body] : [];
+    await run(messages, versionType, tagPrefix, tagSuffix, pkg);
+  } else {
+    const messages = event.commits ? event.commits.map((commit) => commit.message + '\n' + commit.body) : [];
+    await run(messages, versionType, tagPrefix, tagSuffix, pkg);
+  }
+
   const messages = event.commits ? event.commits.map((commit) => commit.message + '\n' + commit.body) : [];
 
   const commitMessage = process.env['INPUT_COMMIT-MESSAGE'] || 'ci: version bump to {{version}}';
