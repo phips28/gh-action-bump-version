@@ -41,7 +41,7 @@ const pkg = getPackageJson();
   let messages = []
   if (checkLastCommitOnly === 'true') {
     console.log('Only checking the last commit...');
-    const commit = event.commits ? event.commits[event.commits.length - 1] : null;
+    const commit = event.commits && event.commits.lengths > 0 ? event.commits[event.commits.length - 1] : null;
     messages = commit ? [commit.message + '\n' + commit.body] : [];
   } else {
     messages = event.commits ? event.commits.map((commit) => commit.message + '\n' + commit.body) : [];
