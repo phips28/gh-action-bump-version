@@ -38,17 +38,14 @@ const pkg = getPackageJson();
 
   const checkLAstCommitOnly = process.env['INPUT_CHECK-LAST-COMMIT-ONLY'] || 'false';
 
+  let messages = []
   if (checkLAstCommitOnly === 'true') {
     console.log('Only checking the last commit...');
     const commit = event.commits ? event.commits[event.commits.length - 1] : null;
-    const messages = commit ? [commit.message + '\n' + commit.body] : [];
-    await run(messages, versionType, tagPrefix, tagSuffix, pkg);
+    messages = commit ? [commit.message + '\n' + commit.body] : [];
   } else {
-    const messages = event.commits ? event.commits.map((commit) => commit.message + '\n' + commit.body) : [];
-    await run(messages, versionType, tagPrefix, tagSuffix, pkg);
+    messages = event.commits ? event.commits.map((commit) => commit.message + '\n' + commit.body) : [];
   }
-
-  const messages = event.commits ? event.commits.map((commit) => commit.message + '\n' + commit.body) : [];
 
   const commitMessage = process.env['INPUT_COMMIT-MESSAGE'] || 'ci: version bump to {{version}}';
   console.log('commit messages:', messages);
