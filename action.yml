@@ -70,6 +70,10 @@ inputs:
     description: 'Set version bump ignore policy'
     default: 'all'
     required: false
+  check-last-commit-only:
+    description: 'Check only last commit message'
+    default: 'false'
+    required: false
   push:
     description: '[DEPRECATED] Set to false to skip pushing the new tag'
     default: 'true'
