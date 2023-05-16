@@ -169,7 +169,7 @@ const pkg = getPackageJson();
     await runInWorkspace('git', [
       'config',
       'user.email',
-      `"${process.env.GITHUB_EMAIL || 'gh-action-bump-version@users.noreply.github.com'}"`,
+      `"${process.env.GITHUB_EMAIL || 'pkg-version-gh-action@users.noreply.github.com'}"`,
     ]);
 
     let currentBranch;
@@ -214,7 +214,7 @@ const pkg = getPackageJson();
     console.log('execute npm version now with the new version:', version);
     newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim().replace(/^v/, '');
     // fix #166 - npm workspaces
-    // https://github.com/phips28/gh-action-bump-version/issues/166#issuecomment-1142640018
+    // https://github.com/tilakDagar07/pkg-version-gh-action/issues/166#issuecomment-1142640018
     newVersion = newVersion.split(/\n/)[1] || newVersion;
     console.log('newVersion 2:', newVersion);
     newVersion = `${tagPrefix}${newVersion}${tagSuffix}`;

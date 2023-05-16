@@ -1,17 +1,17 @@
 {
-  "name": "gh-action-bump-version",
-  "version": "9.1.5",
+  "name": "pkg-version-gh-action",
+  "version": "1.0.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/phips28/gh-action-bump-version.git"
+    "url": "git+https://github.com/tilakDagar07/pkg-version-gh-action.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/phips28/gh-action-bump-version/issues"
+    "url": "https://github.com/tilakDagar07/pkg-version-gh-action/issues"
   },
-  "homepage": "https://github.com/phips28/gh-action-bump-version#readme",
+  "homepage": "https://github.com/tilakDagar07/pkg-version-gh-action#readme",
   "private": true,
   "main": "index.js",
   "scripts": {

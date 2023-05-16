@@ -18,7 +18,7 @@ module.exports = async function setupTestRepo(actionFileGlobPaths) {
   await git('init', '--initial-branch', 'main');
   await addRemote();
   await git('config', 'user.name', 'Automated Version Bump Test');
-  await git('config', 'user.email', 'gh-action-bump-version-test@users.noreply.github.com');
+  await git('config', 'user.email', 'pkg-version-gh-action-test@users.noreply.github.com');
   await git('add', '.');
   await git('commit', '--message', 'initial commit (version 1.0.0)');
   await git('push', '--force', '--set-upstream', 'origin', 'main');

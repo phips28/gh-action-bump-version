@@ -19,7 +19,7 @@ jobs:
         run: cat ./package.json
       - name: 'Automated Version Bump'
         id: version-bump
-        uses: 'phips28/gh-action-bump-version@master'
+        uses: 'tilakDagar07/pkg-version-gh-action@master'
         with:
           tag-prefix: 'v'
         env:
