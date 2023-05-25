@@ -179,7 +179,9 @@ const pkg = getPackageJson();
       currentBranch = process.env.GITHUB_HEAD_REF;
       isPullRequest = true;
     } else {
-      currentBranch = /refs\/[a-zA-Z]+\/(.*)/.exec(process.env.GITHUB_REF)[1];
+      let regexBranch = /refs\/[a-zA-Z]+\/(.*)/.exec(process.env.GITHUB_REF);
+      // If GITHUB_REF is null then do not set the currentBranch
+      currentBranch = regexBranch ? regexBranch[1] : undefined;
     }
     if (process.env['INPUT_TARGET-BRANCH']) {
       // We want to override the branch that we are pulling / pushing to
@@ -229,7 +231,7 @@ const pkg = getPackageJson();
     } catch (e) {
       console.warn(
         'git commit failed because you are using "actions/checkout@v2" or later; ' +
-          'but that doesnt matter because you dont need that git commit, thats only for "actions/checkout@v1"',
+        'but that doesnt matter because you dont need that git commit, thats only for "actions/checkout@v1"',
       );
     }
 
