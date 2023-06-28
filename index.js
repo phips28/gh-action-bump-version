@@ -222,7 +222,12 @@ const pkg = getPackageJson();
     newVersion = `${tagPrefix}${newVersion}${tagSuffix}`;
     console.log(`newVersion after merging tagPrefix+newVersion+tagSuffix: ${newVersion}`);
     // Using sh as command instead of directly echo to be able to use file redirection
-    await runInWorkspace('sh', ['-c', `echo "newTag=${newVersion}" >> $GITHUB_OUTPUT`]);
+    try {
+      await runInWorkspace('sh', ['-c', `echo "newTag=${newVersion}" >> $GITHUB_OUTPUT`]);
+    } catch {
+      // for runner < 2.297.0
+      console.log(`::set-output name=newTag::${newVersion}`);
+    }
     try {
       // to support "actions/checkout@v1"
       if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
