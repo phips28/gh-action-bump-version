@@ -74,6 +74,10 @@ inputs:
     description: 'Check only last commit message'
     default: 'false'
     required: false
+  use-regular-expression:
+    description: 'Use regular expression for version wording instead of comma separated string'
+    default: false
+    required: false
   push:
     description: '[DEPRECATED] Set to false to skip pushing the new tag'
     default: 'true'

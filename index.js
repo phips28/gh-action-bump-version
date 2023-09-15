@@ -38,7 +38,7 @@ const pkg = getPackageJson();
 
   const checkLastCommitOnly = process.env['INPUT_CHECK-LAST-COMMIT-ONLY'] || 'false';
 
-  let messages = []
+  let messages = [];
   if (checkLastCommitOnly === 'true') {
     console.log('Only checking the last commit...');
     const commit = event.commits && event.commits.lengths > 0 ? event.commits[event.commits.length - 1] : null;
@@ -51,7 +51,10 @@ const pkg = getPackageJson();
   console.log('commit messages:', messages);
 
   const bumpPolicy = process.env['INPUT_BUMP-POLICY'] || 'all';
-  const commitMessageRegex = new RegExp(commitMessage.replace(/{{version}}/g, `${tagPrefix}\\d+\\.\\d+\\.\\d+${tagSuffix}`), 'ig');
+  const commitMessageRegex = new RegExp(
+    commitMessage.replace(/{{version}}/g, `${tagPrefix}\\d+\\.\\d+\\.\\d+${tagSuffix}`),
+    'ig',
+  );
 
   let isVersionBump = false;
 
@@ -70,18 +73,15 @@ const pkg = getPackageJson();
     return;
   }
 
-  // input wordings for MAJOR, MINOR, PATCH, PRE-RELEASE
-  const majorWords = process.env['INPUT_MAJOR-WORDING'].split(',').filter((word) => word != '');
-  const minorWords = process.env['INPUT_MINOR-WORDING'].split(',').filter((word) => word != '');
-  // patch is by default empty, and '' would always be true in the includes(''), thats why we handle it separately
-  const patchWords = process.env['INPUT_PATCH-WORDING'] ? process.env['INPUT_PATCH-WORDING'].split(',') : null;
-  const preReleaseWords = process.env['INPUT_RC-WORDING'] ? process.env['INPUT_RC-WORDING'].split(',') : null;
-
-  console.log('config words:', { majorWords, minorWords, patchWords, preReleaseWords });
+  // get the flag indicating whether to use regex to detect version or not
+  const useRegularExpression = process.env['INPUT_USE-REGULAR-EXPRESSION'] || false;
+  let majorWords = process.env['INPUT_MAJOR-WORDING'];
+  let minorWords = process.env['INPUT_MINOR-WORDING'];
+  let patchWords = process.env['INPUT_PATCH-WORDING'] ? process.env['INPUT_PATCH-WORDING'] : null;
+  let preReleaseWords = process.env['INPUT_RC-WORDING'] ? process.env['INPUT_RC-WORDING'] : null;
 
   // get default version bump
   let version = process.env.INPUT_DEFAULT;
-  let foundWord = null;
   // get the pre-release prefix specified in action
   let preid = process.env.INPUT_PREID;
 
@@ -89,40 +89,78 @@ const pkg = getPackageJson();
   if (versionType) {
     version = versionType;
   }
-  // case: if wording for MAJOR found
-  else if (
-    messages.some(
-      (message) => /^([a-zA-Z]+)(\(.+\))?(\!)\:/.test(message) || majorWords.some((word) => message.includes(word)),
-    )
-  ) {
-    version = 'major';
-  }
-  // case: if wording for MINOR found
-  else if (messages.some((message) => minorWords.some((word) => message.includes(word)))) {
-    version = 'minor';
-  }
-  // case: if wording for PATCH found
-  else if (patchWords && messages.some((message) => patchWords.some((word) => message.includes(word)))) {
-    version = 'patch';
-  }
-  // case: if wording for PRE-RELEASE found
-  else if (
-    preReleaseWords &&
-    messages.some((message) =>
-      preReleaseWords.some((word) => {
-        if (message.includes(word)) {
-          foundWord = word;
-          return true;
-        } else {
-          return false;
-        }
-      }),
-    )
-  ) {
-    if (foundWord !== '') {
-      preid = foundWord.split('-')[1];
+  // case: if use-regular-expression
+  else if (useRegularExpression) {
+    console.log('config regular expressions:', { majorWords, minorWords, patchWords, preReleaseWords });
+    // case: if wording for MAJOR found
+    if (messages.some((message) => new RegExp(majorWords).test(message))) {
+      version = 'major';
     }
-    version = 'prerelease';
+    // case: if wording for MINOR found
+    else if (messages.some((message) => new RegExp(minorWords).test(message))) {
+      version = 'minor';
+    }
+    // case: if wording for PATCH found
+    else if (patchWords && messages.some((message) => new RegExp(patchWords).test(message))) {
+      version = 'patch';
+    }
+    // case: if wording for PRE-RELEASE found
+    else if (preReleaseWords && messages.some((message) => new RegExp(preReleaseWords).test(message))) {
+      version = 'prerelease';
+      // find the first commit message with the keyword present
+      const commitMessage = messages.find((message) => new RegExp(preReleaseWords).test(message));
+      // use capture group to extract the preid from the commit message
+      // eg. "^pre-(alpha|beta|rc)\:" matches "alpha", "beta" or "rc"
+      preid = new RegExp(preReleaseWords).exec(commitMessage).at(1);
+    }
+  }
+  // case: default case if !use-regular-expression or explicit version type is not specified
+  else {
+    // input wordings for MAJOR, MINOR, PATCH, PRE-RELEASE
+    majorWords = majorWords.split(',').filter((word) => word != '');
+    minorWords = minorWords.split(',').filter((word) => word != '');
+    // patch is by default empty, and '' would always be true in the includes(''), thats why we handle it separately
+    patchWords = patchWords ? patchWords.split(',') : null;
+    preReleaseWords = preReleaseWords ? preReleaseWords.split(',') : null;
+    console.log('config words:', { majorWords, minorWords, patchWords, preReleaseWords });
+
+    let foundWord = null;
+
+    // case: if wording for MAJOR found
+    if (
+      messages.some(
+        (message) => /^([a-zA-Z]+)(\(.+\))?(\!)\:/.test(message) || majorWords.some((word) => message.includes(word)),
+      )
+    ) {
+      version = 'major';
+    }
+    // case: if wording for MINOR found
+    else if (messages.some((message) => minorWords.some((word) => message.includes(word)))) {
+      version = 'minor';
+    }
+    // case: if wording for PATCH found
+    else if (patchWords && messages.some((message) => patchWords.some((word) => message.includes(word)))) {
+      version = 'patch';
+    }
+    // case: if wording for PRE-RELEASE found
+    else if (
+      preReleaseWords &&
+      messages.some((message) =>
+        preReleaseWords.some((word) => {
+          if (message.includes(word)) {
+            foundWord = word;
+            return true;
+          } else {
+            return false;
+          }
+        }),
+      )
+    ) {
+      if (foundWord !== '') {
+        preid = foundWord.split('-')[1];
+      }
+      version = 'prerelease';
+    }
   }
 
   console.log('version action after first waterfall:', version);
@@ -132,13 +170,15 @@ const pkg = getPackageJson();
   // and does not include any of rc-wording
   // and version-type is not strictly set
   // then unset it and do not run
-  if (
-    version === 'prerelease' &&
-    preReleaseWords &&
-    !messages.some((message) => preReleaseWords.some((word) => message.includes(word))) &&
-    !versionType
-  ) {
-    version = null;
+  if (version === 'prerelease' && preReleaseWords && !versionType) {
+    if (useRegularExpression && !messages.some((message) => new RegExp(preReleaseWords).test(message))) {
+      version = null;
+    } else if (
+      !useRegularExpression &&
+      !messages.some((message) => preReleaseWords.some((word) => message.includes(word)))
+    ) {
+      version = null;
+    }
   }
 
   // case: if default=prerelease, but rc-wording is NOT set
@@ -236,7 +276,7 @@ const pkg = getPackageJson();
     } catch (e) {
       console.warn(
         'git commit failed because you are using "actions/checkout@v2" or later; ' +
-        'but that doesnt matter because you dont need that git commit, thats only for "actions/checkout@v1"',
+          'but that doesnt matter because you dont need that git commit, thats only for "actions/checkout@v1"',
       );
     }
 
