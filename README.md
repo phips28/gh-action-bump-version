@@ -217,6 +217,20 @@ Set check-last-commit-only to only read last commit's message (optional). Exampl
     check-last-commit-only: 'true'
 ```
 
+#### **custom-git-domain:**
+
+Set a custom domain of the git instance (optional). This is only needed, when using self-hosted instances of GitHub or alternative git provider (e.g. Gitea).
+Example:
+
+```yaml
+- name:  'Automated Version Bump'
+  uses:  'phips28/gh-action-bump-version@master'
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  with:
+    custom-git-domain: 'github.com'
+```
+
 #### [DEPRECATED] **push:**
 **DEPRECATED** Set false you want to avoid pushing the new version tag/package.json. Example:
 ```yaml

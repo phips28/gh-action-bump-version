@@ -44,7 +44,7 @@ inputs:
     required: false
   skip-push:
     description: 'If true, skip pushing any commits or tags created after the version bump'
-    default: false
+    default: 'false'
     required: false
   PACKAGEJSON_DIR:
     description: 'Custom dir to the package'
@@ -73,6 +73,10 @@ inputs:
   check-last-commit-only:
     description: 'Check only last commit message'
     default: 'false'
+    required: false
+  custom-git-domain:
+    description: 'Set a custom domain of the git instance'
+    default: 'github.com'
     required: false
   push:
     description: '[DEPRECATED] Set to false to skip pushing the new tag'
