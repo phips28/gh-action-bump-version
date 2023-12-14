@@ -38,7 +38,7 @@ const pkg = getPackageJson();
 
   const checkLastCommitOnly = process.env['INPUT_CHECK-LAST-COMMIT-ONLY'] || 'false';
 
-  let messages = []
+  let messages = [];
   if (checkLastCommitOnly === 'true') {
     console.log('Only checking the last commit...');
     const commit = event.commits && event.commits.lengths > 0 ? event.commits[event.commits.length - 1] : null;
@@ -51,7 +51,10 @@ const pkg = getPackageJson();
   console.log('commit messages:', messages);
 
   const bumpPolicy = process.env['INPUT_BUMP-POLICY'] || 'all';
-  const commitMessageRegex = new RegExp(commitMessage.replace(/{{version}}/g, `${tagPrefix}\\d+\\.\\d+\\.\\d+${tagSuffix}`), 'ig');
+  const commitMessageRegex = new RegExp(
+    commitMessage.replace(/{{version}}/g, `${tagPrefix}\\d+\\.\\d+\\.\\d+${tagSuffix}`),
+    'ig',
+  );
 
   let isVersionBump = false;
 
@@ -198,7 +201,7 @@ const pkg = getPackageJson();
     // important for further usage of the package.json version
     await runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', current]);
     console.log('current 1:', current, '/', 'version:', version);
-    let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim().replace(/^v/, '');
+    let newVersion = parseNpmVersionOutput(execSync(`npm version --git-tag-version=false ${version}`).toString());
     console.log('newVersion 1:', newVersion);
     newVersion = `${tagPrefix}${newVersion}${tagSuffix}`;
     if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
@@ -214,7 +217,7 @@ const pkg = getPackageJson();
     await runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', current]);
     console.log('current 2:', current, '/', 'version:', version);
     console.log('execute npm version now with the new version:', version);
-    newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim().replace(/^v/, '');
+    newVersion = parseNpmVersionOutput(execSync(`npm version --git-tag-version=false ${version}`).toString());
     // fix #166 - npm workspaces
     // https://github.com/phips28/gh-action-bump-version/issues/166#issuecomment-1142640018
     newVersion = newVersion.split(/\n/)[1] || newVersion;
@@ -236,11 +239,13 @@ const pkg = getPackageJson();
     } catch (e) {
       console.warn(
         'git commit failed because you are using "actions/checkout@v2" or later; ' +
-        'but that doesnt matter because you dont need that git commit, thats only for "actions/checkout@v1"',
+          'but that doesnt matter because you dont need that git commit, thats only for "actions/checkout@v1"',
       );
     }
 
-    const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@${process.env['INPUT_CUSTOM-GIT-DOMAIN'] || "github.com"}/${process.env.GITHUB_REPOSITORY}.git`;
+    const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@${
+      process.env['INPUT_CUSTOM-GIT-DOMAIN'] || 'github.com'
+    }/${process.env.GITHUB_REPOSITORY}.git`;
     if (process.env['INPUT_SKIP-TAG'] !== 'true') {
       await runInWorkspace('git', ['tag', newVersion]);
       if (process.env['INPUT_SKIP-PUSH'] !== 'true') {
@@ -278,6 +283,12 @@ function exitFailure(message) {
 
 function logError(error) {
   console.error(`✖  fatal     ${error.stack || error}`);
+}
+
+function parseNpmVersionOutput(output) {
+  const npmVersionStr = output.trim().split(EOL).pop();
+  const version = npmVersionStr.replace(/^v/, '');
+  return version;
 }
 
 function runInWorkspace(command, args) {
