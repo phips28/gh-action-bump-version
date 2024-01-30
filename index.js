@@ -145,7 +145,7 @@ const pkg = getPackageJson();
   }
 
   // case: if default=prerelease, but rc-wording is NOT set
-  if (['prerelease', 'prepatch', 'preminor', 'premajor'].contains(version) && preid) {
+  if (['prerelease', 'prepatch', 'preminor', 'premajor'].includes(version) && preid) {
     version = `${version} --preid=${preid}`;
   }
 
