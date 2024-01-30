@@ -1,7 +1,7 @@
 name: Version Bump by nahuelhds
 description: Fork from Automated version bump.
 runs:
-  using: node16
+  using: node20
   main: index.js
 branding:
   icon: chevron-up
