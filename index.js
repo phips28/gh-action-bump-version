@@ -24,7 +24,7 @@ const pkg = getPackageJson();
     console.log("Couldn't find any commits in this event, incrementing patch version...");
   }
 
-  const allowedTypes = ['major', 'minor', 'patch', 'prerelease'];
+  const allowedTypes = ['major', 'minor', 'patch', 'premajor', 'preminor', 'prepatch', 'prerelease'];
   if (process.env['INPUT_VERSION-TYPE'] && !allowedTypes.includes(process.env['INPUT_VERSION-TYPE'])) {
     exitFailure('Invalid version type');
     return;
@@ -38,7 +38,7 @@ const pkg = getPackageJson();
 
   const checkLastCommitOnly = process.env['INPUT_CHECK-LAST-COMMIT-ONLY'] || 'false';
 
-  let messages = []
+  let messages = [];
   if (checkLastCommitOnly === 'true') {
     console.log('Only checking the last commit...');
     const commit = event.commits && event.commits.lengths > 0 ? event.commits[event.commits.length - 1] : null;
@@ -51,7 +51,10 @@ const pkg = getPackageJson();
   console.log('commit messages:', messages);
 
   const bumpPolicy = process.env['INPUT_BUMP-POLICY'] || 'all';
-  const commitMessageRegex = new RegExp(commitMessage.replace(/{{version}}/g, `${tagPrefix}\\d+\\.\\d+\\.\\d+${tagSuffix}`), 'ig');
+  const commitMessageRegex = new RegExp(
+    commitMessage.replace(/{{version}}/g, `${tagPrefix}\\d+\\.\\d+\\.\\d+${tagSuffix}`),
+    'ig',
+  );
 
   let isVersionBump = false;
 
@@ -236,11 +239,13 @@ const pkg = getPackageJson();
     } catch (e) {
       console.warn(
         'git commit failed because you are using "actions/checkout@v2" or later; ' +
-        'but that doesnt matter because you dont need that git commit, thats only for "actions/checkout@v1"',
+          'but that doesnt matter because you dont need that git commit, thats only for "actions/checkout@v1"',
       );
     }
 
-    const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@${process.env['INPUT_CUSTOM-GIT-DOMAIN'] || "github.com"}/${process.env.GITHUB_REPOSITORY}.git`;
+    const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@${
+      process.env['INPUT_CUSTOM-GIT-DOMAIN'] || 'github.com'
+    }/${process.env.GITHUB_REPOSITORY}.git`;
     if (process.env['INPUT_SKIP-TAG'] !== 'true') {
       await runInWorkspace('git', ['tag', newVersion]);
       if (process.env['INPUT_SKIP-PUSH'] !== 'true') {
