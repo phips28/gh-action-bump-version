@@ -1,5 +1,5 @@
-name: Version Bump by nahuelhds
-description: Fork from Automated version bump.
+name: Automated Version Bump
+description: Automated version bump for npm packages.
 runs:
   using: node20
   main: index.js
