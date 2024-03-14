@@ -266,8 +266,9 @@ const pkg = getPackageJson();
 })();
 
 function getPackageJson() {
-  const pathToPackage = path.join(workspace, 'package.json');
-  if (!existsSync(pathToPackage)) throw new Error("package.json could not be found in your project's root.");
+  const packageJSONFileName = process.env.PACKAGE_FILENAME || 'package.json';
+  const pathToPackage = path.join(workspace, packageJSONFileName);
+  if (!existsSync(pathToPackage)) throw new Error(packageJSONFileName + " could not be found in your project's root.");
   return require(pathToPackage);
 }
 
