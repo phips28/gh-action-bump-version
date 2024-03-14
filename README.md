@@ -165,6 +165,16 @@ Param to parse the location of the desired package.json (optional). Example:
     PACKAGEJSON_DIR:  'frontend'
 ```
 
+#### **PACKAGE_FILENAME:**
+Param to use another file for detect version (optional). Example:
+```yaml
+- name:  'Automated Version Bump'
+  uses:  'phips28/gh-action-bump-version@master'
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    PACKAGE_FILENAME:  'app.json'
+```
+
 #### **TARGET-BRANCH:**
 Set a custom target branch to use when bumping the version. Useful in cases such as updating the version on master after a tag has been set (optional). Example:
 ```yaml
