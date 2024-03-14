@@ -198,7 +198,7 @@ const pkg = getPackageJson();
     }
 
     // disable npm fund message
-    execSync('npm config set fund false --location=global');
+    execSync('npm config set fund false');
 
     // do it in the current checked out github branch (DETACHED HEAD)
     // important for further usage of the package.json version
