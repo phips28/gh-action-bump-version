@@ -237,10 +237,10 @@ const pkg = getPackageJson();
         await runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)]);
       }
     } catch (e) {
-      console.warn(
-        'git commit failed because you are using "actions/checkout@v2" or later; ' +
-          'but that doesnt matter because you dont need that git commit, thats only for "actions/checkout@v1"',
-      );
+      // console.warn(
+      //   'git commit failed because you are using "actions/checkout@v2" or later; ' +
+      //     'but that doesnt matter because you dont need that git commit, thats only for "actions/checkout@v1"',
+      // );
     }
 
     const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@${
