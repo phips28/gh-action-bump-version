@@ -198,7 +198,8 @@ const pkg = getPackageJson();
     }
 
     // disable npm fund message, because that would break the output
-    await runInWorkspace('npm', ['config', 'set', 'fund', 'false']);
+    // -ws/iwr needed for workspaces https://github.com/npm/cli/issues/6099#issuecomment-1961995288
+    await runInWorkspace('npm', ['config', 'set', 'fund', 'false', '-ws=false', '-iwr']);
 
     // do it in the current checked out github branch (DETACHED HEAD)
     // important for further usage of the package.json version
