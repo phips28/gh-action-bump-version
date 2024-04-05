@@ -291,7 +291,8 @@ function logError(error) {
 }
 
 function parseNpmVersionOutput(output) {
-  const npmVersionStr = output.trim().split(EOL).pop();
+  const lines = output.trim().split('\n');
+  const npmVersionStr = lines[1];
   console.log('[parseNpmVersionOutput] output:', output);
   console.log('[parseNpmVersionOutput] npmVersionStr:', npmVersionStr);
   const version = npmVersionStr.replace(/^v/, '');
