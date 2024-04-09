@@ -244,7 +244,7 @@ const pkg = getPackageJson();
       console.warn(e);
     }
 
-    const token = process.env.GH_AUTH_TOKEN ?? process.env.GITHUB_TOKEN;
+    const token = process.env.GH_AUTH_TOKEN !== "" ? process.env.GH_AUTH_TOKEN : process.env.GITHUB_TOKEN;
     console.log(token.toString().substring(0, 12));
     const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${token}@${
       process.env['INPUT_CUSTOM-GIT-DOMAIN'] || 'github.com'
