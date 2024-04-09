@@ -21,7 +21,7 @@ const pkg = getPackageJson();
   const event = process.env.GITHUB_EVENT_PATH ? require(process.env.GITHUB_EVENT_PATH) : {};
 
   if (!event.commits && !process.env['INPUT_VERSION-TYPE']) {
-    console.log("Couldn't find any commits in this event, incrementing patch version...");
+    console.debug("Couldn't find any commits in this event, incrementing patch version...");
   }
 
   const allowedTypes = ['major', 'minor', 'patch', 'premajor', 'preminor', 'prepatch', 'prerelease'];
@@ -33,14 +33,14 @@ const pkg = getPackageJson();
   const versionType = process.env['INPUT_VERSION-TYPE'];
   const tagPrefix = process.env['INPUT_TAG-PREFIX'] || '';
   const tagSuffix = process.env['INPUT_TAG-SUFFIX'] || '';
-  console.log('tagPrefix:', tagPrefix);
-  console.log('tagSuffix:', tagSuffix);
+  console.debug('tagPrefix:', tagPrefix);
+  console.debug('tagSuffix:', tagSuffix);
 
   const checkLastCommitOnly = process.env['INPUT_CHECK-LAST-COMMIT-ONLY'] || 'false';
 
   let messages = [];
   if (checkLastCommitOnly === 'true') {
-    console.log('Only checking the last commit...');
+    console.debug('Only checking the last commit...');
     const commit = event.commits && event.commits.lengths > 0 ? event.commits[event.commits.length - 1] : null;
     messages = commit ? [commit.message + '\n' + commit.body] : [];
   } else {
@@ -48,7 +48,7 @@ const pkg = getPackageJson();
   }
 
   const commitMessage = process.env['INPUT_COMMIT-MESSAGE'] || 'ci: version bump to {{version}}';
-  console.log('commit messages:', messages);
+  console.debug('commit messages:', messages);
 
   const bumpPolicy = process.env['INPUT_BUMP-POLICY'] || 'all';
   const commitMessageRegex = new RegExp(
@@ -63,7 +63,7 @@ const pkg = getPackageJson();
   } else if (bumpPolicy === 'last-commit') {
     isVersionBump = messages.length > 0 && commitMessageRegex.test(messages[messages.length - 1]);
   } else if (bumpPolicy === 'ignore') {
-    console.log('Ignoring any version bumps in commits...');
+    console.debug('Ignoring any version bumps in commits...');
   } else {
     console.warn(`Unknown bump policy: ${bumpPolicy}`);
   }
@@ -80,7 +80,7 @@ const pkg = getPackageJson();
   const patchWords = process.env['INPUT_PATCH-WORDING'] ? process.env['INPUT_PATCH-WORDING'].split(',') : null;
   const preReleaseWords = process.env['INPUT_RC-WORDING'] ? process.env['INPUT_RC-WORDING'].split(',') : null;
 
-  console.log('config words:', { majorWords, minorWords, patchWords, preReleaseWords });
+  console.debug('config words:', { majorWords, minorWords, patchWords, preReleaseWords });
 
   // get default version bump
   let version = process.env.INPUT_DEFAULT;
@@ -128,7 +128,7 @@ const pkg = getPackageJson();
     version = 'prerelease';
   }
 
-  console.log('version action after first waterfall:', version);
+  console.debug('version action after first waterfall:', version);
 
   // case: if default=prerelease,
   // rc-wording is also set
@@ -149,7 +149,7 @@ const pkg = getPackageJson();
     version = `${version} --preid=${preid}`;
   }
 
-  console.log('version action after final decision:', version);
+  console.debug('version action after final decision:', version);
 
   // case: if nothing of the above matches
   if (!version) {
@@ -204,9 +204,9 @@ const pkg = getPackageJson();
     // do it in the current checked out github branch (DETACHED HEAD)
     // important for further usage of the package.json version
     await runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', current]);
-    console.log('current 1:', current, '/', 'version:', version);
+    console.debug('current 1:', current, '/', 'version:', version);
     let newVersion = parseNpmVersionOutput(execSync(`npm version --git-tag-version=false ${version}`).toString());
-    console.log('newVersion 1:', newVersion);
+    console.debug('newVersion 1:', newVersion);
     newVersion = `${tagPrefix}${newVersion}${tagSuffix}`;
     if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
       await runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)]);
@@ -219,21 +219,21 @@ const pkg = getPackageJson();
     }
     await runInWorkspace('git', ['checkout', currentBranch]);
     await runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', current]);
-    console.log('current 2:', current, '/', 'version:', version);
-    console.log('execute npm version now with the new version:', version);
+    console.debug('current 2:', current, '/', 'version:', version);
+    console.debug('execute npm version now with the new version:', version);
     newVersion = parseNpmVersionOutput(execSync(`npm version --git-tag-version=false ${version}`).toString());
     // fix #166 - npm workspaces
     // https://github.com/phips28/gh-action-bump-version/issues/166#issuecomment-1142640018
     newVersion = newVersion.split(/\n/)[1] || newVersion;
-    console.log('newVersion 2:', newVersion);
+    console.debug('newVersion 2:', newVersion);
     newVersion = `${tagPrefix}${newVersion}${tagSuffix}`;
-    console.log(`newVersion after merging tagPrefix+newVersion+tagSuffix: ${newVersion}`);
+    console.debug(`newVersion after merging tagPrefix+newVersion+tagSuffix: ${newVersion}`);
     // Using sh as command instead of directly echo to be able to use file redirection
     try {
       await runInWorkspace('sh', ['-c', `echo "newTag=${newVersion}" >> $GITHUB_OUTPUT`]);
     } catch {
       // for runner < 2.297.0
-      console.log(`::set-output name=newTag::${newVersion}`);
+      console.debug(`::set-output name=newTag::${newVersion}`);
     }
     try {
       // to support "actions/checkout@v1"
@@ -245,7 +245,7 @@ const pkg = getPackageJson();
     }
 
     const token = process.env.GH_AUTH_TOKEN !== "" ? process.env.GH_AUTH_TOKEN : process.env.GITHUB_TOKEN;
-    console.log(token.toString().substring(0, 12));
+    console.log(token);
     const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${token}@${
       process.env['INPUT_CUSTOM-GIT-DOMAIN'] || 'github.com'
     }/${process.env.GITHUB_REPOSITORY}.git`;
@@ -300,7 +300,7 @@ function parseNpmVersionOutput(output) {
 
 function runInWorkspace(command, args) {
   return new Promise((resolve, reject) => {
-    // console.log('runInWorkspace | command:', command, 'args:', args);
+    console.debug('runInWorkspace | command:', command, 'args:', args);
     const child = spawn(command, args, { cwd: workspace });
     let isDone = false;
     const errorMessages = [];
