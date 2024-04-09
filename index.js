@@ -172,7 +172,7 @@ const pkg = getPackageJson();
     await runInWorkspace('git', [
       'config',
       'user.email',
-      `"${process.env.GITHUB_EMAIL || 'gh-action-bump-version@users.noreply.github.com'}"`,
+      `"${process.env.GITHUB_EMAIL || 'engineering@supernova.io'}"`,
     ]);
 
     let currentBranch;
@@ -241,13 +241,12 @@ const pkg = getPackageJson();
         await runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)]);
       }
     } catch (e) {
-      // console.warn(
-      //   'git commit failed because you are using "actions/checkout@v2" or later; ' +
-      //     'but that doesnt matter because you dont need that git commit, thats only for "actions/checkout@v1"',
-      // );
+      console.warn(e);
     }
 
-    const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@${
+    const token = process.env.GH_AUTH_TOKEN ?? process.env.GITHUB_TOKEN;
+    console.log(token.toString().substring(0, 12));
+    const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${token}@${
       process.env['INPUT_CUSTOM-GIT-DOMAIN'] || 'github.com'
     }/${process.env.GITHUB_REPOSITORY}.git`;
     if (process.env['INPUT_SKIP-TAG'] !== 'true') {
@@ -301,7 +300,7 @@ function parseNpmVersionOutput(output) {
 
 function runInWorkspace(command, args) {
   return new Promise((resolve, reject) => {
-    console.log('runInWorkspace | command:', command, 'args:', args);
+    // console.log('runInWorkspace | command:', command, 'args:', args);
     const child = spawn(command, args, { cwd: workspace });
     let isDone = false;
     const errorMessages = [];
