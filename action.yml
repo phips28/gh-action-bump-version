@@ -78,8 +78,8 @@ inputs:
     description: 'Set a custom domain of the git instance'
     default: 'github.com'
     required: false
-  git-no-verify:
-    description: 'Skip precommit hooks'
+  commit-no-verify:
+    description: 'Skip commit hooks'
     default: 'false'
     required: false
   push:

@@ -238,7 +238,7 @@ const pkg = getPackageJson();
     try {
       // to support "actions/checkout@v1"
       if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
-        if (process.env['INPUT_GIT-NO-VERIFY'] === 'true') {
+        if (process.env['INPUT_COMMIT-NO-VERIFY'] === 'true') {
           await runInWorkspace('git', ['commit', '-a', '--no-verify', '-m', commitMessage.replace(/{{version}}/g, newVersion)]);
         } else {
           await runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)]);
