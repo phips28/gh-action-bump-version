@@ -78,6 +78,10 @@ inputs:
     description: 'Set a custom domain of the git instance'
     default: 'github.com'
     required: false
+  commit-no-verify:
+    description: 'Skip commit hooks'
+    default: 'false'
+    required: false
   push:
     description: '[DEPRECATED] Set to false to skip pushing the new tag'
     default: 'true'
