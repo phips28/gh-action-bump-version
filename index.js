@@ -205,7 +205,7 @@ const pkg = getPackageJson();
     // important for further usage of the package.json version
     await runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', current]);
     console.log('current 1:', current, '/', 'version:', version);
-    let newVersion = parseNpmVersionOutput(execSync(`npm version --git-tag-version=false ${version}`).toString());
+    let newVersion = parseNpmVersionOutput(execSync(`npm version --git-tag-version=false ${version} --silent`).toString());
     console.log('newVersion 1:', newVersion);
     newVersion = `${tagPrefix}${newVersion}${tagSuffix}`;
     if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
@@ -221,7 +221,7 @@ const pkg = getPackageJson();
     await runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', current]);
     console.log('current 2:', current, '/', 'version:', version);
     console.log('execute npm version now with the new version:', version);
-    newVersion = parseNpmVersionOutput(execSync(`npm version --git-tag-version=false ${version}`).toString());
+    newVersion = parseNpmVersionOutput(execSync(`npm version --git-tag-version=false ${version} --silent`).toString());
     // fix #166 - npm workspaces
     // https://github.com/phips28/gh-action-bump-version/issues/166#issuecomment-1142640018
     newVersion = newVersion.split(/\n/)[1] || newVersion;
