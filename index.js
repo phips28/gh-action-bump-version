@@ -243,7 +243,6 @@ const pkg = getPackageJson();
         } else {
           await runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)]);
         }
-        await runInWorkspace('git', ['checkout', '--', 'yarn.lock']);
 
       }
     } catch (e) {
@@ -267,6 +266,7 @@ const pkg = getPackageJson();
         await runInWorkspace('git', ['push', remoteRepo]);
       }
     }
+    await runInWorkspace('git', ['checkout', '--', 'yarn.lock']);
   } catch (e) {
     logError(e);
     exitFailure('Failed to bump version');
