@@ -255,20 +255,10 @@ const pkg = getPackageJson();
     const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@${
       process.env['INPUT_CUSTOM-GIT-DOMAIN'] || 'github.com'
     }/${process.env.GITHUB_REPOSITORY}.git`;
-    if (process.env['INPUT_SKIP-TAG'] !== 'true') {
-      await runInWorkspace('git', ['tag', newVersion]);
-      if (process.env['INPUT_SKIP-PUSH'] !== 'true') {
-        await runInWorkspace('git', ['push', remoteRepo, '--follow-tags']);
-        await runInWorkspace('git', ['push', remoteRepo, '--tags']);
-      }
-    } else {
-      if (process.env['INPUT_SKIP-PUSH'] !== 'true') {
-        await runInWorkspace('git', ['push', remoteRepo]);
-      }
-    }
     try {
       // Find all yarn.lock files and checkout each one individually
       const yarnLockFiles = execSync('find . -name "yarn.lock"').toString().trim().split('\n');
+      console.info('yarnLockFiles:', yarnLockFiles);
       yarnLockFiles.forEach(file => {
         execSync(`git checkout -- ${file}`);
       });
@@ -281,6 +271,18 @@ const pkg = getPackageJson();
     exitFailure('Failed to bump version');
     return;
   }
+    if (process.env['INPUT_SKIP-TAG'] !== 'true') {
+      await runInWorkspace('git', ['tag', newVersion]);
+      if (process.env['INPUT_SKIP-PUSH'] !== 'true') {
+        await runInWorkspace('git', ['push', remoteRepo, '--follow-tags']);
+        await runInWorkspace('git', ['push', remoteRepo, '--tags']);
+      }
+    } else {
+      if (process.env['INPUT_SKIP-PUSH'] !== 'true') {
+        await runInWorkspace('git', ['push', remoteRepo]);
+      }
+    }
+    
   exitSuccess('Version bumped!');
 })();
 
