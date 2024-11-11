@@ -266,7 +266,7 @@ const pkg = getPackageJson();
         await runInWorkspace('git', ['push', remoteRepo]);
       }
     }
-    await runInWorkspace('git', ['checkout', '--', 'yarn.lock']);
+    await runInWorkspace('git', ['checkout', '--', '**/yarn.lock']);
   } catch (e) {
     logError(e);
     exitFailure('Failed to bump version');
