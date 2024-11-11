@@ -256,10 +256,9 @@ const pkg = getPackageJson();
     }/${process.env.GITHUB_REPOSITORY}.git`;
 
 
+    // Find all yarn.lock files and checkout each one individually
     try {
-      // Find all yarn.lock files and checkout each one individually
       const yarnLockFiles = execSync('find . -name "yarn.lock"').toString().trim().split('\n');
-      console.info('yarnLockFiles:', yarnLockFiles);
       yarnLockFiles.forEach(file => {
         execSync(`git checkout -- ${file}`);
       });
@@ -267,7 +266,6 @@ const pkg = getPackageJson();
     } catch (error) {
       console.error('Error resetting yarn.lock files:', error);
     }
-
 
     if (process.env['INPUT_SKIP-TAG'] !== 'true') {
       await runInWorkspace('git', ['tag', newVersion]);
