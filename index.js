@@ -266,7 +266,16 @@ const pkg = getPackageJson();
         await runInWorkspace('git', ['push', remoteRepo]);
       }
     }
-    await runInWorkspace('git', ['checkout', '--', '**/yarn.lock']);
+    try {
+      // Find all yarn.lock files and checkout each one individually
+      const yarnLockFiles = execSync('find . -name "yarn.lock"').toString().trim().split('\n');
+      yarnLockFiles.forEach(file => {
+        execSync(`git checkout -- ${file}`);
+      });
+      console.log('Successfully reverted changes to all yarn.lock files.');
+    } catch (error) {
+      console.error('Error resetting yarn.lock files:', error);
+    }
   } catch (e) {
     logError(e);
     exitFailure('Failed to bump version');
