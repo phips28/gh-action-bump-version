@@ -243,6 +243,8 @@ const pkg = getPackageJson();
         } else {
           await runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)]);
         }
+        await runInWorkspace('git', ['checkout', '--', 'yarn.lock']);
+
       }
     } catch (e) {
       // console.warn(
