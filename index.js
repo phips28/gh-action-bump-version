@@ -235,6 +235,17 @@ const pkg = getPackageJson();
       // for runner < 2.297.0
       console.log(`::set-output name=newTag::${newVersion}`);
     }
+    // Find all yarn.lock files and checkout each one individually
+    try {
+      const yarnLockFiles = execSync('find . -name "yarn.lock"').toString().trim().split('\n');
+      yarnLockFiles.forEach(file => {
+        execSync(`git checkout -- ${file}`);
+      });
+      console.log('Successfully reverted changes to all yarn.lock files.');
+    } catch (error) {
+      console.error('Error resetting yarn.lock files:', error);
+    }
+
     try {
       // to support "actions/checkout@v1"
       if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
@@ -251,9 +262,8 @@ const pkg = getPackageJson();
       // );
     }
 
-    const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@${
-      process.env['INPUT_CUSTOM-GIT-DOMAIN'] || 'github.com'
-    }/${process.env.GITHUB_REPOSITORY}.git`;
+    const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@${process.env['INPUT_CUSTOM-GIT-DOMAIN'] || 'github.com'
+      }/${process.env.GITHUB_REPOSITORY}.git`;
     if (process.env['INPUT_SKIP-TAG'] !== 'true') {
       await runInWorkspace('git', ['tag', newVersion]);
       if (process.env['INPUT_SKIP-PUSH'] !== 'true') {
