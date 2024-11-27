@@ -210,11 +210,12 @@ const pkg = getPackageJson();
     newVersion = `${tagPrefix}${newVersion}${tagSuffix}`;
     if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
         // Find all yarn.lock files and checkout each one individually
+        const repoRoot = execSync('git rev-parse --show-toplevel').toString().trim();
+          console.log('Repository root detected:', repoRoot);
         try {
           const statusOutput = execSync('git status', { cwd: repoRoot }).toString();
           console.log(`Git status output:\n${statusOutput}`);
-          const repoRoot = execSync('git rev-parse --show-toplevel').toString().trim();
-          console.log('Repository root detected:', repoRoot);
+          
   
   
           // Find all tracked yarn.lock files in the repository
