@@ -213,11 +213,11 @@ const pkg = getPackageJson();
     if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
 
     try {
-      const yarnLockFiles = execSync(`git ls-files | grep 'yarn.lock'`, { cwd: repoRoot })
+      const yarnLockFiles = execSync(`find ${repoRoot} -name "yarn.lock"`, { cwd: repoRoot })
         .toString()
         .trim()
         .split('\n');
-        const npmLockFiles = execSync(`git ls-files | grep 'package-lock.json'`, { cwd: repoRoot })
+        const npmLockFiles = execSync(`find ${repoRoot} -name "package-lock.json"`, { cwd: repoRoot })
           .toString()
           .trim()
           .split('\n');
@@ -257,11 +257,11 @@ const pkg = getPackageJson();
     }
 
     try {
-      const yarnLockFiles = execSync(`git ls-files | grep 'yarn.lock'`, { cwd: repoRoot })
+      const yarnLockFiles = execSync(`find ${repoRoot} -name "yarn.lock"`, { cwd: repoRoot })
         .toString()
         .trim()
         .split('\n');
-        const npmLockFiles = execSync(`git ls-files | grep 'package-lock.json'`, { cwd: repoRoot })
+        const npmLockFiles = execSync(`find ${repoRoot} -name "package-lock.json"`, { cwd: repoRoot })
           .toString()
           .trim()
           .split('\n');
@@ -298,11 +298,11 @@ const pkg = getPackageJson();
 
     // Find all yarn.lock files and checkout each one individually
     try {
-      const yarnLockFiles = execSync(`git ls-files | grep 'yarn.lock'`, { cwd: repoRoot })
+      const yarnLockFiles = execSync(`find ${repoRoot} -name "yarn.lock"`, { cwd: repoRoot })
         .toString()
         .trim()
         .split('\n');
-        const npmLockFiles = execSync(`git ls-files | grep 'package-lock.json'`, { cwd: repoRoot })
+        const npmLockFiles = execSync(`find ${repoRoot} -name "package-lock.json"`, { cwd: repoRoot })
           .toString()
           .trim()
           .split('\n');
