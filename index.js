@@ -18,6 +18,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
 const pkg = getPackageJson();
 
 (async () => {
+  const repoRoot = execSync('git rev-parse --show-toplevel').toString().trim();
   const event = process.env.GITHUB_EVENT_PATH ? require(process.env.GITHUB_EVENT_PATH) : {};
 
   if (!event.commits && !process.env['INPUT_VERSION-TYPE']) {
@@ -262,7 +263,6 @@ const pkg = getPackageJson();
 
     // Find all yarn.lock files and checkout each one individually
     try {
-      const repoRoot = execSync('git rev-parse --show-toplevel').toString().trim();
 
       const yarnLockFiles = execSync(`git ls-files ${repoRoot} | grep 'yarn.lock'`).toString().trim().split('\n');
 
