@@ -208,19 +208,6 @@ const pkg = getPackageJson();
     let newVersion = parseNpmVersionOutput(execSync(`npm version --git-tag-version=false ${version} --silent`).toString());
     console.log('newVersion 1:', newVersion);
     newVersion = `${tagPrefix}${newVersion}${tagSuffix}`;
-
-    // Find all yarn.lock files and checkout each one individually
-    try {
-      const yarnLockFiles = execSync('find . -name "yarn.lock"').toString().trim().split('\n');
-      yarnLockFiles.forEach(file => {
-        execSync(`git checkout -- ${file}`);
-      });
-      console.log('Successfully reverted changes to all yarn.lock files.');
-    } catch (error) {
-      console.error('Error resetting yarn.lock files:', error);
-    }
-
-
     if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
       await runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)]);
     }
@@ -269,7 +256,18 @@ const pkg = getPackageJson();
     }/${process.env.GITHUB_REPOSITORY}.git`;
 
 
+    // Find all yarn.lock files and checkout each one individually
+    try {
+      const repoRoot = execSync('git rev-parse --show-toplevel').toString().trim();
 
+      const yarnLockFiles = execSync(`find ${repoRoot} -name "yarn.lock"`).toString().trim().split('\n');
+      yarnLockFiles.forEach(file => {
+        execSync(`git checkout -- ${file}`);
+      });
+      console.log('Successfully reverted changes to all yarn.lock files.');
+    } catch (error) {
+      console.error('Error resetting yarn.lock files:', error);
+    }
 
     if (process.env['INPUT_SKIP-TAG'] !== 'true') {
       await runInWorkspace('git', ['tag', newVersion]);
