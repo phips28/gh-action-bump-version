@@ -209,6 +209,8 @@ const pkg = getPackageJson();
     console.log('newVersion 1:', newVersion);
     newVersion = `${tagPrefix}${newVersion}${tagSuffix}`;
     if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
+      const statusOutput = execSync('git status', { cwd: repoRoot }).toString();
+      console.log(`Git status output (1):\n${statusOutput}`);
       await runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)]);
     }
 
@@ -236,6 +238,8 @@ const pkg = getPackageJson();
       console.log(`::set-output name=newTag::${newVersion}`);
     }
     try {
+      const statusOutput = execSync('git status', { cwd: repoRoot }).toString();
+      console.log(`Git status (2) output:\n${statusOutput}`);
       // to support "actions/checkout@v1"
       if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
         if (process.env['INPUT_COMMIT-NO-VERIFY'] === 'true') {
@@ -278,6 +282,8 @@ const pkg = getPackageJson();
     } catch (error) {
       console.error('Error resetting yarn.lock files:', error);
     }
+    const statusOutput = execSync('git status', { cwd: repoRoot }).toString();
+    console.log(`Git status output (3):\n${statusOutput}`);
 
     if (process.env['INPUT_SKIP-TAG'] !== 'true') {
       await runInWorkspace('git', ['tag', newVersion]);
