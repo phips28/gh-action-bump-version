@@ -30,6 +30,8 @@ const pkg = getPackageJson();
     return;
   }
 
+  const repoRoot = execSync('git rev-parse --show-toplevel').toString().trim();
+
   const versionType = process.env['INPUT_VERSION-TYPE'];
   const tagPrefix = process.env['INPUT_TAG-PREFIX'] || '';
   const tagSuffix = process.env['INPUT_TAG-SUFFIX'] || '';
@@ -211,10 +213,16 @@ const pkg = getPackageJson();
     if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
 
     try {
-      const yarnLockFiles = execSync('find . -name "yarn.lock"').toString().trim().split('\n');
-      const npmLockFiles = execSync('find . -name "package-lock.json"').toString().trim().split('\n');
+      const yarnLockFiles = execSync(`git ls-files | grep 'yarn.lock'`, { cwd: repoRoot })
+        .toString()
+        .trim()
+        .split('\n');
+        const npmLockFiles = execSync(`git ls-files | grep 'package-lock.json'`, { cwd: repoRoot })
+          .toString()
+          .trim()
+          .split('\n');
       [...yarnLockFiles, ...npmLockFiles].forEach(file => {
-        console.log('Reverting changes to:', file);
+        console.log(`reverting changes to ${file}`);
         execSync(`git checkout -- ${file}`);
       });
       console.log('Successfully reverted changes to all yarn.lock files.');
@@ -249,10 +257,16 @@ const pkg = getPackageJson();
     }
 
     try {
-      const yarnLockFiles = execSync('find . -name "yarn.lock"').toString().trim().split('\n');
-      const npmLockFiles = execSync('find . -name "package-lock.json"').toString().trim().split('\n');
+      const yarnLockFiles = execSync(`git ls-files | grep 'yarn.lock'`, { cwd: repoRoot })
+        .toString()
+        .trim()
+        .split('\n');
+        const npmLockFiles = execSync(`git ls-files | grep 'package-lock.json'`, { cwd: repoRoot })
+          .toString()
+          .trim()
+          .split('\n');
       [...yarnLockFiles, ...npmLockFiles].forEach(file => {
-        console.log('Reverting changes to:', file);
+        console.log(`reverting changes to ${file}`);
         execSync(`git checkout -- ${file}`);
       });
       console.log('Successfully reverted changes to all yarn.lock files.');
@@ -284,10 +298,16 @@ const pkg = getPackageJson();
 
     // Find all yarn.lock files and checkout each one individually
     try {
-      const yarnLockFiles = execSync('find . -name "yarn.lock"').toString().trim().split('\n');
-      const npmLockFiles = execSync('find . -name "package-lock.json"').toString().trim().split('\n');
+      const yarnLockFiles = execSync(`git ls-files | grep 'yarn.lock'`, { cwd: repoRoot })
+        .toString()
+        .trim()
+        .split('\n');
+        const npmLockFiles = execSync(`git ls-files | grep 'package-lock.json'`, { cwd: repoRoot })
+          .toString()
+          .trim()
+          .split('\n');
       [...yarnLockFiles, ...npmLockFiles].forEach(file => {
-        console.log('Reverting changes to:', file);
+        console.log(`reverting changes to ${file}`);
         execSync(`git checkout -- ${file}`);
       });
       console.log('Successfully reverted changes to all yarn.lock files.');
