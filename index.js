@@ -239,6 +239,28 @@ const pkg = getPackageJson();
       console.log(`::set-output name=newTag::${newVersion}`);
     }
     try {
+              // Find all yarn.lock files and checkout each one individually
+          try {
+
+            const yarnLockFiles = execSync(`git ls-files ${repoRoot} | grep 'yarn.lock'`).toString().trim().split('\n');
+            const npmLockFiles = execSync(`git ls-files ${repoRoot} | grep 'package-lock.json'`).toString().trim().split('\n');
+
+            for (const file of [...yarnLockFiles, ...npmLockFiles]) {
+              if (file) {
+                console.log(`Processing yarn.lock file: ${file}`);
+          
+                // Uncommit the file: remove it from the last commit
+                await runInWorkspace('git', ['reset', 'HEAD', file], repoRoot);
+                console.log(`Uncommitted: ${file}`);
+          
+                // Revert changes to the file
+                await runInWorkspace('git', ['checkout', '--', file], repoRoot);
+                console.log(`Reverted changes to: ${file}`);
+              }
+            }
+          } catch (error) {
+            console.error('Error resetting yarn.lock files:', error);
+          }
       const statusOutput = execSync('git status', { cwd: repoRoot }).toString();
       console.log(`Git status (2) output:\n${statusOutput}`);
       // to support "actions/checkout@v1"
@@ -261,28 +283,7 @@ const pkg = getPackageJson();
     }/${process.env.GITHUB_REPOSITORY}.git`;
 
 
-    // Find all yarn.lock files and checkout each one individually
-    try {
-
-      const yarnLockFiles = execSync(`git ls-files ${repoRoot} | grep 'yarn.lock'`).toString().trim().split('\n');
-      const npmLockFiles = execSync(`git ls-files ${repoRoot} | grep 'package-lock.json'`).toString().trim().split('\n');
-
-      for (const file of [...yarnLockFiles, ...npmLockFiles]) {
-        if (file) {
-          console.log(`Processing yarn.lock file: ${file}`);
-    
-          // Uncommit the file: remove it from the last commit
-          await runInWorkspace('git', ['reset', 'HEAD', file], repoRoot);
-          console.log(`Uncommitted: ${file}`);
-    
-          // Revert changes to the file
-          await runInWorkspace('git', ['checkout', '--', file], repoRoot);
-          console.log(`Reverted changes to: ${file}`);
-        }
-      }
-    } catch (error) {
-      console.error('Error resetting yarn.lock files:', error);
-    }
+ 
     const statusOutput = execSync('git status', { cwd: repoRoot }).toString();
     console.log(`Git status output (3):\n${statusOutput}`);
 
