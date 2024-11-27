@@ -262,24 +262,19 @@ const pkg = getPackageJson();
 
       const yarnLockFiles = execSync(`git ls-files ${repoRoot} | grep 'yarn.lock'`).toString().trim().split('\n');
 
-      yarnLockFiles.forEach(file => {
+      for (const file of yarnLockFiles) {
         if (file) {
-          const absolutePath = `${repoRoot}/${file}`; // Ensure full path
-
+          console.log(`Processing yarn.lock file: ${file}`);
+    
           // Uncommit the file: remove it from the last commit
-          execSync(`git reset HEAD ${absolutePath}`);
-          console.log(`Uncommitted: ${absolutePath}`);
+          await runInWorkspace('git', ['reset', 'HEAD', file], repoRoot);
+          console.log(`Uncommitted: ${file}`);
     
           // Revert changes to the file
-          execSync(`git checkout -- ${absolutePath}`);
-          console.log(`Reverted changes to: ${absolutePath}`);
-    
-          // Optional: Temporarily ignore the file to avoid accidental staging
-          execSync(`echo "${absolutePath}" >> ${repoRoot}/.gitignore`);
-          console.log(`Temporarily ignored: ${absolutePath}`);
+          await runInWorkspace('git', ['checkout', '--', file], repoRoot);
+          console.log(`Reverted changes to: ${file}`);
         }
-      });
-      console.log('Successfully reverted changes to all yarn.lock files.');
+      }
     } catch (error) {
       console.error('Error resetting yarn.lock files:', error);
     }
