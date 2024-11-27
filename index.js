@@ -263,7 +263,15 @@ const pkg = getPackageJson();
       const yarnLockFiles = execSync(`git ls-files ${repoRoot} | grep 'yarn.lock'`).toString().trim().split('\n');
 
       yarnLockFiles.forEach(file => {
-        execSync(`git checkout -- ${file}`);
+        if (file) {
+          // Revert changes to the yarn.lock file
+          execSync(`git checkout -- ${file}`);
+          console.log(`Reverted changes to: ${file}`);
+          
+          // Unstage the yarn.lock file
+          execSync(`git reset HEAD ${file}`);
+          console.log(`Unstaged yarn.lock: ${file}`);
+        }
       });
       console.log('Successfully reverted changes to all yarn.lock files.');
     } catch (error) {
