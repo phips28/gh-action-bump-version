@@ -260,7 +260,9 @@ const pkg = getPackageJson();
     try {
       const yarnLockFiles = execSync('find . -name "yarn.lock"').toString().trim().split('\n');
       yarnLockFiles.forEach(file => {
-        execSync(`git checkout -- ${file}`);
+        execSync(`git restore --staged ${file}`); // Unstage changes
+        execSync(`git checkout -- ${file}`);      // Revert changes
+        console.log(`Successfully reverted ${file}`);
       });
       console.log('Successfully reverted changes to all yarn.lock files.');
     } catch (error) {
