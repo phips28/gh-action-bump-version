@@ -209,6 +209,35 @@ const pkg = getPackageJson();
     console.log('newVersion 1:', newVersion);
     newVersion = `${tagPrefix}${newVersion}${tagSuffix}`;
     if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
+
+      // find all lock files and rmeove it from commit
+      // use absolute path to avoid problem with directories
+      const repoRoot = execSync('git rev-parse --show-toplevel').toString().trim();
+      try {
+        // yarn and npm for now
+        const lockFiles = execSync(`git ls-files | grep -E 'yarn.lock|package-lock.json'`, { cwd: repoRoot })
+          .toString()
+          .trim()
+          .split('\n');
+
+        for (const file of lockFiles) {
+          if (file) {
+            const absolutePath = `${repoRoot}/${file}`;
+            console.log(`Processing yarn.lock file: ${file}`);
+
+            // Uncommit the file: remove it from the last commit
+            execSync(`git reset HEAD ${absolutePath}`);
+            console.log(`Uncommitted: ${absolutePath}`);
+
+            // Revert changes to the file
+            execSync(`git checkout -- ${absolutePath}`);
+            console.log(`Reverted changes to: ${absolutePath}`);
+          }
+        }
+      } catch (error) {
+        console.error('Error while processing lock files:', error);
+      }
+
       await runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)]);
     }
 
@@ -254,17 +283,7 @@ const pkg = getPackageJson();
     const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@${
       process.env['INPUT_CUSTOM-GIT-DOMAIN'] || 'github.com'
     }/${process.env.GITHUB_REPOSITORY}.git`;
-    if (process.env['INPUT_SKIP-TAG'] !== 'true') {
-      await runInWorkspace('git', ['tag', newVersion]);
-      if (process.env['INPUT_SKIP-PUSH'] !== 'true') {
-        await runInWorkspace('git', ['push', remoteRepo, '--follow-tags']);
-        await runInWorkspace('git', ['push', remoteRepo, '--tags']);
-      }
-    } else {
-      if (process.env['INPUT_SKIP-PUSH'] !== 'true') {
-        await runInWorkspace('git', ['push', remoteRepo]);
-      }
-    }
+
   } catch (e) {
     logError(e);
     exitFailure('Failed to bump version');
