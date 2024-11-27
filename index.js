@@ -238,8 +238,8 @@ const pkg = getPackageJson();
               console.log(`Reverted changes to: ${absolutePath}`);
 
               // Optional: Temporarily ignore the file to avoid accidental staging
-              execSync(`echo "${absolutePath}" >> ${repoRoot}/.gitignore`);
-              console.log(`Temporarily ignored: ${absolutePath}`);
+              // execSync(`echo "${absolutePath}" >> ${repoRoot}/.gitignore`);
+              // console.log(`Temporarily ignored: ${absolutePath}`);
             }
           }
         } catch (error) {
