@@ -264,13 +264,12 @@ const pkg = getPackageJson();
 
       yarnLockFiles.forEach(file => {
         if (file) {
-          // Revert changes to the yarn.lock file
+          execSync(`git reset HEAD ${file}`);
+          console.log(`Uncommitted: ${file}`);
+    
+          // Revert changes to the file
           execSync(`git checkout -- ${file}`);
           console.log(`Reverted changes to: ${file}`);
-          
-          // Unstage the yarn.lock file
-          execSync(`git reset HEAD ${file}`);
-          console.log(`Unstaged yarn.lock: ${file}`);
         }
       });
       console.log('Successfully reverted changes to all yarn.lock files.');
