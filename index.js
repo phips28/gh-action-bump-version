@@ -209,6 +209,18 @@ const pkg = getPackageJson();
     console.log('newVersion 1:', newVersion);
     newVersion = `${tagPrefix}${newVersion}${tagSuffix}`;
     if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
+
+    try {
+      const yarnLockFiles = execSync('find . -name "yarn.lock"').toString().trim().split('\n');
+      const npmLockFiles = execSync('find . -name "package-lock.json"').toString().trim().split('\n');
+      [...yarnLockFiles, ...npmLockFiles].forEach(file => {
+        console.log('Reverting changes to:', file);
+        execSync(`git checkout -- ${file}`);
+      });
+      console.log('Successfully reverted changes to all yarn.lock files.');
+    } catch (error) {
+      console.error('Error resetting yarn.lock files:', error);
+    }
       await runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)]);
     }
 
@@ -240,6 +252,7 @@ const pkg = getPackageJson();
       const yarnLockFiles = execSync('find . -name "yarn.lock"').toString().trim().split('\n');
       const npmLockFiles = execSync('find . -name "package-lock.json"').toString().trim().split('\n');
       [...yarnLockFiles, ...npmLockFiles].forEach(file => {
+        console.log('Reverting changes to:', file);
         execSync(`git checkout -- ${file}`);
       });
       console.log('Successfully reverted changes to all yarn.lock files.');
@@ -274,6 +287,7 @@ const pkg = getPackageJson();
       const yarnLockFiles = execSync('find . -name "yarn.lock"').toString().trim().split('\n');
       const npmLockFiles = execSync('find . -name "package-lock.json"').toString().trim().split('\n');
       [...yarnLockFiles, ...npmLockFiles].forEach(file => {
+        console.log('Reverting changes to:', file);
         execSync(`git checkout -- ${file}`);
       });
       console.log('Successfully reverted changes to all yarn.lock files.');
