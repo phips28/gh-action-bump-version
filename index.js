@@ -265,8 +265,9 @@ const pkg = getPackageJson();
     try {
 
       const yarnLockFiles = execSync(`git ls-files ${repoRoot} | grep 'yarn.lock'`).toString().trim().split('\n');
+      const npmLockFiles = execSync(`git ls-files ${repoRoot} | grep 'package-lock.json'`).toString().trim().split('\n');
 
-      for (const file of yarnLockFiles) {
+      for (const file of [...yarnLockFiles, ...npmLockFiles]) {
         if (file) {
           console.log(`Processing yarn.lock file: ${file}`);
     
