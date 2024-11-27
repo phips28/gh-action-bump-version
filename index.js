@@ -260,7 +260,8 @@ const pkg = getPackageJson();
     try {
       const repoRoot = execSync('git rev-parse --show-toplevel').toString().trim();
 
-      const yarnLockFiles = execSync(`find ${repoRoot} -name "yarn.lock"`).toString().trim().split('\n');
+      const yarnLockFiles = execSync(`git ls-files ${repoRoot} | grep 'yarn.lock'`).toString().trim().split('\n');
+
       yarnLockFiles.forEach(file => {
         execSync(`git checkout -- ${file}`);
       });
