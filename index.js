@@ -209,44 +209,34 @@ const pkg = getPackageJson();
     console.log('newVersion 1:', newVersion);
     newVersion = `${tagPrefix}${newVersion}${tagSuffix}`;
     if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
-        // Find all yarn.lock files and checkout each one individually
-        const repoRoot = execSync('git rev-parse --show-toplevel').toString().trim();
-          console.log('Repository root detected:', repoRoot);
-        try {
-          const statusOutput = execSync('git status', { cwd: repoRoot }).toString();
-          console.log(`Git status output:\n${statusOutput}`);
-          
-  
-  
-          // Find all tracked yarn.lock files in the repository
-          const yarnLockFiles = execSync(`git ls-files | grep -E 'yarn.lock|package-lock.json'`, { cwd: repoRoot })
-            .toString()
-            .trim()
-            .split('\n');
 
-          for (const file of yarnLockFiles) {
-            if (file) {
-              const absolutePath = `${repoRoot}/${file}`;
-              console.log(`Processing yarn.lock file: ${file}`);
+      // find all lock files and rmeove it from commit
+      // use absolute path to avoid problem with directories
+      const repoRoot = execSync('git rev-parse --show-toplevel').toString().trim();
+      try {
+        // yarn and npm for now
+        const lockFiles = execSync(`git ls-files | grep -E 'yarn.lock|package-lock.json'`, { cwd: repoRoot })
+          .toString()
+          .trim()
+          .split('\n');
 
-              // Uncommit the file: remove it from the last commit
-              execSync(`git reset HEAD ${absolutePath}`);
-              console.log(`Uncommitted: ${absolutePath}`);
+        for (const file of lockFiles) {
+          if (file) {
+            const absolutePath = `${repoRoot}/${file}`;
+            console.log(`Processing yarn.lock file: ${file}`);
 
-              // Revert changes to the file
-              execSync(`git checkout -- ${absolutePath}`);
-              console.log(`Reverted changes to: ${absolutePath}`);
+            // Uncommit the file: remove it from the last commit
+            execSync(`git reset HEAD ${absolutePath}`);
+            console.log(`Uncommitted: ${absolutePath}`);
 
-              // Optional: Temporarily ignore the file to avoid accidental staging
-              // execSync(`echo "${absolutePath}" >> ${repoRoot}/.gitignore`);
-              // console.log(`Temporarily ignored: ${absolutePath}`);
-            }
+            // Revert changes to the file
+            execSync(`git checkout -- ${absolutePath}`);
+            console.log(`Reverted changes to: ${absolutePath}`);
           }
-        } catch (error) {
-          console.error('Error while processing yarn.lock files:', error);
         }
-        const statusOutput = execSync('git status', { cwd: repoRoot }).toString();
-        console.log(`Git status output (2):\n${statusOutput}`);
+      } catch (error) {
+        console.error('Error while processing lock files:', error);
+      }
 
       await runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)]);
     }
@@ -274,25 +264,26 @@ const pkg = getPackageJson();
       // for runner < 2.297.0
       console.log(`::set-output name=newTag::${newVersion}`);
     }
+    try {
+      // to support "actions/checkout@v1"
+      if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
+        if (process.env['INPUT_COMMIT-NO-VERIFY'] === 'true') {
+          await runInWorkspace('git', ['commit', '-a', '--no-verify', '-m', commitMessage.replace(/{{version}}/g, newVersion)]);
+        } else {
+          await runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{version}}/g, newVersion)]);
+        }
+      }
+    } catch (e) {
+      // console.warn(
+      //   'git commit failed because you are using "actions/checkout@v2" or later; ' +
+      //     'but that doesnt matter because you dont need that git commit, thats only for "actions/checkout@v1"',
+      // );
+    }
 
     const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@${
       process.env['INPUT_CUSTOM-GIT-DOMAIN'] || 'github.com'
     }/${process.env.GITHUB_REPOSITORY}.git`;
 
-
-
-
-    if (process.env['INPUT_SKIP-TAG'] !== 'true') {
-      await runInWorkspace('git', ['tag', newVersion]);
-      if (process.env['INPUT_SKIP-PUSH'] !== 'true') {
-        await runInWorkspace('git', ['push', remoteRepo, '--follow-tags']);
-        await runInWorkspace('git', ['push', remoteRepo, '--tags']);
-      }
-    } else {
-      if (process.env['INPUT_SKIP-PUSH'] !== 'true') {
-        await runInWorkspace('git', ['push', remoteRepo]);
-      }
-    }
   } catch (e) {
     logError(e);
     exitFailure('Failed to bump version');
