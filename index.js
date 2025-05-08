@@ -258,7 +258,6 @@ const pkg = getPackageJson();
     if (isSsh) {
       remoteRepo = `git@${gihtubDomain}:${process.env.GITHUB_REPOSITORY}.git`
     }
-
     
     if (process.env['INPUT_SKIP-TAG'] !== 'true') {
       await runInWorkspace('git', ['tag', newVersion]);
