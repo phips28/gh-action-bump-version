@@ -254,7 +254,7 @@ const pkg = getPackageJson();
     const githubDomain = process.env['INPUT_CUSTOM-GIT-DOMAIN'] || 'github.com'
     let remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@${githubDomain}/${process.env.GITHUB_REPOSITORY}.git`;
 
-    const isSsh = process.env['INPUT_SSH'];
+    const isSsh = process.env['INPUT_SSH'] === 'true';
     if (isSsh) {
       remoteRepo = `git@${githubDomain}:${process.env.GITHUB_REPOSITORY}.git`
     }
