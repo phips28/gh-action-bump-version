@@ -254,13 +254,9 @@ const pkg = getPackageJson();
     const gihtubDomain = process.env['INPUT_CUSTOM-GIT-DOMAIN'] || 'github.com'
     let remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@${gihtubDomain}/${process.env.GITHUB_REPOSITORY}.git`;
 
-    console.log(`remoteRepo[default] = ${remoteRepo}`);
-
     const isSsh = process.env['INPUT_SSH'];
-    
     if (isSsh) {
       remoteRepo = `git@${gihtubDomain}:${process.env.GITHUB_REPOSITORY}.git`
-      console.log(`remoteRepo[ssh] = ${remoteRepo}`);
     }
 
     
