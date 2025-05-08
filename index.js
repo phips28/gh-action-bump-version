@@ -4,6 +4,10 @@ const { existsSync } = require('fs');
 const { EOL } = require('os');
 const path = require('path');
 
+const trimLeft = (value, charlist = '/') => value.replace(new RegExp(`^[${charlist}]*`), '');
+const trimRight = (value, charlist = '/') => value.replace(new RegExp(`[${charlist}]*$`), '');
+const trim = (value, charlist) => trimLeft(trimRight(value, charlist));
+
 // Change working directory if user defined PACKAGEJSON_DIR
 if (process.env.PACKAGEJSON_DIR) {
   process.env.GITHUB_WORKSPACE = `${process.env.GITHUB_WORKSPACE}/${process.env.PACKAGEJSON_DIR}`;
@@ -251,11 +255,20 @@ const pkg = getPackageJson();
       // );
     }
 
-    const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@${
+    let remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@${
       process.env['INPUT_CUSTOM-GIT-DOMAIN'] || 'github.com'
     }/${process.env.GITHUB_REPOSITORY}.git`;
 
-    console.log(`remoteRepo = `, remoteRepo);
+    console.log(`remoteRepo[default] = ${remoteRepo}`);
+
+    const isSsh = process.env['INPUT_SSH'];
+    
+    if (isSsh) {
+      const github_url = trim(process.env.INPUT_GITHUB_URL).split('//')[1];
+      remoteRepo = `git@${github_url}:${process.env.GITHUB_REPOSITORY}.git`
+      console.log(`remoteRepo[ssh] = ${remoteRepo}`);
+    }
+
     
     if (process.env['INPUT_SKIP-TAG'] !== 'true') {
       await runInWorkspace('git', ['tag', newVersion]);

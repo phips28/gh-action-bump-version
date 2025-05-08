@@ -86,6 +86,9 @@ inputs:
     description: '[DEPRECATED] Set to false to skip pushing the new tag'
     default: 'true'
     required: false
+  ssh:
+    description: 'Specify if ssh should be used'
+    required: false
 outputs:
   newTag:
     description: 'The newly created tag'
