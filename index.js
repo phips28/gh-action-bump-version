@@ -256,7 +256,7 @@ const pkg = getPackageJson();
 
     const isSsh = process.env['INPUT_SSH'];
     if (isSsh) {
-      remoteRepo = `git@${gihtubDomain}:${process.env.GITHUB_REPOSITORY}.git`
+      remoteRepo = `git@${githubDomain}:${process.env.GITHUB_REPOSITORY}.git`
     }
     
     if (process.env['INPUT_SKIP-TAG'] !== 'true') {
