@@ -251,9 +251,14 @@ const pkg = getPackageJson();
       // );
     }
 
-    const remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@${
-      process.env['INPUT_CUSTOM-GIT-DOMAIN'] || 'github.com'
-    }/${process.env.GITHUB_REPOSITORY}.git`;
+    const githubDomain = process.env['INPUT_CUSTOM-GIT-DOMAIN'] || 'github.com'
+    let remoteRepo = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@${githubDomain}/${process.env.GITHUB_REPOSITORY}.git`;
+
+    const isSsh = process.env['INPUT_SSH'] === 'true';
+    if (isSsh) {
+      remoteRepo = `git@${githubDomain}:${process.env.GITHUB_REPOSITORY}.git`
+    }
+    
     if (process.env['INPUT_SKIP-TAG'] !== 'true') {
       await runInWorkspace('git', ['tag', newVersion]);
       if (process.env['INPUT_SKIP-PUSH'] !== 'true') {
