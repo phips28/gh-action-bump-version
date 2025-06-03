@@ -1,7 +1,7 @@
 name: Automated Version Bump
 description: Automated version bump for npm packages.
 runs:
-  using: node22
+  using: node20
   main: index.js
 branding:
   icon: chevron-up
