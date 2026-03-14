@@ -241,6 +241,25 @@ Example:
     custom-git-domain: 'github.com'
 ```
 
+## Outputs Usage:
+
+### **newTag**
+
+The new version tag that was created. Example:
+```yaml
+- id: bump_version
+  name:  'Automated Version Bump'
+  uses:  'phips28/gh-action-bump-version@master'
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  with:
+    tag-prefix:  'v'
+
+- name: 'Use newTag output'
+  run: echo "New version tag is ${{ steps.bump_version.outputs.newTag }}"
+  # Output will be something like "v1.2.3"
+```
+
 #### [DEPRECATED] **push:**
 **DEPRECATED** Set false you want to avoid pushing the new version tag/package.json. Example:
 ```yaml
