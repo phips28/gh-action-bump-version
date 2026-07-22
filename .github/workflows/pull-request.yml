@@ -1,4 +1,4 @@
-name: Confirm Pull Request
+name: Pull Request Test
 
 on:
   pull_request:
@@ -9,7 +9,7 @@ env:
 
 jobs:
   bump-version:
-    name: 'Bump Version on master'
+    name: 'Pull Request Test'
     runs-on: ubuntu-latest
 
     steps:
