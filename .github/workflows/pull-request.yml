@@ -8,9 +8,11 @@ env:
   major: 'MAJOR_VERSION'
 
 jobs:
-  bump-version:
+  test:
     name: 'Pull Request Test'
     runs-on: ubuntu-latest
+    outputs:
+      new_tag: ${{ steps.version-bump.outputs.newTag }}
 
     steps:
       - name: 'Checkout source code'
@@ -37,9 +39,28 @@ jobs:
           skip-push: 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: 'cat package.json'
         run: cat ./package.json
-      - name: 'Output Step'
+
+  report:
+    if: always()
+    runs-on: ubuntu-latest
+    needs:
+      - test
+    steps:
+      - name: 'Summary'
         env:
-          NEW_TAG: ${{ steps.version-bump.outputs.newTag }}
-        run: echo "new tag $NEW_TAG"
+          RESULT: ${{ needs.test.result }}
+          NEW_TAG: "${{ needs.test.outputs.new_tag }}"
+        run: |
+          echo "### Pull Request Test Report" >> $GITHUB_STEP_SUMMARY
+          
+          if [[ $RESULT == "success" ]]; then
+            status="Success"
+          else
+            status="Failure"
+          fi
+          
+          echo "Status: \`$status\`" >> $GITHUB_STEP_SUMMARY
+          echo "New Tag: \`$NEW_TAG\`" >> $GITHUB_STEP_SUMMARY
