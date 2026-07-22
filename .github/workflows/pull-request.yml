@@ -1,0 +1,36 @@
+name: Confirm Pull Request
+
+on:
+  pull_request:
+
+env:
+  minor: 'MINOR_VERSION'
+  major: 'MAJOR_VERSION'
+
+jobs:
+  bump-version:
+    name: 'Bump Version on master'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 'Checkout source code'
+        uses: 'actions/checkout@v2'
+
+      - name: 'cat package.json'
+        run: cat ./package.json
+      - name: 'Automated Version Bump'
+        id: version-bump
+        uses: './action.yml'
+        with:
+          minor-wording: ${{ env.minor }}
+          major-wording: ${{ env.major }}
+          skip-commit: 'true'
+          skip-push: 'false'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: 'cat package.json'
+        run: cat ./package.json
+      - name: 'Output Step'
+        env:
+          NEW_TAG: ${{ steps.version-bump.outputs.newTag }}
+        run: echo "new tag $NEW_TAG"
