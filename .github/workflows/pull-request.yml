@@ -20,6 +20,10 @@ jobs:
 
       - name: 'cat package.json'
         run: cat ./package.json
+
+      - name: 'cat ./action.yml'
+        run: cat ./action.yml
+
       - name: 'Automated Version Bump'
         id: version-bump
         uses: './action.yml'
