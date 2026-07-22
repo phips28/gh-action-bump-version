@@ -14,19 +14,22 @@ jobs:
 
     steps:
       - name: 'Checkout source code'
-        uses: 'actions/checkout@v2'
+        uses: 'actions/checkout@v4'
         with:
           ref: ${{ github.ref }}
+
+      - name: 'Checkout source code'
+        uses: 'actions/checkout@v4'
+        with:
+          ref: ${{ github.ref }}
+          path: .github/test
 
       - name: 'cat package.json'
         run: cat ./package.json
 
-      - name: 'cat ./action.yml'
-        run: cat ./action.yml
-
       - name: 'Automated Version Bump'
         id: version-bump
-        uses: './action.yml'
+        uses: './.github/test/action.yml'
         with:
           minor-wording: ${{ env.minor }}
           major-wording: ${{ env.major }}
