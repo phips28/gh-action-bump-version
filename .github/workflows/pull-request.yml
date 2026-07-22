@@ -63,4 +63,4 @@ jobs:
           fi
           
           echo "Status: \`$status\`" >> $GITHUB_STEP_SUMMARY
-          echo "New Tag: \`$NEW_TAG\`" >> $GITHUB_STEP_SUMMARY
+          echo "New Version: \`$NEW_TAG\`" >> $GITHUB_STEP_SUMMARY
