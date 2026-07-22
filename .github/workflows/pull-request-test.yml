@@ -1,5 +1,7 @@
 name: Pull Request Test
 
+# This workflow runs the action every time you push to a PR to allow for easy testing of the github-facing side of this project. Commit and push are skipped so no changes will be made to the branch. The new version will be shown on the github run page.
+
 on:
   pull_request:
 
