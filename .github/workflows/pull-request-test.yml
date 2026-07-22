@@ -49,6 +49,7 @@ jobs:
         run: cat ./package.json
 
   report:
+    name: 'Report'
     if: always()
     runs-on: ubuntu-latest
     needs:
