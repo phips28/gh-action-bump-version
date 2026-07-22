@@ -29,12 +29,12 @@ jobs:
 
       - name: 'Automated Version Bump'
         id: version-bump
-        uses: './.github/test/action.yml'
+        uses: './.github/test'
         with:
           minor-wording: ${{ env.minor }}
           major-wording: ${{ env.major }}
           skip-commit: 'true'
-          skip-push: 'false'
+          skip-push: 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: 'cat package.json'
