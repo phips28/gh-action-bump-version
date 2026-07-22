@@ -22,7 +22,7 @@ jobs:
         run: cat ./package.json
       - name: 'Automated Version Bump'
         id: version-bump
-        uses: './../../action.yml'
+        uses: 'action.yml'
         with:
           minor-wording: ${{ env.minor }}
           major-wording: ${{ env.major }}
