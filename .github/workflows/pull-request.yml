@@ -20,7 +20,7 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - name: 'Checkout source code'
+      - name: 'Checkout action in test dir'
         uses: 'actions/checkout@v4'
         with:
           ref: ${{ github.ref }}
@@ -28,6 +28,9 @@ jobs:
 
       - name: 'cat package.json'
         run: cat ./package.json
+
+      - name: 'npm version'
+        run: npm -v
 
       - name: 'Automated Version Bump'
         id: version-bump
